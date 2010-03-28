@@ -1,0 +1,85 @@
+find_package(ITK)
+if(ITK_FOUND)
+  include(${ITK_USE_FILE})
+else(ITK_FOUND)
+  message(FATAL_ERROR "Cannot build without ITK. Please set ITK_DIR.")
+endif(ITK_FOUND)
+
+find_package(TCLAP REQUIRED)
+if(TCLAP_FOUND)
+  include(${TCLAP_USE_FILE})
+endif(TCLAP_FOUND)
+
+find_package(ModuleDescriptionParser REQUIRED)
+if(ModuleDescriptionParser_FOUND)
+  include(${ModuleDescriptionParser_USE_FILE})
+endif(ModuleDescriptionParser_FOUND)
+
+
+# create the .clp files
+# usage: GENERATE_CLP(foo_SRCS XML_FILE [LOGO_FILE])
+macro(GENERATECLP SOURCES)
+
+  # The shell into which nmake.exe executes the custom command has some issues
+  # with mixing quoted and unquoted arguments :( Let's help.
+
+  if(CMAKE_GENERATOR MATCHES "NMake Makefiles")
+    set(verbatim "")
+    set(quote "\"")
+  else(CMAKE_GENERATOR MATCHES "NMake Makefiles")
+    set(verbatim "VERBATIM")
+    set(quote "")
+  endif(CMAKE_GENERATOR MATCHES "NMake Makefiles")
+
+  # what is the filename without the extension
+  get_filename_component(TMP_FILENAME ${ARGV1} NAME_WE)
+
+  # the input file might be full path so handle that
+  get_filename_component(TMP_FILEPATH ${ARGV1} PATH)
+
+  # compute the input filename
+  if (TMP_FILEPATH)
+    set(TMP_INPUT ${TMP_FILEPATH}/${TMP_FILENAME}.xml)
+  else (TMP_FILEPATH)
+    set(TMP_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${TMP_FILENAME}.xml)
+  endif (TMP_FILEPATH)
+
+  # add custom command to output
+  if ("x${ARGV2}" STREQUAL "x")
+    ## CASE OF NO LOGO FILE
+    add_custom_command(
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h
+      DEPENDS "${GENERATECLP_EXE}" ${TMP_INPUT}
+      COMMAND "${GENERATECLP_EXE}"
+      --InputXML "${quote}${TMP_INPUT}${quote}"
+      --OutputCxx "${quote}${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h${quote}"
+      ${verbatim}
+      )
+    # mark the .clp file as a header file
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h PROPERTIES HEADER_FILE_ONLY TRUE)
+    foreach( INPUT_SOURCE_FILE ${${SOURCES}} ${TMP_FILENAME}.cxx)
+      set_source_files_properties(${INPUT_SOURCE_FILE} PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h)
+    endforeach( INPUT_SOURCE_FILE )
+  else ("x${ARGV2}" STREQUAL "x")
+    ## CASE WITH LOGO FILE
+    add_custom_command(
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h
+      DEPENDS "${GENERATECLP_EXE}" ${TMP_INPUT} ${ARGV2}
+      COMMAND "${GENERATECLP_EXE}"
+      --logoFiles "${quote}${ARGV2}${quote}"
+      --InputXML "${quote}${TMP_INPUT}${quote}"
+      --OutputCxx "${quote}${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h${quote}"
+      ${verbatim}
+      )
+    # mark the .clp file as a header file
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h PROPERTIES HEADER_FILE_ONLY TRUE)
+    foreach( INPUT_SOURCE_FILE ${${SOURCES}} ${TMP_FILENAME}.cxx)
+      set_source_files_properties(${INPUT_SOURCE_FILE} PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h OBJECT_DEPENDS ${ARGV2})
+    endforeach( INPUT_SOURCE_FILE )
+    # mark the logo include file as a header file
+    set_source_files_properties(${ARGV2} PROPERTIES HEADER_FILE_ONLY TRUE)
+  endif ("x${ARGV2}" STREQUAL "x")
+
+  set(${SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h ${${SOURCES}})
+  include_directories(${CMAKE_CURRENT_BINARY_DIR})
+endmacro(GENERATECLP)
