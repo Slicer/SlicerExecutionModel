@@ -5,6 +5,8 @@
 #
 #
 
+set(SlicerExecutionModel_INCLUDE_DIRS_CONFIG ${SlicerExecutionModel_INCLUDE_DIRS})
+
 set(SlicerExecutionModel_LIBRARIES_CONFIG ModuleDescriptionParser)
 
 set(SlicerExecutionModel_USE_FILE_CONFIG
