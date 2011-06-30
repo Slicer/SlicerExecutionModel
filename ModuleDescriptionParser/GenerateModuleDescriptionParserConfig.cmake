@@ -5,8 +5,7 @@
 #
 #
 set(ModuleDescriptionParser_INCLUDE_DIRS_CONFIG
-  ${ModuleDescriptionParser_BINARY_DIR}
-  ${ModuleDescriptionParser_SOURCE_DIR}
+  ${ModuleDescriptionParser_INCLUDE_DIRS}
   )
 
 get_target_property(ModuleDescriptionParser_ARCHIVE_OUTPUT_DIRECTORY

@@ -4,7 +4,7 @@
 # Settings specific to build trees
 #
 #    tclap include files referenced as "tclap/foo.h"
-set(TCLAP_INCLUDE_DIRS_CONFIG ${TCLAP_SOURCE_DIR}/include)
+set(TCLAP_INCLUDE_DIRS_CONFIG ${TCLAP_INCLUDE_DIRS})
 set(TCLAP_USE_FILE_CONFIG ${TCLAP_BINARY_DIR}/UseTCLAP.cmake)
 
 

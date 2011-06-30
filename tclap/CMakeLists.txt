@@ -15,16 +15,6 @@ if(POLICY CMP0017)
 endif()
 
 # --------------------------------------------------------------------------
-# Configure support file
-# --------------------------------------------------------------------------
-include(GenerateTCLAPConfig.cmake)
-
-configure_file(
-  ${TCLAP_SOURCE_DIR}/UseTCLAP.cmake.in
-  ${TCLAP_BINARY_DIR}/UseTCLAP.cmake COPYONLY
-  )
-
-# --------------------------------------------------------------------------
 # Install headers
 # --------------------------------------------------------------------------
 if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
@@ -53,5 +43,15 @@ endif()
 # --------------------------------------------------------------------------
 # Set INCLUDE_DIRS variable
 # --------------------------------------------------------------------------
-set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE)
+
+# --------------------------------------------------------------------------
+# Configure support file
+# --------------------------------------------------------------------------
+include(GenerateTCLAPConfig.cmake)
+
+configure_file(
+  ${TCLAP_SOURCE_DIR}/UseTCLAP.cmake.in
+  ${TCLAP_BINARY_DIR}/UseTCLAP.cmake COPYONLY
+  )

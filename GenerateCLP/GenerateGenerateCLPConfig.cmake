@@ -25,7 +25,7 @@ configure_file(${GenerateCLP_SOURCE_DIR}/UseGenerateCLP.cmake.in
   ${GenerateCLP_USE_FILE_CONFIG}
   @ONLY)
 
-set(GenerateCLP_INCLUDE_DIRS_CONFIG ${GenerateCLP_BINARY_DIR} ${GenerateCLP_SOURCE_DIR})
+set(GenerateCLP_INCLUDE_DIRS_CONFIG ${GenerateCLP_INCLUDE_DIRS})
 set(GenerateCLP_LIBRARY_DIRS_CONFIG ${GenerateCLP_BINARY_DIR})
 set(GENERATECLP_EXE_CONFIG "${GENERATECLP_EXE}")
 if(NOT WIN32)

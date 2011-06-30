@@ -66,11 +66,9 @@ add_subdirectory(GenerateCLP)
 # Set INCLUDE_DIRS variable
 # --------------------------------------------------------------------------
 set(${PROJECT_NAME}_INCLUDE_DIRS
-  ${ModuleDescriptionParser_SOURCE_DIR}
-  ${ModuleDescriptionParser_BINARY_DIR}
-  ${GenerateCLP_SOURCE_DIR}
-  ${GenerateCLP_BINARY_DIR}
-  ${TCLAP_SOURCE_DIR}
-  ${TCLAP_BINARY_DIR}
+  ${ModuleDescriptionParser_INCLUDE_DIRS}
+  ${GenerateCLP_INCLUDE_DIRS}
+  ${TCLAP_INCLUDE_DIRS}
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE
   )
+
