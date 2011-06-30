@@ -68,12 +68,10 @@ target_link_libraries(${executable_name}
 # --------------------------------------------------------------------------
 # Export target
 # --------------------------------------------------------------------------
-set(GenerateCLP_LOCAL_EXPORT_FILE FALSE)
-if(NOT DEFINED ${PROJECT_NAME}_EXPORT_FILE)
-  set(GenerateCLP_LOCAL_EXPORT_FILE TRUE)
-  set(${PROJECT_NAME}_EXPORT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
+export(TARGETS ${lib_name} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
+if(DEFINED ${PROJECT_NAME}_EXPORT_FILE)
+  export(TARGETS ${lib_name} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
 endif()
-export(TARGETS ${executable_name} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
 
 # --------------------------------------------------------------------------
 # Install executable

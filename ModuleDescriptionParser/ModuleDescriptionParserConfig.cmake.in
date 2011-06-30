@@ -12,8 +12,6 @@ set(ModuleDescriptionParser_USE_FILE
 set(ITK_DIR "@ITK_DIR_CONFIG@")
 
 # The ModuleDescriptionParser targets file.
-set(ModuleDescriptionParser_LOCAL_EXPORT_FILE "@ModuleDescriptionParser_LOCAL_EXPORT_FILE@")
-if(ModuleDescriptionParser_LOCAL_EXPORT_FILE 
-  AND NOT TARGET ModuleDescriptionParser AND EXISTS "@ModuleDescriptionParser_EXPORT_FILE@")
-  include("@ModuleDescriptionParser_EXPORT_FILE@")
+if(NOT TARGET ModuleDescriptionParser AND EXISTS "@CMAKE_CURRENT_BINARY_DIR@/ModuleDescriptionParserTargets.cmake")
+  include("@CMAKE_CURRENT_BINARY_DIR@/ModuleDescriptionParserTargets.cmake")
 endif()

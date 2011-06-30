@@ -22,11 +22,13 @@ if(DEFINED SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
   set(tclap_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
 endif()
 
-if(DEFINED SlicerExecutionModel_EXPORT_FILE)
-  set(GenerateCLP_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
-  set(ModuleDescriptionParser_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
-  #set(tclap_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
+if(NOT DEFINED SlicerExecutionModel_EXPORT_FILE)
+  set(SlicerExecutionModel_EXPORT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 endif()
+
+set(GenerateCLP_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
+set(ModuleDescriptionParser_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
+#set(tclap_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
 
 if(DEFINED SlicerExecutionModel_LIBRARY_PROPERTIES)
   set(ModuleDescriptionParser_LIBRARY_PROPERTIES ${SlicerExecutionModel_LIBRARY_PROPERTIES})
