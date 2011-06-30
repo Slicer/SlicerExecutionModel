@@ -19,6 +19,6 @@ configure_file(${TCLAP_SOURCE_DIR}/TCLAPConfig.cmake.in
 #    tclap include files referenced as "tclap/foo.h"
 
 
-# Configure TCLAPInstallConfig.cmake for the install tree.
-configure_file(${TCLAP_SOURCE_DIR}/TCLAPInstallConfig.cmake.in
-               ${TCLAP_BINARY_DIR}/install/TCLAPConfig.cmake @ONLY)
+# TODO- Configure TCLAPInstallConfig.cmake for the install tree.
+#configure_file(${TCLAP_SOURCE_DIR}/TCLAPInstallConfig.cmake.in
+#               ${TCLAP_BINARY_DIR}/install/TCLAPConfig.cmake @ONLY)

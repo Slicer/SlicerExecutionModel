@@ -36,12 +36,12 @@ configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPConfig.cmake.in
   ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake @ONLY)
 
 
-# Settings specific for installation trees
+# TODO - Settings specific for installation trees
 #
 #
-configure_file(${GenerateCLP_SOURCE_DIR}/UseGenerateCLP.cmake.in
-  ${GenerateCLP_BINARY_DIR}/UseGenerateCLP.cmake_install
-  @ONLY)
+#configure_file(${GenerateCLP_SOURCE_DIR}/UseGenerateCLP.cmake.in
+#  ${GenerateCLP_BINARY_DIR}/UseGenerateCLP.cmake_install
+#  @ONLY)
 
-configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPInstallConfig.cmake.in
-  ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake_install @ONLY)
+#configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPInstallConfig.cmake.in
+#  ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake_install @ONLY)

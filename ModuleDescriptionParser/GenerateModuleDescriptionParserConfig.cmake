@@ -37,10 +37,10 @@ configure_file(
 #
 #
 
-# Configure ModuleDescriptionParserConfig.cmake for the install tree.
+# TODO Configure ModuleDescriptionParserConfig.cmake for the install tree.
 #
-configure_file(
-  ${ModuleDescriptionParser_SOURCE_DIR}/ModuleDescriptionParserInstallConfig.cmake.in
-  ${ModuleDescriptionParser_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
-  @ONLY
-  )
+#configure_file(
+#  ${ModuleDescriptionParser_SOURCE_DIR}/ModuleDescriptionParserInstallConfig.cmake.in
+#  ${ModuleDescriptionParser_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
+#  @ONLY
+#  )
