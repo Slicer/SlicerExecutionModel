@@ -1,13 +1,38 @@
 #
+# Typical usage could be something like:
+#   find_package(SlicerExecutionModel REQUIRED GenerateCLP)
+#   include(${SlicerExecutionModel_USE_FILE})
+#   generateclp(...)
+##
+# When using the components argument, SlicerExecutionModel_USE_* variables are 
+# automatically set for the SlicerExecutionModel_USE_FILE to pick up.  
+# If one wishes to manually set them, the available ones to set include:
+#                    SlicerExecutionModel_USE_GENERATECLP
+#                    SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER
+#                    SlicerExecutionModel_USE_TCLAP
 
+# Check if components where passed to find_package()
+if(SlicerExecutionModel_FIND_COMPONENTS)
+  foreach(component ${SlicerExecutionModel_FIND_COMPONENTS})
+    string(TOUPPER ${component} _COMPONENT)
+    set(SlicerExecutionModel_USE_${_COMPONENT} 1)
+  endforeach()
+endif()
+
+# If no components are passed, let's assume all components are expected to be enabled
+if(NOT SlicerExecutionModel_FIND_COMPONENTS)
+  set(SlicerExecutionModel_USE_GENERATECLP 1)
+  set(SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER 1)
+  set(SlicerExecutionModel_USE_TCLAP 1)
+endif()
+
+# Set SlicerExecutionModel variables 
 set(SlicerExecutionModel_INCLUDE_DIRS
   "@SlicerExecutionModel_INCLUDE_DIRS_CONFIG@"
   )
-
 set(SlicerExecutionModel_LIBRARIES
   @SlicerExecutionModel_LIBRARIES_CONFIG@
   )
-
 set(SlicerExecutionModel_USE_FILE
   "@SlicerExecutionModel_USE_FILE_CONFIG@"
   )
@@ -17,19 +42,27 @@ if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
   include("@SlicerExecutionModel_EXPORT_FILE@")
 endif()
 
+# Set *_DIR variable so that find_package() works appropriately
+set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
+set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
+set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
+
 #
 # Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated 
 # variables (ModuleDescriptionParser_INCLUDE_DIRS, ...) are exposed.
 #
-set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
-find_package(ModuleDescriptionParser REQUIRED)
+if(SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER)
+  find_package(ModuleDescriptionParser REQUIRED)
+endif()
 
-set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
-find_package(GenerateCLP REQUIRED)
+if(SlicerExecutionModel_USE_GENERATECLP)
+  find_package(GenerateCLP REQUIRED)
+endif()
 
-set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
-find_package(TCLAP REQUIRED)
-
+if(SlicerExecutionModel_USE_TCLAP)
+  find_package(TCLAP REQUIRED)
+endif()
 
 set(SlicerExecutionModel_LIBRARY_DIRS 
   ${GenerateCLP_LIBRARY_DIRS} ${ModuleDescriptionParser_LIBRARY_DIRS})
+
