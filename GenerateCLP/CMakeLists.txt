@@ -49,6 +49,11 @@ include_directories(
   )
 
 # --------------------------------------------------------------------------
+# List of targets to export
+# --------------------------------------------------------------------------
+set(targets_to_export)
+
+# --------------------------------------------------------------------------
 # Build executable
 # --------------------------------------------------------------------------
 set(executable_name GenerateCLP)
@@ -56,6 +61,7 @@ set(GENERATECLP_SOURCE
   GenerateCLP.cxx
   )
 add_executable(${executable_name} ${GENERATECLP_SOURCE})
+list(APPEND targets_to_export ${executable_name})
 
 target_link_libraries(${executable_name}
   # Appearently windows does not like static libs mixed with shared libs ModuleDescriptionParser-static
@@ -64,14 +70,6 @@ target_link_libraries(${executable_name}
   ModuleDescriptionParser
   itksys
   ITKEXPAT)
-
-# --------------------------------------------------------------------------
-# Export target
-# --------------------------------------------------------------------------
-export(TARGETS ${lib_name} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
-if(DEFINED ${PROJECT_NAME}_EXPORT_FILE)
-  export(TARGETS ${lib_name} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
-endif()
 
 # --------------------------------------------------------------------------
 # Install executable
@@ -136,6 +134,7 @@ if(NOT WIN32)
     @ONLY)
   add_executable(GenerateCLPLauncher
     ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c)
+  list(APPEND targets_to_export GenerateCLPLauncher)
   add_dependencies(GenerateCLPLauncher GenerateCLP)
 
   # --------------------------------------------------------------------------
@@ -146,6 +145,14 @@ if(NOT WIN32)
       DESTINATION bin COMPONENT Development
       )
   endif()
+endif()
+
+# --------------------------------------------------------------------------
+# Export target
+# --------------------------------------------------------------------------
+export(TARGETS ${targets_to_export} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
+if(DEFINED ${PROJECT_NAME}_EXPORT_FILE)
+  export(TARGETS ${targets_to_export} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
 endif()
 
 # --------------------------------------------------------------------------

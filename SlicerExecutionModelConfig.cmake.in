@@ -1,0 +1,35 @@
+#
+
+set(SlicerExecutionModel_INCLUDE_DIRS
+  "@SlicerExecutionModel_INCLUDE_DIRS_CONFIG@"
+  )
+
+set(SlicerExecutionModel_LIBRARIES
+  @SlicerExecutionModel_LIBRARIES_CONFIG@
+  )
+
+set(SlicerExecutionModel_USE_FILE
+  "@SlicerExecutionModel_USE_FILE_CONFIG@"
+  )
+
+# The SlicerExecutionModel targets file.
+if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
+  include("@SlicerExecutionModel_EXPORT_FILE@")
+endif()
+
+#
+# Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated 
+# variables (ModuleDescriptionParser_INCLUDE_DIRS, ...) are exposed.
+#
+set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
+find_package(ModuleDescriptionParser REQUIRED)
+
+set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
+find_package(GenerateCLP REQUIRED)
+
+set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
+find_package(TCLAP REQUIRED)
+
+
+set(SlicerExecutionModel_LIBRARY_DIRS 
+  ${GenerateCLP_LIBRARY_DIRS} ${ModuleDescriptionParser_LIBRARY_DIRS})

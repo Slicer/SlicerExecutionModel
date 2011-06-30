@@ -74,3 +74,10 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE
   )
 
+# --------------------------------------------------------------------------
+# Configure support files
+# --------------------------------------------------------------------------
+include(GenerateSlicerExecutionModelConfig.cmake)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/UseSlicerExecutionModel.cmake COPYONLY)
