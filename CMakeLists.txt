@@ -28,6 +28,10 @@ if(DEFINED SlicerExecutionModel_EXPORT_FILE)
   #set(tclap_EXPORT_FILE ${SlicerExecutionModel_EXPORT_FILE})
 endif()
 
+if(DEFINED SlicerExecutionModel_LIBRARY_PROPERTIES)
+  set(ModuleDescriptionParser_LIBRARY_PROPERTIES ${SlicerExecutionModel_LIBRARY_PROPERTIES})
+endif()
+
 
 # --------------------------------------------------------------------------
 # SETIFEMPTY
