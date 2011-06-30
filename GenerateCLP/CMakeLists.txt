@@ -65,12 +65,12 @@ target_link_libraries(${executable_name}
   itksys
   ITKEXPAT)
 
-include(GenerateGenerateCLPConfig.cmake)
-
 # --------------------------------------------------------------------------
 # Export target
 # --------------------------------------------------------------------------
+set(GenerateCLP_LOCAL_EXPORT_FILE FALSE)
 if(NOT DEFINED ${PROJECT_NAME}_EXPORT_FILE)
+  set(GenerateCLP_LOCAL_EXPORT_FILE TRUE)
   set(${PROJECT_NAME}_EXPORT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 endif()
 export(TARGETS ${executable_name} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
@@ -162,3 +162,9 @@ endif()
 # --------------------------------------------------------------------------
 set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE)
+
+# --------------------------------------------------------------------------
+# Configure support files
+# --------------------------------------------------------------------------  
+include(GenerateGenerateCLPConfig.cmake)
+

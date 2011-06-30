@@ -6,3 +6,10 @@ set(GENERATECLP_EXE "@GENERATECLP_EXE_CONFIG@")
 set(TCLAP_DIR "@TCLAP_DIR@")
 set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
 set(ITK_DIR "@ITK_DIR_CONFIG@")
+
+# The GenerateCLP targets file.
+set(GenerateCLP_LOCAL_EXPORT_FILE "@GenerateCLP_LOCAL_EXPORT_FILE@")
+if(GenerateCLP_LOCAL_EXPORT_FILE 
+  AND NOT TARGET GenerateCLP AND EXISTS "@GenerateCLP_EXPORT_FILE@")
+  include("@GenerateCLP_EXPORT_FILE@")
+endif()

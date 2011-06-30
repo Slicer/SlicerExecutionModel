@@ -173,7 +173,9 @@ endif()
 # --------------------------------------------------------------------------
 # Export target
 # --------------------------------------------------------------------------
+set(ModuleDescriptionParser_LOCAL_EXPORT_FILE FALSE)
 if(NOT DEFINED ${PROJECT_NAME}_EXPORT_FILE)
+  set(ModuleDescriptionParser_LOCAL_EXPORT_FILE TRUE)
   set(${PROJECT_NAME}_EXPORT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 endif()
 export(TARGETS ${lib_name} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
@@ -204,14 +206,6 @@ if(BUILD_TESTING)
 endif()
 
 # --------------------------------------------------------------------------
-# Configure support files
-# --------------------------------------------------------------------------
-include(GenerateModuleDescriptionParserConfig.cmake)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseModuleDescriptionParser.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/UseModuleDescriptionParser.cmake COPYONLY)
-
-# --------------------------------------------------------------------------
 # Install support files
 # --------------------------------------------------------------------------
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
@@ -226,3 +220,12 @@ endif()
 # --------------------------------------------------------------------------
 set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE)
+
+# --------------------------------------------------------------------------
+# Configure support files
+# --------------------------------------------------------------------------
+include(GenerateModuleDescriptionParserConfig.cmake)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseModuleDescriptionParser.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/UseModuleDescriptionParser.cmake COPYONLY)
+
