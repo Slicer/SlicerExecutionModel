@@ -1,6 +1,7 @@
 # The GenerateCLP source tree.
 set(GenerateCLP_INCLUDE_DIRS "@GenerateCLP_INCLUDE_DIRS_CONFIG@")
 set(GenerateCLP_LIBRARY_DIRS "@GenerateCLP_LIBRARY_DIRS_CONFIG@")
+set(GenerateCLP_CMAKE_DIR "@GenerateCLP_CMAKE_DIR_CONFIG@")
 set(GenerateCLP_USE_FILE "@GenerateCLP_USE_FILE_CONFIG@")
 set(GENERATECLP_EXE "@GENERATECLP_EXE_CONFIG@")
 set(TCLAP_DIR "@TCLAP_DIR@")

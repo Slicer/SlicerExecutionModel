@@ -171,5 +171,10 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BIN
 # --------------------------------------------------------------------------
 # Configure support files
 # --------------------------------------------------------------------------  
+configure_file(
+  GenerateCLP.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLP.cmake
+  @ONLY
+  )
 include(GenerateGenerateCLPConfig.cmake)
 
