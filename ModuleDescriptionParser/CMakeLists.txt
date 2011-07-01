@@ -173,10 +173,8 @@ endif()
 # --------------------------------------------------------------------------
 # Export target
 # --------------------------------------------------------------------------
+set(${PROJECT_NAME}_TARGETS ${lib_name} CACHE INTERNAL "${PROJECT_NAME} targets" FORCE)
 export(TARGETS ${lib_name} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
-if(DEFINED ${PROJECT_NAME}_EXPORT_FILE)
-  export(TARGETS ${lib_name} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
-endif()
 
 # --------------------------------------------------------------------------
 # Install library

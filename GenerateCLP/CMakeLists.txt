@@ -150,10 +150,8 @@ endif()
 # --------------------------------------------------------------------------
 # Export target
 # --------------------------------------------------------------------------
+set(${PROJECT_NAME}_TARGETS ${targets_to_export} CACHE INTERNAL "${PROJECT_NAME} targets" FORCE)
 export(TARGETS ${targets_to_export} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
-if(DEFINED ${PROJECT_NAME}_EXPORT_FILE)
-  export(TARGETS ${targets_to_export} APPEND FILE ${${PROJECT_NAME}_EXPORT_FILE})
-endif()
 
 # --------------------------------------------------------------------------
 # Testing
