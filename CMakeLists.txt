@@ -32,6 +32,21 @@ if(DEFINED SlicerExecutionModel_LIBRARY_PROPERTIES)
   set(ModuleDescriptionParser_LIBRARY_PROPERTIES ${SlicerExecutionModel_LIBRARY_PROPERTIES})
 endif()
 
+#-----------------------------------------------------------------------------
+# Output directories.
+#-----------------------------------------------------------------------------
+foreach(type LIBRARY RUNTIME ARCHIVE)
+  # Make sure the directory exists
+  if(DEFINED SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY
+     AND NOT EXISTS ${SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY})
+    message(FATAL_ERROR "SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY is set to a non-existing directory [${SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY}]")
+  endif()
+  
+  if(DEFINED SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY)
+    set(ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY ${SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY})
+    set(GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY})
+  endif()
+endforeach()
 
 # --------------------------------------------------------------------------
 # SETIFEMPTY

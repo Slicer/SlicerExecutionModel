@@ -8,11 +8,6 @@ set(ModuleDescriptionParser_INCLUDE_DIRS_CONFIG
   ${ModuleDescriptionParser_INCLUDE_DIRS}
   )
 
-get_target_property(ModuleDescriptionParser_ARCHIVE_OUTPUT_DIRECTORY
-  ${lib_name} ARCHIVE_OUTPUT_DIRECTORY)
-get_target_property(ModuleDescriptionParser_LIBRARY_OUTPUT_DIRECTORY
-  ${lib_name} LIBRARY_OUTPUT_DIRECTORY)
-
 set(ModuleDescriptionParser_LIBRARY_DIRS_CONFIG
   ${ModuleDescriptionParser_ARCHIVE_OUTPUT_DIRECTORY}
   ${ModuleDescriptionParser_LIBRARY_OUTPUT_DIRECTORY}

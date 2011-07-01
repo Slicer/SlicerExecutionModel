@@ -36,6 +36,22 @@ if(NOT DEFINED GENERATECLP_USE_MD5)
   option(GENERATECLP_USE_MD5 "Enabling that option will teach GenerateCLP to overwrite output file only if needed. Make sure to build ITK with KWSYS_USE_MD5 enabled." OFF)
 endif()
 
+#-----------------------------------------------------------------------------
+# Output directories.
+#-----------------------------------------------------------------------------
+foreach(type LIBRARY RUNTIME ARCHIVE)
+  # Make sure the directory exists
+  if(DEFINED GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY
+     AND NOT EXISTS ${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY})
+    message(FATAL_ERROR "GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY is set to a non-existing directory [${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY}]")
+  endif()
+  
+  if(NOT DEFINED GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY)
+    set(GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_BINARY_DIR})
+  endif()
+  set(CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY} CACHE INTERNAL "Single output directory for building all libraries.")
+endforeach()
+
 # --------------------------------------------------------------------------
 # Configure header(s)
 # --------------------------------------------------------------------------

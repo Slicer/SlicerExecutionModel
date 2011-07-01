@@ -31,6 +31,22 @@ if(NOT DEFINED BUILD_SHARED_LIBS)
   option(BUILD_SHARED_LIBS "Build with shared libraries." ON)
 endif()
 
+#-----------------------------------------------------------------------------
+# Output directories.
+#-----------------------------------------------------------------------------
+foreach(type LIBRARY RUNTIME ARCHIVE)
+  # Make sure the directory exists
+  if(DEFINED ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY
+     AND NOT EXISTS ${ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY})
+    message(FATAL_ERROR "ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY is set to a non-existing directory [${ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY}]")
+  endif()
+  
+  if(NOT DEFINED ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY)
+    set(ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY ${ModuleDescriptionParser_BINARY_DIR})
+  endif()
+  set(CMAKE_${type}_OUTPUT_DIRECTORY ${ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY} CACHE INTERNAL "Single output directory for building all libraries.")
+endforeach()
+
 # --------------------------------------------------------------------------
 # Include dirs
 # --------------------------------------------------------------------------
