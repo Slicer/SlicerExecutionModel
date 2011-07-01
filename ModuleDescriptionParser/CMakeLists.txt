@@ -42,7 +42,7 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
   endif()
   
   if(NOT DEFINED ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY)
-    set(ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY ${ModuleDescriptionParser_BINARY_DIR})
+    set(ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY ${ModuleDescriptionParser_BINARY_DIR}/bin)
   endif()
   set(CMAKE_${type}_OUTPUT_DIRECTORY ${ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY} CACHE INTERNAL "Single output directory for building all libraries.")
 endforeach()

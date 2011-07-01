@@ -47,7 +47,7 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
   endif()
   
   if(NOT DEFINED GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY)
-    set(GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_BINARY_DIR})
+    set(GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_BINARY_DIR}/bin)
   endif()
   set(CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY} CACHE INTERNAL "Single output directory for building all libraries.")
 endforeach()
