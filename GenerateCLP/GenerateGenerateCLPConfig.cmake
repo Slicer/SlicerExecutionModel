@@ -31,10 +31,7 @@ set(GenerateCLP_LIBRARY_DIRS_CONFIG
   ${GenerateCLP_LIBRARY_OUTPUT_DIRECTORY}
   )
 set(GenerateCLP_CMAKE_DIR_CONFIG ${GenerateCLP_BINARY_DIR})
-set(GENERATECLP_EXE_CONFIG "${GENERATECLP_EXE}")
-if(NOT WIN32)
-  set(GENERATECLP_EXE_CONFIG "${GENERATECLP_EXE}Launcher")
-endif(NOT WIN32)
+set(GENERATECLP_EXE_CONFIG "${GENERATECLP_EXE}Launcher")
 set(ITK_DIR_CONFIG ${ITK_DIR})
 configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPConfig.cmake.in
   ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake @ONLY)

@@ -127,40 +127,38 @@ endif()
 # libraries it depends on.
 #
 set(GenerateCLP_FORWARD_DIR_BUILD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-set(GenerateCLP_FORWARD_DIR_INSTALL ".")
-if(WIN32)
-  set(GenerateCLP_FORWARD_PATH_BUILD
-    "\"${GenerateCLP_FORWARD_DIR_BUILD}\" CONFIG_DIR_POST,\"${ITK_DIR}/bin\" CONFIG_DIR_POST")
-  set(GenerateCLP_FORWARD_PATH_INSTALL "\"\"")
-else()
-  set(GenerateCLP_FORWARD_PATH_BUILD
-    "\"${GenerateCLP_FORWARD_DIR_BUILD}\",\"${ITK_DIR}/bin\"")
-  set(GenerateCLP_FORWARD_PATH_INSTALL
-    "\"${GenerateCLP_DIR}\",\"${ITK_DIR}\",\"${ModuleDescriptionParser_DIR}\"")
-endif()
+set(GenerateCLP_FORWARD_PATH_BUILD " \\
+   \".\" CONFIG_DIR_POST, \\
+   \"${ITK_DIR}/bin\" CONFIG_DIR_POST, \\
+   \"${ModuleDescriptionParser_DIR}/bin\" CONFIG_DIR_POST \\
+")
+set(GenerateCLP_FORWARD_PATH_INSTALL " \\
+   \".\", \\
+   \"${ITK_DIR}/bin\", \\
+   \"${ModuleDescriptionParser_DIR}/bin\" \\
+")
 set(GenerateCLP_FORWARD_EXE GenerateCLP)
+set(GenerateCLP_FORWARD_DIR_INSTALL "../")
 
-if(NOT WIN32)
-  # --------------------------------------------------------------------------
-  # Build launcher
-  # --------------------------------------------------------------------------
-  configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/GenerateCLPLauncher.c.in
-    ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c
-    @ONLY)
-  add_executable(GenerateCLPLauncher
-    ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c)
-  list(APPEND targets_to_export GenerateCLPLauncher)
-  add_dependencies(GenerateCLPLauncher GenerateCLP)
+# --------------------------------------------------------------------------
+# Build launcher
+# --------------------------------------------------------------------------
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/GenerateCLPLauncher.c.in
+  ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c
+  @ONLY)
+add_executable(GenerateCLPLauncher
+  ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c)
+list(APPEND targets_to_export GenerateCLPLauncher)
+add_dependencies(GenerateCLPLauncher GenerateCLP)
 
-  # --------------------------------------------------------------------------
-  # Install launcher
-  # --------------------------------------------------------------------------
-  if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
-    install(TARGETS GenerateCLPLauncher RUNTIME
-      DESTINATION bin COMPONENT Development
-      )
-  endif()
+# --------------------------------------------------------------------------
+# Install launcher
+# --------------------------------------------------------------------------
+if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+  install(TARGETS GenerateCLPLauncher RUNTIME
+    DESTINATION bin COMPONENT Development
+    )
 endif()
 
 # --------------------------------------------------------------------------
