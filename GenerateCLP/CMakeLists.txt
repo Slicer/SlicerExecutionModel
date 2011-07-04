@@ -143,7 +143,7 @@ set(GenerateCLP_FORWARD_PATH_INSTALL " \\
    \"${ModuleDescriptionParser_DIR}/bin\" \\
 ")
 set(GenerateCLP_FORWARD_EXE GenerateCLP)
-set(GenerateCLP_FORWARD_DIR_INSTALL "../")
+set(GenerateCLP_FORWARD_DIR_INSTALL "..")
 
 # --------------------------------------------------------------------------
 # Build launcher
