@@ -1,14 +1,5 @@
-find_package( ITK )
-if( ITK_FOUND )
-  include(${ITK_USE_FILE})
-else( ITK_FOUND )
-  message( FATAL_ERROR "Cannot build without ITK" )
-endif( ITK_FOUND )
-
 find_package(GenerateCLP NO_MODULE REQUIRED)
-if(GenerateCLP_FOUND)
-  include(${GenerateCLP_USE_FILE})
-endif(GenerateCLP_FOUND)
+include(${GenerateCLP_USE_FILE})
 
 set( CLPEXAMPLE1_SOURCE CLPExample1.cxx )
 GENERATECLP(CLPEXAMPLE1_SOURCE CLPExample1.xml)
