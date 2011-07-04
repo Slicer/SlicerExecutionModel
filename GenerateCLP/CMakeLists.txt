@@ -122,7 +122,7 @@ endif()
 # Launcher
 # --------------------------------------------------------------------------
 # Enable shared link forwarding support if needed.
-# This is required so that GenerateCLP can be run from an installed tree,
+# This is required so that GenerateCLP can be run from either a build or an installed tree,
 # where the binary is actually not in the same directory as the shared
 # libraries it depends on.
 #

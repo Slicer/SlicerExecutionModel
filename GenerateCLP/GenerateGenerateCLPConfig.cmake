@@ -4,18 +4,14 @@
 # Following the standard pattern, UseGenerateCLP.cmake is a configured file
 #
 
-get_target_property(GenerateCLP_EXE_PATH GenerateCLP LOCATION)
+get_target_property(GenerateCLP_EXE_PATH GenerateCLPLauncher LOCATION)
 
 if(GenerateCLP_EXE_PATH)
   set(GENERATECLP_EXE "${GenerateCLP_EXE_PATH}")
-else(GenerateCLP_EXE_PATH)
-  if(Slicer_BINARY_DIR)
-    set(USE_CONFIG_FILE_INSTALL_DIR ${Slicer_BINARY_DIR}/bin)
-  else(Slicer_BINARY_DIR)
-    set(USE_CONFIG_FILE_INSTALL_DIR ${GenerateCLP_BINARY_DIR})
-  endif(Slicer_BINARY_DIR)
-  set(GENERATECLP_EXE "${USE_CONFIG_FILE_INSTALL_DIR}/${CMAKE_CFG_INTDIR}/GenerateCLP")
-endif(GenerateCLP_EXE_PATH)
+else()
+  set(USE_CONFIG_FILE_INSTALL_DIR ${GenerateCLP_BINARY_DIR})
+  set(GENERATECLP_EXE "${USE_CONFIG_FILE_INSTALL_DIR}/${CMAKE_CFG_INTDIR}/GenerateCLPLauncher")
+endif()
 
 # Settings specific to build trees
 #
@@ -31,7 +27,7 @@ set(GenerateCLP_LIBRARY_DIRS_CONFIG
   ${GenerateCLP_LIBRARY_OUTPUT_DIRECTORY}
   )
 set(GenerateCLP_CMAKE_DIR_CONFIG ${GenerateCLP_BINARY_DIR})
-set(GENERATECLP_EXE_CONFIG "${GENERATECLP_EXE}Launcher")
+set(GENERATECLP_EXE_CONFIG "${GENERATECLP_EXE}")
 set(ITK_DIR_CONFIG ${ITK_DIR})
 configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPConfig.cmake.in
   ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake @ONLY)
