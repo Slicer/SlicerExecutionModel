@@ -173,13 +173,6 @@ set(${PROJECT_NAME}_TARGETS ${targets_to_export} CACHE INTERNAL "${PROJECT_NAME}
 export(TARGETS ${targets_to_export} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 
 # --------------------------------------------------------------------------
-# Testing
-# --------------------------------------------------------------------------
-if(BUILD_TESTING)
-  add_subdirectory(Testing)
-endif()
-
-# --------------------------------------------------------------------------
 # Set INCLUDE_DIRS variable
 # --------------------------------------------------------------------------
 set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
@@ -194,4 +187,11 @@ configure_file(
   @ONLY
   )
 include(GenerateGenerateCLPConfig.cmake)
+
+# --------------------------------------------------------------------------
+# Testing
+# --------------------------------------------------------------------------
+if(BUILD_TESTING)
+  add_subdirectory(Testing)
+endif()
 
