@@ -41,7 +41,7 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
      AND NOT EXISTS ${SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY})
     message(FATAL_ERROR "SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY is set to a non-existing directory [${SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY}]")
   endif()
-  
+
   if(DEFINED SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY)
     set(ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY ${SlicerExecutionModel_CMAKE_${type}_OUTPUT_DIRECTORY})
     set(GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY})
@@ -105,3 +105,11 @@ include(GenerateSlicerExecutionModelConfig.cmake)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/UseSlicerExecutionModel.cmake COPYONLY)
+
+
+file(GLOB allscripts "CMake/*")
+foreach(SCRIPT  ${allscripts})
+  get_filename_component(_fileName ${SCRIPT} NAME)
+  configure_file(${SCRIPT}
+    ${CMAKE_CURRENT_BINARY_DIR}/CMake/${_fileName} COPYONLY IMMEDIATE)
+endforeach()
