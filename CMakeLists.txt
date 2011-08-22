@@ -106,7 +106,6 @@ include(GenerateSlicerExecutionModelConfig.cmake)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/UseSlicerExecutionModel.cmake COPYONLY)
 
-
 file(GLOB allscripts "CMake/*")
 foreach(SCRIPT  ${allscripts})
   get_filename_component(_fileName ${SCRIPT} NAME)

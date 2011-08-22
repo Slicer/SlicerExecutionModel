@@ -2,7 +2,11 @@
 # Depends on:
 #  CMakeParseArguments.cmake from Cmake 2.8.4 or greater
 #
-include(CMakeParseArguments)
+if(CMAKE_PATCH_VERSION LESS 3)
+  include(Pre283CMakeParseArguments)
+else()
+  include(CMakeParseArguments)
+endif()
 
 macro(SEMMacroBuildCLI)
   set(options
