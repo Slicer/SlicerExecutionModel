@@ -36,7 +36,7 @@ set(SlicerExecutionModel_LIBRARIES
 set(SlicerExecutionModel_USE_FILE
   "@SlicerExecutionModel_USE_FILE_CONFIG@"
   )
-set(SlicerExecutionModel_MACROS ${SlicerExecutionModel_DIR}/CMake)
+set(SlicerExecutionModel_CMAKE_DIR ${SlicerExecutionModel_DIR}/CMake)
 
 # The SlicerExecutionModel targets file.
 if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
