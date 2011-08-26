@@ -11,6 +11,26 @@ set(SlicerExecutionModel_LIBRARIES_CONFIG ModuleDescriptionParser)
 
 set(SlicerExecutionModel_USE_FILE_CONFIG
   ${SlicerExecutionModel_BINARY_DIR}/UseSlicerExecutionModel.cmake)
+  
+set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG
+  ${SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY}
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY_CONFIG
+  ${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY}
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY_CONFIG
+  ${SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY}
+  )
+
+set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION_CONFIG
+  ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION}
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION_CONFIG
+  ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION}
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION_CONFIG
+  ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION}
+  )
 
 # Configure SlicerExecutionModelConfig.cmake for the build tree.
 #

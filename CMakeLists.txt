@@ -33,7 +33,7 @@ if(DEFINED SlicerExecutionModel_LIBRARY_PROPERTIES)
 endif()
 
 #-----------------------------------------------------------------------------
-# Output directories.
+# Output directories associated with ModuleDescriptionParser and GenerateCLP subprojects
 #-----------------------------------------------------------------------------
 foreach(type LIBRARY RUNTIME ARCHIVE)
   # Make sure the directory exists
@@ -47,6 +47,38 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
     set(GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY ${GenerateCLP_CMAKE_${type}_OUTPUT_DIRECTORY})
   endif()
 endforeach()
+
+
+#-----------------------------------------------------------------------------
+# Note: The default values defined below could be overwritten if passed when configuring
+#       SlicerExecutionModel project. 
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+# Define default "output directories" used by SEMMacroBuildCLI.cmake
+#-----------------------------------------------------------------------------
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
+#-----------------------------------------------------------------------------
+# Define default "install destination" used by SEMMacroBuildCLI.cmake
+#-----------------------------------------------------------------------------
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION)
+  set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION bin)
+endif()
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION)
+  set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION lib)
+endif()
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
+  set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION lib)
+endif()
 
 #-----------------------------------------------------------------------------
 # Testing

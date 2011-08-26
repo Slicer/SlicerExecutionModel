@@ -38,6 +38,28 @@ set(SlicerExecutionModel_USE_FILE
   )
 set(SlicerExecutionModel_CMAKE_DIR ${SlicerExecutionModel_DIR}/CMake)
 
+# Default "output directories" used by SEMMacroBuildCLI.cmake
+set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY 
+  "@SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG@"
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
+  "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY_CONFIG@"
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
+  "@SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY_CONFIG@"
+  )
+
+# Default "install destination" used by SEMMacroBuildCLI.cmake
+set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION
+  "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION_CONFIG@"
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION
+  "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION_CONFIG@"
+  )
+set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION
+  "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION_CONFIG@"
+  )
+
 # The SlicerExecutionModel targets file.
 if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
   include("@SlicerExecutionModel_EXPORT_FILE@")
