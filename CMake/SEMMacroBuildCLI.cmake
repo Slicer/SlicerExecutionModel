@@ -3,7 +3,7 @@
 #  CMakeParseArguments.cmake from Cmake 2.8.4 or greater
 #
 if(CMAKE_PATCH_VERSION LESS 3)
-  include(Pre283CMakeParseArguments)
+  include(${SlicerExecutionModel_MACROS}/Pre283CMakeParseArguments.cmake)
 else()
   include(CMakeParseArguments)
 endif()
