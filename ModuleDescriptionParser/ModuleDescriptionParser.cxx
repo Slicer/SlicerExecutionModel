@@ -578,6 +578,22 @@ startElement(void *userData, const char *element, const char **attrs)
     parameter = new ModuleParameter;
     parameter->SetTag(name);
     parameter->SetCPPType("std::string");
+    // Parse attribute pairs
+    int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
+    for (int attr=0; attr < (attrCount / 2); attr++)
+      {
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      }
     }
   else if (name == "integer-enumeration")
     {
@@ -597,6 +613,22 @@ startElement(void *userData, const char *element, const char **attrs)
     parameter = new ModuleParameter;
     parameter->SetTag(name);
     parameter->SetCPPType("int");
+    // Parse attribute pairs
+    int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
+    for (int attr=0; attr < (attrCount / 2); attr++)
+      {
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      }
     }
   else if (name == "float-enumeration")
     {
@@ -616,6 +648,22 @@ startElement(void *userData, const char *element, const char **attrs)
     parameter = new ModuleParameter;
     parameter->SetTag(name);
     parameter->SetCPPType("float");
+    // Parse attribute pairs
+    int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
+    for (int attr=0; attr < (attrCount / 2); attr++)
+      {
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      }
     }
   else if (name == "double-enumeration")
     {
@@ -635,6 +683,22 @@ startElement(void *userData, const char *element, const char **attrs)
     parameter = new ModuleParameter;
     parameter->SetTag(name);
     parameter->SetCPPType("double");
+    // Parse attribute pairs
+    int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
+    for (int attr=0; attr < (attrCount / 2); attr++)
+      {
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      }
     }
   else if (name == "file")
     {
@@ -1849,6 +1913,28 @@ endElement(void *userData, const char *element)
     ps->Depth--;
     }
 }
+
+bool
+ModuleDescriptionParser::processHiddenAttribute(const char* value, ModuleParameter* parameter, ParserState* ps)
+{
+  if ((strcmp(value, "true") == 0) ||
+      (strcmp(value, "false") == 0))
+    {
+    parameter->SetHidden(value);
+    return true;
+    }
+  else
+    {
+    std::string error("ModuleDescriptionParser Error: \"" + std::string(value) + "\" is not a valid argument for the attribute \"hidden\". Only \"true\" and \"false\" are accepted.");
+    if (ps->ErrorDescription.size() == 0)
+      {
+      ps->ErrorDescription = error;
+      ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+      ps->Error = true;
+      }
+    return false;
+    }
+} 
 
 void
 charData(void *userData, const char *s, int len)

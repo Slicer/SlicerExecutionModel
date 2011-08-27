@@ -19,8 +19,9 @@
 #include "ModuleDescriptionParserWin32Header.h"
 
 class ModuleDescription;
+class ModuleParameter;
 class ModuleParameterGroup;
-
+class ParserState;
 
 class ModuleDescriptionParser_EXPORT ModuleDescriptionParser
 {
@@ -29,6 +30,8 @@ public:
   ~ModuleDescriptionParser() {};
 
   int Parse( const std::string& xml, ModuleDescription& description);
+
+  static bool processHiddenAttribute(const char* value, ModuleParameter* parameter, ParserState* ps);
 };
 
 #endif
