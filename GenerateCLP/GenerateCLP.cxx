@@ -510,8 +510,6 @@ void GeneratePluginProcedures(std::ostream &sout, std::vector<std::string> &logo
 {
   if (logos.size() == 1)
     {
-    std::string logo = logos[0];
-    std::string fileName = itksys::SystemTools::GetFilenameWithoutExtension (logo);
     sout << "unsigned char *GetModuleLogo(int *width," << std::endl;
     sout << "                             int *height," << std::endl;
     sout << "                             int *pixel_size," << std::endl;
