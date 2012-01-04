@@ -9,8 +9,8 @@ set(ModuleDescriptionParser_INCLUDE_DIRS_CONFIG
   )
 
 set(ModuleDescriptionParser_LIBRARY_DIRS_CONFIG
-  ${ModuleDescriptionParser_ARCHIVE_OUTPUT_DIRECTORY}
-  ${ModuleDescriptionParser_LIBRARY_OUTPUT_DIRECTORY}
+  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
   )
 
 set(ModuleDescriptionParser_USE_FILE_CONFIG

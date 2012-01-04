@@ -86,6 +86,9 @@ if(SlicerExecutionModel_USE_TCLAP)
   find_package(TCLAP REQUIRED)
 endif()
 
-set(SlicerExecutionModel_LIBRARY_DIRS 
-  ${GenerateCLP_LIBRARY_DIRS} ${ModuleDescriptionParser_LIBRARY_DIRS})
-
+set(SlicerExecutionModel_LIBRARY_DIRS
+  "@SlicerExecutionModel_LIBRARY_DIRS_CONFIG@"
+  ${GenerateCLP_LIBRARY_DIRS}
+  ${ModuleDescriptionParser_LIBRARY_DIRS}
+  ${TCLAP_LIBRARY_DIRS}
+  )
