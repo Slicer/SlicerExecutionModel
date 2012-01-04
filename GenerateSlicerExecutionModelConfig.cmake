@@ -32,6 +32,11 @@ set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION_CONFIG
   ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION}
   )
 
+set(SlicerExecutionModel_LIBRARY_DIRS_CONFIG
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  )
+
 # Configure SlicerExecutionModelConfig.cmake for the build tree.
 #
 configure_file(
