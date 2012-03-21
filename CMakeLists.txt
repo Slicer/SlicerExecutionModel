@@ -81,6 +81,14 @@ if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
 endif()
 
 #-----------------------------------------------------------------------------
+# Define default "cli library wrapper" used by SEMMacroBuildCLI.cmake
+#-----------------------------------------------------------------------------
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX 
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMake/SEMCommandLineLibraryWrapper.cxx)
+endif()
+
+#-----------------------------------------------------------------------------
 # Testing
 #-----------------------------------------------------------------------------
 include(CTest)

@@ -61,6 +61,11 @@ macro(SEMMacroBuildCLI)
     set(LOCAL_SEM_LOGO_HEADER)
   endif()
 
+  # Use default value if it applies
+  if(NOT DEFINED LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX)
+    set(LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX ${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX})
+  endif()
+  
   foreach(v LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX)
     if(NOT EXISTS "${${v}}")
       message(FATAL_ERROR "error: Variable ${v} point to an non-existing file or directory !")

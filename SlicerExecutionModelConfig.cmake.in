@@ -60,6 +60,10 @@ set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION
   "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION_CONFIG@"
   )
 
+set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX
+  "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG@"
+  )
+
 # The SlicerExecutionModel targets file.
 if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
   include("@SlicerExecutionModel_EXPORT_FILE@")
