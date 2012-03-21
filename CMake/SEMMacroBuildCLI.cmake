@@ -15,7 +15,7 @@ macro(SEMMacroBuildCLI)
     )
   set(oneValueArgs  
     NAME LOGO_HEADER 
-    CLI_XML_FILE CLI_SHARED_LIBRARY_WRAPPER_CXX
+    CLI_XML_FILE CLI_LIBRARY_WRAPPER_CXX
     RUNTIME_OUTPUT_DIRECTORY
     LIBRARY_OUTPUT_DIRECTORY
     ARCHIVE_OUTPUT_DIRECTORY
@@ -61,7 +61,7 @@ macro(SEMMacroBuildCLI)
     set(LOCAL_SEM_LOGO_HEADER)
   endif()
 
-  foreach(v LOCAL_SEM_CLI_SHARED_LIBRARY_WRAPPER_CXX)
+  foreach(v LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX)
     if(NOT EXISTS "${${v}}")
       message(FATAL_ERROR "error: Variable ${v} point to an non-existing file or directory !")
     endif()
@@ -113,7 +113,7 @@ macro(SEMMacroBuildCLI)
       target_link_libraries(${CLP}Lib ${LOCAL_SEM_TARGET_LIBRARIES})
     endif()
 
-    add_executable(${CLP} ${LOCAL_SEM_CLI_SHARED_LIBRARY_WRAPPER_CXX})
+    add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
     target_link_libraries(${CLP} ${CLP}Lib)
 
     set(cli_targets ${CLP} ${CLP}Lib)
