@@ -75,6 +75,13 @@
       <label>Iterations</label>
       <default>100,100,100,200</default>
     </integer-vector>
+    
+    <!-- Illustrate issue reported by Cory Quammen - http://www.na-mic.org/Bug/view.php?id=1828 -->
+    <integer-vector>
+      <name>pluginsPadLowerBound</name>
+      <label>PadLowerBound</label>
+      <default>0,0,0</default>
+    </integer-vector>
 
     <float-vector>
       <name>LearningRate</name>

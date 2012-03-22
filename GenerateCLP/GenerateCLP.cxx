@@ -955,7 +955,7 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
             sout << "    TCLAP::UnlabeledValueArg<";
             sout << pit->GetCPPType();
             }
-          sout << "> "
+          sout << " > "
                << pit->GetName()
                << "Arg" << "(\""
                << pit->GetName()
