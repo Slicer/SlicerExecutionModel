@@ -13,8 +13,8 @@ macro(SEMMacroBuildCLI)
     EXECUTABLE_ONLY
     NO_INSTALL VERBOSE
     )
-  set(oneValueArgs  
-    NAME LOGO_HEADER 
+  set(oneValueArgs
+    NAME LOGO_HEADER
     CLI_XML_FILE
     CLI_LIBRARY_WRAPPER_CXX
     CLI_SHARED_LIBRARY_WRAPPER_CXX # Deprecated
@@ -45,7 +45,7 @@ macro(SEMMacroBuildCLI)
   if(LOCAL_SEM_VERBOSE)
     list(APPEND ALL_OPTIONS ${options} ${oneValueArgs} ${multiValueArgs})
     foreach(curr_opt ${ALL_OPTIONS})
-      message(STATUS "STATUS: ${curr_opt} = ${LOCAL_SEM_${curr_opt}}")
+      message(STATUS "${curr_opt} = ${LOCAL_SEM_${curr_opt}}")
     endforeach()
   endif()
   if(LOCAL_SEM_INSTALL_UNPARSED_ARGUMENTS)
@@ -62,7 +62,7 @@ macro(SEMMacroBuildCLI)
     message(AUTHOR_WARNING "Specified LOGO_HEADER [${LOCAL_SEM_LOGO_HEADER}] doesn't exist")
     set(LOCAL_SEM_LOGO_HEADER)
   endif()
-  
+
   if(DEFINED LOCAL_SEM_CLI_SHARED_LIBRARY_WRAPPER_CXX)
     message(AUTHOR_WARNING "Parameter 'CLI_SHARED_LIBRARY_WRAPPER_CXX' is deprecated. Use 'CLI_LIBRARY_WRAPPER_CXX' instead.")
     set(LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX ${LOCAL_SEM_CLI_SHARED_LIBRARY_WRAPPER_CXX})
@@ -72,10 +72,10 @@ macro(SEMMacroBuildCLI)
   if(NOT DEFINED LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX)
     set(LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX ${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX})
   endif()
-  
+
   foreach(v LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX)
     if(NOT EXISTS "${${v}}")
-      message(FATAL_ERROR "error: Variable ${v} point to an non-existing file or directory !")
+      message(FATAL_ERROR "Variable ${v} point to an non-existing file or directory !")
     endif()
   endforeach()
 
