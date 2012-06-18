@@ -110,6 +110,10 @@ macro(SEMMacroBuildCLI)
   if(DEFINED LOCAL_SEM_INCLUDE_DIRECTORIES)
     include_directories(${LOCAL_SEM_INCLUDE_DIRECTORIES})
   endif()
+  
+  if(DEFINED SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES)
+    include_directories(${SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES})
+  endif()
 
   set(cli_targets)
 
