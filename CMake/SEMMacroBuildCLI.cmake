@@ -143,41 +143,33 @@ macro(SEMMacroBuildCLI)
 
   # Set labels associated with the target.
   set_target_properties(${cli_targets} PROPERTIES LABELS ${CLP})
-
-  # Define default Output directories if it applies
-  if(NOT DEFINED LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY)
-    set(LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY ${SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY})
-    message(STATUS "Defaulting RUNTIME_OUTPUT_DIRECTORY to ${LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY}")
-  endif()
-  if(NOT DEFINED LOCAL_SEM_LIBRARY_OUTPUT_DIRECTORY)
-    set(LOCAL_SEM_LIBRARY_OUTPUT_DIRECTORY ${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY})
-    message(STATUS "Defaulting LIBRARY_OUTPUT_DIRECTORY to ${LOCAL_SEM_LIBRARY_OUTPUT_DIRECTORY}")
-  endif()
-  if(NOT DEFINED LOCAL_SEM_ARCHIVE_OUTPUT_DIRECTORY)
-    set(LOCAL_SEM_ARCHIVE_OUTPUT_DIRECTORY ${SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY})
-    message(STATUS "Defaulting ARCHIVE_OUTPUT_DIRECTORY to ${LOCAL_SEM_ARCHIVE_OUTPUT_DIRECTORY}")
-  endif()
   
+  # Define default Output directories if it applies
+  foreach(type RUNTIME LIBRARY ARCHIVE)
+    if(NOT DEFINED LOCAL_SEM_${type}_OUTPUT_DIRECTORY)
+      set(LOCAL_SEM_${type}_OUTPUT_DIRECTORY ${SlicerExecutionModel_DEFAULT_CLI_${type}_OUTPUT_DIRECTORY})
+      if(LOCAL_SEM_VERBOSE)
+        message(STATUS "Defaulting ${type}_OUTPUT_DIRECTORY to ${LOCAL_SEM_${type}_OUTPUT_DIRECTORY}")
+      endif()
+    endif()
+  endforeach()
+
   set_target_properties(${cli_targets} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY}"
     LIBRARY_OUTPUT_DIRECTORY "${LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY}"
     ARCHIVE_OUTPUT_DIRECTORY "${LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY}"
     )
-  
+
   if(NOT LOCAL_SEM_NO_INSTALL)
     # Define default install destination if it applies
-    if(NOT DEFINED LOCAL_SEM_INSTALL_RUNTIME_DESTINATION)
-      set(LOCAL_SEM_INSTALL_RUNTIME_DESTINATION ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION})
-      message(STATUS "Defaulting INSTALL_RUNTIME_DESTINATION to ${LOCAL_SEM_INSTALL_RUNTIME_DESTINATION}")
-    endif()
-    if(NOT DEFINED LOCAL_SEM_INSTALL_LIBRARY_DESTINATION)
-      set(LOCAL_SEM_INSTALL_LIBRARY_DESTINATION ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION})
-      message(STATUS "Defaulting INSTALL_LIBRARY_DESTINATION to ${LOCAL_SEM_INSTALL_LIBRARY_DESTINATION}")
-    endif()
-    if(NOT DEFINED LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION)
-      set(LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION})
-      message(STATUS "Defaulting INSTALL_ARCHIVE_DESTINATION to ${LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION}")
-    endif()
+    foreach(type RUNTIME LIBRARY ARCHIVE)
+      if(NOT DEFINED LOCAL_SEM_INSTALL_${type}_DESTINATION)
+        set(LOCAL_SEM_INSTALL_${type}_DESTINATION ${SlicerExecutionModel_DEFAULT_CLI_INSTALL_${type}_DESTINATION})
+        if(LOCAL_SEM_VERBOSE)
+          message(STATUS "Defaulting INSTALL_${type}_DESTINATION to ${LOCAL_SEM_INSTALL_${type}_DESTINATION}")
+        endif()
+      endif()
+    endforeach()
 
     # Install each target in the production area (where it would appear in an installation)
     # and install each target in the developer area (for running from a build)
