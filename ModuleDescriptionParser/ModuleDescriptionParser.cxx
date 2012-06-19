@@ -150,6 +150,7 @@ startElement(void *userData, const char *element, const char **attrs)
       }
     parameter = new ModuleParameter;
     parameter->SetTag(name);
+    parameter->SetCPPType("int");
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
     for (int attr=0; attr < (attrCount / 2); attr++)
       {
@@ -174,10 +175,6 @@ startElement(void *userData, const char *element, const char **attrs)
         parameter->SetArgType("int");
         parameter->SetStringToType("atoi");
         }
-      else
-        {
-        parameter->SetCPPType("int");
-        }
       }
     }
   else if (name == "float")
@@ -195,6 +192,8 @@ startElement(void *userData, const char *element, const char **attrs)
       return;
       }
     parameter = new ModuleParameter;
+    parameter->SetTag(name);
+    parameter->SetCPPType("float");
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
     for (int attr=0; attr < (attrCount / 2); attr++)
       {
@@ -219,28 +218,25 @@ startElement(void *userData, const char *element, const char **attrs)
         parameter->SetArgType("float");
         parameter->SetStringToType("atof");
         }
-      else
-        {
-        parameter->SetCPPType("float");
-        }
       }
-    parameter->SetTag(name);
     }
   else if (name == "double")
     {
     if (!group || (ps->OpenTags.top() != "parameters"))
       {
       std::string error("ModuleDescriptionParser Error: <" + std::string(name) + "> can only be used inside <parameters> but was found inside <" + ps->OpenTags.top() + ">");
-    if (ps->ErrorDescription.size() == 0)
-      {
-      ps->ErrorDescription = error;
-      ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
-      ps->Error = true;
-      }
+      if (ps->ErrorDescription.size() == 0)
+        {
+        ps->ErrorDescription = error;
+        ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+        ps->Error = true;
+        }
       ps->OpenTags.push(name);
       return;
       }
     parameter = new ModuleParameter;
+    parameter->SetTag(name);
+    parameter->SetCPPType("double");
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
     for (int attr=0; attr < (attrCount / 2); attr++)
       {
@@ -265,12 +261,7 @@ startElement(void *userData, const char *element, const char **attrs)
         parameter->SetArgType("double");
         parameter->SetStringToType("atof");
         }
-      else
-        {
-        parameter->SetCPPType("double");
-        }
       }
-    parameter->SetTag(name);
     }
   else if (name == "string")
     {
@@ -287,6 +278,8 @@ startElement(void *userData, const char *element, const char **attrs)
       return;
       }
     parameter = new ModuleParameter;
+    parameter->SetTag(name);
+    parameter->SetCPPType("std::string");
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
     for (int attr=0; attr < (attrCount / 2); attr++)
       {
@@ -311,12 +304,7 @@ startElement(void *userData, const char *element, const char **attrs)
         parameter->SetArgType("std::string");
         parameter->SetStringToType("");
         }
-      else
-        {
-        parameter->SetCPPType("std::string");
-        }
       }
-    parameter->SetTag(name);
     }
   else if (name == "boolean")
     {
