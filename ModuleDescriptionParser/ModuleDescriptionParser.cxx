@@ -151,17 +151,33 @@ startElement(void *userData, const char *element, const char **attrs)
     parameter = new ModuleParameter;
     parameter->SetTag(name);
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
-    if (attrCount == 2 && 
-        (strcmp(attrs[0], "multiple") == 0) &&
-        (strcmp(attrs[1], "true") == 0))
+    for (int attr=0; attr < (attrCount / 2); attr++)
       {
-      parameter->SetMultiple(attrs[1]);
-      parameter->SetCPPType("std::vector<int>");
-      parameter->SetArgType("int");
-      parameter->SetStringToType("atoi");      }
-    else
-      {
-      parameter->SetCPPType("int");
+      // check hidden
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      // check multiple
+      if ((strcmp(attrs[2*attr], "multiple") == 0) &&
+          (strcmp(attrs[2*attr+1], "true") == 0))
+        {
+        parameter->SetMultiple(attrs[2*attr+1]);
+        parameter->SetCPPType("std::vector<int>");
+        parameter->SetArgType("int");
+        parameter->SetStringToType("atoi");
+        }
+      else
+        {
+        parameter->SetCPPType("int");
+        }
       }
     }
   else if (name == "float")
@@ -180,18 +196,33 @@ startElement(void *userData, const char *element, const char **attrs)
       }
     parameter = new ModuleParameter;
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
-    if (attrCount == 2 && 
-        (strcmp(attrs[0], "multiple") == 0) &&
-        (strcmp(attrs[1], "true") == 0))
+    for (int attr=0; attr < (attrCount / 2); attr++)
       {
-      parameter->SetMultiple(attrs[1]);
-      parameter->SetCPPType("std::vector<float>");
-      parameter->SetArgType("float");
-      parameter->SetStringToType("atof");
-      }
-    else
-      {
-      parameter->SetCPPType("float");
+      // check hidden
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      // check multiple
+      if ((strcmp(attrs[2*attr], "multiple") == 0) &&
+          (strcmp(attrs[2*attr+1], "true") == 0))
+        {
+        parameter->SetMultiple(attrs[2*attr+1]);
+        parameter->SetCPPType("std::vector<float>");
+        parameter->SetArgType("float");
+        parameter->SetStringToType("atof");
+        }
+      else
+        {
+        parameter->SetCPPType("float");
+        }
       }
     parameter->SetTag(name);
     }
@@ -211,18 +242,33 @@ startElement(void *userData, const char *element, const char **attrs)
       }
     parameter = new ModuleParameter;
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
-    if (attrCount == 2 && 
-        (strcmp(attrs[0], "multiple") == 0) &&
-        (strcmp(attrs[1], "true") == 0))
+    for (int attr=0; attr < (attrCount / 2); attr++)
       {
-      parameter->SetMultiple(attrs[1]);
-      parameter->SetCPPType("std::vector<double>");
-      parameter->SetArgType("double");
-      parameter->SetStringToType("atof");
-      }
-    else
-      {
-      parameter->SetCPPType("double");
+      // check hidden
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      // check multiple
+      if ((strcmp(attrs[2*attr], "multiple") == 0) &&
+          (strcmp(attrs[2*attr+1], "true") == 0))
+        {
+        parameter->SetMultiple(attrs[2*attr+1]);
+        parameter->SetCPPType("std::vector<double>");
+        parameter->SetArgType("double");
+        parameter->SetStringToType("atof");
+        }
+      else
+        {
+        parameter->SetCPPType("double");
+        }
       }
     parameter->SetTag(name);
     }
@@ -242,17 +288,33 @@ startElement(void *userData, const char *element, const char **attrs)
       }
     parameter = new ModuleParameter;
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
-    if (attrCount == 2 && 
-        (strcmp(attrs[0], "multiple") == 0) &&
-        (strcmp(attrs[1], "true") == 0))
+    for (int attr=0; attr < (attrCount / 2); attr++)
       {
-      parameter->SetMultiple(attrs[1]);
-      parameter->SetCPPType("std::vector<std::string>");
-      parameter->SetArgType("std::string");
-      parameter->SetStringToType("");      }
-    else
-      {
-      parameter->SetCPPType("std::string");
+      // check hidden
+      bool res = true;
+      if ((strcmp(attrs[2*attr], "hidden") == 0))
+        {
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
+      // check multiple
+      if ((strcmp(attrs[2*attr], "multiple") == 0) &&
+          (strcmp(attrs[2*attr+1], "true") == 0))
+        {
+        parameter->SetMultiple(attrs[2*attr+1]);
+        parameter->SetCPPType("std::vector<std::string>");
+        parameter->SetArgType("std::string");
+        parameter->SetStringToType("");
+        }
+      else
+        {
+        parameter->SetCPPType("std::string");
+        }
       }
     parameter->SetTag(name);
     }
@@ -278,26 +340,17 @@ startElement(void *userData, const char *element, const char **attrs)
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
     for (int attr=0; attr < (attrCount / 2); attr++)
       {
+      // check hidden
+      bool res = true;
       if ((strcmp(attrs[2*attr], "hidden") == 0))
         {
-        if ((strcmp(attrs[2*attr+1], "true") == 0) ||
-            (strcmp(attrs[2*attr+1], "false") == 0))
-          {
-          parameter->SetHidden(attrs[2*attr+1]);
-          }
-        else
-          {
-          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid argument for the attribute \"hidden\". Only \"true\" and \"false\" are accepted.");
-          if (ps->ErrorDescription.size() == 0)
-            {
-            ps->ErrorDescription = error;
-            ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
-            ps->Error = true;
-            }
-          ps->OpenTags.push(name);
-          delete parameter;
-          return;
-          }
+        res = ModuleDescriptionParser::processHiddenAttribute(attrs[2*attr+1], parameter, ps);
+        }
+      if (!res)
+        {
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
         }
       }
     }
