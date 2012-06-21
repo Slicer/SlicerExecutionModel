@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 
-#include <itksys/ios/sstream>
+#include <sstream>
 
 #include "tclap/CmdLine.h"
 #include "ModuleProcessInformation.h"

@@ -347,7 +347,7 @@ void GeneratePre(std::ostream &sout, ModuleDescription &, int argc, char *argv[]
   sout << "#include <vector>" << std::endl;
   sout << "#include <map>" << std::endl;
   sout << std::endl;
-  sout << "#include <itksys/ios/sstream>" << std::endl;
+  sout << "#include <sstream>" << std::endl;
   sout << std::endl;
   sout << "#include \"tclap/CmdLine.h\"" << std::endl;
   sout << "#include \"ModuleProcessInformation.h\"" << std::endl;
@@ -878,7 +878,7 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
   sout << "       " << "' '," << EOL << std::endl;
   sout << "      " << "\"" << module.GetVersion() << "\"";
   sout << " );" << EOL << std::endl << EOL << std::endl;
-  sout << "      itksys_ios::ostringstream msg;" << EOL << std::endl;
+  sout << "      std::ostringstream msg;" << EOL << std::endl;
 
   // Second pass generates TCLAP declarations
   for (git = module.GetParameterGroups().begin();
