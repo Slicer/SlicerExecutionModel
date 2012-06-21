@@ -991,13 +991,16 @@ startElement(void *userData, const char *element, const char **attrs)
             (strcmp(attrs[2*attr+1], "label") == 0) ||
             (strcmp(attrs[2*attr+1], "tensor") == 0) ||
             (strcmp(attrs[2*attr+1], "diffusion-weighted") == 0) ||
-            (strcmp(attrs[2*attr+1], "vector") == 0))
+            (strcmp(attrs[2*attr+1], "vector") == 0) ||
+            (strcmp(attrs[2*attr+1], "signal") == 0) ||
+            (strcmp(attrs[2*attr+1], "multichannel") == 0) ||
+            (strcmp(attrs[2*attr+1], "dynamic-contrast-enhanced") == 0))
           {
           parameter->SetType(attrs[2*attr+1]);
           }
         else
           {
-          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid value for the attribute \"" + "type" + "\". Only \"scalar\", \"label\" , \"tensor\", \"diffusion-weighted\", \"vector\" and \"any\" are accepted.");
+          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid value for the attribute \"" + "type" + "\". Only \"scalar\", \"label\" , \"tensor\", \"diffusion-weighted\", \"vector\", \"signal\", \"multichannel\", \"dynamic-contrast-enhanced\" and \"any\" are accepted.");
           if (ps->ErrorDescription.size() == 0)
             {
             ps->ErrorDescription = error;
