@@ -174,13 +174,8 @@ NameIsExecutable(const char* name)
     // extension. 
     return !NameIsSharedLibrary(name);
     }
-  else
-    {
-    // no default extension but we found another extension that can be
-    // an executable
-    return true;
-    }
-
+  // no default extension but we found another extension that can be
+  // an executable
   return true;
 }
 
@@ -528,7 +523,6 @@ long ModuleFactory::ScanForSharedObjectModules()
 
     for ( unsigned int ii=0; ii < directory.GetNumberOfFiles(); ++ii)
       {
-      bool isAPlugin = true;
       const char *filename = directory.GetFile(ii);
       
       // skip any directories
@@ -783,8 +777,6 @@ long ModuleFactory::ScanForSharedObjectModules()
                 {
                 // not a plugin, no xml description, close the library
                 itksys::DynamicLoader::CloseLibrary(lib);
-
-                isAPlugin = false;
                 information << filename
                             << " is not a plugin (no XML description)."
                             << std::endl;
@@ -799,8 +791,6 @@ long ModuleFactory::ScanForSharedObjectModules()
 
               // not a plugin, doesn't have the symbols, close the library
               itksys::DynamicLoader::CloseLibrary(lib);
-
-              isAPlugin = false;
               information << filename
                           << " is not a plugin (no entry points)."
                           << std::endl;
@@ -865,7 +855,6 @@ long ModuleFactory::ScanForCommandLineModulesByExecuting()
 
     for ( unsigned int ii=0; ii < directory.GetNumberOfFiles(); ++ii)
       {
-      bool isAPlugin = true;
       const char *filename = directory.GetFile(ii);
       
       // skip any directories
@@ -1002,7 +991,7 @@ long ModuleFactory::ScanForCommandLineModulesByExecuting()
                 if (executable != NULL)
                   {
                   // includes the exec with the bare command name
-                  std::string newcommand = std::string(executable) + std::string(" ") + commandName;
+                  // std::string newcommand = std::string(executable) + std::string(" ") + commandName;
                   // std::cout << "ScanForCommandLineModulesByExecuting: Setting location to " << executable << ", target to " << newcommand.c_str() << "\n";
                   //module.SetTarget(newcommand);
                   // use location to point to the executable used to run the command in commandName
@@ -1101,24 +1090,20 @@ long ModuleFactory::ScanForCommandLineModulesByExecuting()
                 }
               else
                 {
-                isAPlugin = false;
                 information << filename << " is not a plugin (did not generate an XML description)." << std::endl;
                 }
               }
             else
               {
-              isAPlugin = false;
               information << filename << " is not a plugin (exited with errors)." << std::endl;
               }
             }
           else if (result == itksysProcess_State_Expired)
             {
-            isAPlugin = false;
             information << filename << " is not a plugin (timeout exceeded)." << std::endl;
             }
           else
             {
-            isAPlugin = false;
             information << filename << " is not a plugin (did not exit cleanly), command[0] = " << command[0] << ", [1] = " << command[1] << std::endl;
             }
 
@@ -1141,7 +1126,7 @@ long ModuleFactory::ScanForCommandLineModulesByExecuting()
 }
 
 //-----------------------------------------------------------------------------
-#if WIN32
+#ifdef WIN32
 // Implementation of ScanForCommandLineModulesByPeeking() for Windows.
 // On Windows, executables can be opened and queried like libraries
 // for global symbols.
