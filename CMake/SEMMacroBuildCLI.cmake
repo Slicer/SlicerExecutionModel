@@ -126,15 +126,26 @@ macro(SEMMacroBuildCLI)
     endif()
 
     add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
-    target_link_libraries(${CLP} ${CLP}Lib)
+    set(cli_executable_libraries ${CLP}Lib)
+    if(DEFINED SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES)
+      list(APPEND cli_executable_libraries ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES})
+    endif()
+    target_link_libraries(${CLP} ${cli_executable_libraries})
 
     set(cli_targets ${CLP} ${CLP}Lib)
 
   else()
 
     add_executable(${CLP} ${${CLP}_SOURCE})
+    set(cli_executable_libraries "")
     if(DEFINED LOCAL_SEM_TARGET_LIBRARIES)
-      target_link_libraries(${CLP} ${LOCAL_SEM_TARGET_LIBRARIES})
+      list(APPEND cli_executable_libraries ${LOCAL_SEM_TARGET_LIBRARIES})
+    endif()
+    if(DEFINED SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES)
+      list(APPEND cli_executable_libraries ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES})
+    endif()
+    if(NOT "${cli_executable_libraries}" STREQUAL "")
+      target_link_libraries(${CLP} ${cli_executable_libraries})
     endif()
 
     set(cli_targets ${CLP})
