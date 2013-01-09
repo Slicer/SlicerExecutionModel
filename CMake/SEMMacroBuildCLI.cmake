@@ -185,7 +185,7 @@ macro(SEMMacroBuildCLI)
     # and install each target in the developer area (for running from a build)
     install(TARGETS ${cli_targets}
       RUNTIME DESTINATION ${LOCAL_SEM_INSTALL_RUNTIME_DESTINATION} COMPONENT RuntimeLibraries
-      LIBRARY DESTINATION ${LOCAL_SEM_LIBRARY_LIBRARY_DESTINATION} COMPONENT RuntimeLibraries
+      LIBRARY DESTINATION ${LOCAL_SEM_INSTALL_LIBRARY_DESTINATION} COMPONENT RuntimeLibraries
       ARCHIVE DESTINATION ${LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION} COMPONENT RuntimeLibraries
       )
   endif()
