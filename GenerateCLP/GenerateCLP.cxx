@@ -762,9 +762,23 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
           sout << "Temp";
           }
         
+        const std::string cppType = pit->GetCPPType();
         if (!HasDefault(*pit) &&
-            (*pit).GetCPPType() != "bool")
+            cppType != "bool")
           {
+          // Initialized to avoid compiler warnings.
+          if (cppType.compare("int") == 0)
+            {
+            sout << " = 0";
+            }
+          else if (cppType.compare("float") == 0)
+            {
+            sout << " = 0.0f";
+            }
+          else if (cppType.compare("double") == 0)
+            {
+            sout << " = 0.0";
+            }
           sout << ";"
                << EOL << std::endl;
           }
