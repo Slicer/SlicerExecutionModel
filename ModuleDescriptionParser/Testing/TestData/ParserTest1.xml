@@ -65,7 +65,7 @@
       <label>Learning Rates</label>
       <default>0.005,0.001,0.0005,0.0002</default>
     </float-vector>
-    
+
     <double>
       <name>TranslationScale</name>
       <longflag>--translationscale</longflag>
@@ -79,6 +79,17 @@
         <step>50.0</step>
       </constraints>
     </double>
+
+    <integer>
+      <name>DownsamplingFactor</name>
+      <description>Downsample the fixed and moving input images by this factor.</description>
+      <label>Downsampling Factor</label>
+      <constraints>
+        <minimum>1</minimum>
+        <maximum>50000</maximum>
+      </constraints>
+    </integer>
+
   </parameters>
 
   <parameters>
