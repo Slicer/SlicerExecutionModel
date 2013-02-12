@@ -185,6 +185,40 @@ bool ModuleDescription::HasReturnParameters() const
   return false;
 }
 
+
+//----------------------------------------------------------------------------
+std::vector<ModuleParameter> ModuleDescription
+::FindParametersWithDefaultValue(const std::string& defaultValue) const
+{
+  std::vector<ModuleParameter> parameters;
+  // iterate over each parameter group
+  std::vector<ModuleParameterGroup>::const_iterator pgbeginit
+    = this->ParameterGroups.begin();
+  std::vector<ModuleParameterGroup>::const_iterator pgendit
+    = this->ParameterGroups.end();
+  std::vector<ModuleParameterGroup>::const_iterator pgit;
+
+  for (pgit = pgbeginit; pgit != pgendit; ++pgit)
+    {
+    // iterate over each parameter in this group
+    std::vector<ModuleParameter>::const_iterator pbeginit
+      = (*pgit).GetParameters().begin();
+    std::vector<ModuleParameter>::const_iterator pendit
+      = (*pgit).GetParameters().end();
+    std::vector<ModuleParameter>::const_iterator pit;
+
+    for (pit = pbeginit; pit != pendit; ++pit)
+      {
+      if ((*pit).GetDefault() == defaultValue)
+        {
+        parameters.push_back(*pit);
+        }
+      }
+    }
+
+  return parameters;
+}
+
 //----------------------------------------------------------------------------
 bool ModuleDescription::SetParameterDefaultValue(const std::string& name, const std::string& value)
 {
