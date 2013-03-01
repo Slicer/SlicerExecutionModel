@@ -1,5 +1,11 @@
-# Create the .clp files
-# Usage: GENERATE_CLP(foo_SRCS XML_FILE [LOGO_FILE])
+# Create the fooCLP.h file.  This file should be included in
+# foo.cxx and the PARSE_ARGS pre-processor macro used to process command line
+# arguments.
+#
+# Usage: GENERATECLP(foo_SRCS XML_FILE [LOGO_FILE])
+# 
+# foo_SRCS should be a list of source files with foo.cxx at the beginning of the
+# list.
 macro(GENERATECLP SOURCES)
 
   # Sanity checks
