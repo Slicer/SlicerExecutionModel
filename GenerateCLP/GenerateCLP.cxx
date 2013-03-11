@@ -155,6 +155,15 @@ void GenerateXML(std::ostream &);
  */
 void GenerateTCLAP(std::ostream &, ModuleDescription &);
 
+/** Generate the code that parses the command line arguments and puts them into
+ * TCLAP data structures. */
+void GenerateTCLAPParse(std::ostream & sout, ModuleDescription & module);
+
+/* Generate the code that assigns the TCLAP parsed variables to their C++
+ * values.  If onlyIfSet is true, the will only be set values have been passed
+ * on the command line. */
+void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & module, bool onlyIfSet=false);
+
 /* Generate code to echo the command line arguments and their values. */
 void GenerateEchoArgs(std::ostream &, ModuleDescription &);
 
@@ -269,6 +278,7 @@ main(int argc, char *argv[])
   GenerateLOGO(sout, logoFiles);
   GenerateXML(sout);
   GenerateTCLAP(sout, module);
+  GenerateTCLAPAssignment(sout, module, true);
   GenerateEchoArgs(sout, module);
   GenerateProcessInformationAddressDecoding(sout);
   GeneratePost(sout);
@@ -678,9 +688,15 @@ void GenerateEchoArgs(std::ostream &sout, ModuleDescription &module)
 
 void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
 {
+  GenerateTCLAPParse(sout, module);
+  GenerateTCLAPAssignment(sout, module);
+  sout << "#define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT " << std::endl;
+}
 
+void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
+{
   std::string EOL(" \\");
-  sout << "#define GENERATE_TCLAP \\" << std::endl;
+  sout << "#define GENERATE_TCLAP_PARSE \\" << std::endl;
 
   ModuleParameterGroup autoParameters;
 
@@ -1259,14 +1275,33 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
    sout << "     vargs.push_back(const_cast<char *>(targs[ac].c_str()));" << EOL << std::endl;
    sout << "     }" << EOL << std::endl;
 
-   //sout << "std::cout << \"Remapped back command line\" << std::endl;" << EOL << std::endl;
-   //sout << "for(int ai=0; ai < argc; ++ai) std::cout << \"argv[\" << ai << \"]=\"<<vargs[ai] << std::endl;" << EOL << std::endl;
-   
   // Generate the code to parse the command line
   sout << "    commandLine.parse ( vargs.size(), (char**) &(vargs[0]) );" << EOL << std::endl;
-  //sout << "exit(0);" << EOL << std::endl;
-  
-  // Third pass generates access to arguments
+
+  // Wrapup the block and generate the catch block
+  sout << "  }" << EOL << std::endl;
+  sout << "catch ( TCLAP::ArgException e )" << EOL << std::endl;
+  sout << "  {" << EOL << std::endl;
+  sout << "  std::cerr << \"error: \" << e.error() << \" for arg \" << e.argId() << std::endl;" << EOL << std::endl;
+  sout << "  return ( EXIT_FAILURE );" << EOL << std::endl;
+  sout << "  }" << std::endl;
+}
+
+void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & module, bool onlyIfSet)
+{
+  std::string EOL(" \\");
+  sout << "#define GENERATE_TCLAP_ASSIGNMENT";
+  if( onlyIfSet )
+    {
+    sout << "_IFSET \\" << std::endl;
+    }
+  else
+    {
+    sout << " \\" << std::endl;
+    }
+
+  std::vector<ModuleParameterGroup>::const_iterator git;
+  std::vector<ModuleParameter>::const_iterator pit;
   for (git = module.GetParameterGroups().begin();
        git != module.GetParameterGroups().end();
        ++git)
@@ -1280,7 +1315,12 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
         continue;
         }
 
-      sout << "    "
+      if( onlyIfSet )
+        {
+        sout << "    if( " << pit->GetName() << "Arg.isSet() )" << EOL << '\n'
+             << "      {" << EOL << '\n';
+        }
+      sout << "      "
            << pit->GetName();
       if (NeedsTemp(*pit))
         {
@@ -1290,6 +1330,10 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
            << pit->GetName()
            << "Arg.getValue();"
            << EOL << std::endl;
+      if( onlyIfSet )
+        {
+        sout << "      }" << EOL << '\n';
+        }
       }
     }
 
@@ -1304,14 +1348,19 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
       {
       if (NeedsTemp(*pit) && pit->GetMultiple() != "true")
         {
+        if( onlyIfSet )
+          {
+          sout << "    if( " << pit->GetName() << "Arg.isSet() )" << EOL << '\n';
+          }
         sout << "      { " << "/* Assignment for " << pit->GetName() << " */" << EOL << std::endl;
+        sout << "      " << pit->GetName() << ".clear();" << EOL << std::endl;
         sout << "      std::vector<std::string> words;"
              << EOL << std::endl;
         sout << "      std::string sep(\",\");"
              << EOL << std::endl;
         if ((*pit).GetTag() == "file")
           {
-          sout << "      splitFilenames(" 
+          sout << "      splitFilenames("
                << pit->GetName()
                << "Temp"
                << ", "
@@ -1320,7 +1369,7 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
           }
         else
           {
-          sout << "      splitString(" 
+          sout << "      splitString("
                << pit->GetName()
                << "Temp"
                << ", "
@@ -1388,13 +1437,7 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
         }
       }
     }
-  // Wrapup the block and generate the catch block
-  sout << "  }" << EOL << std::endl;
-  sout << "catch ( TCLAP::ArgException e )" << EOL << std::endl;
-  sout << "  {" << EOL << std::endl;
-  sout << "  std::cerr << \"error: \" << e.error() << \" for arg \" << e.argId() << std::endl;" << EOL << std::endl;
-  sout << "  return ( EXIT_FAILURE );" << EOL << std::endl;
-  sout << "  }" << std::endl;
+  sout << "" << std::endl;
 }
 
 void GeneratePost(std::ostream &sout)
