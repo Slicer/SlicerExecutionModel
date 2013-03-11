@@ -14,7 +14,7 @@
 #ifndef __ModuleFactory_h
 #define __ModuleFactory_h
 
-#include "ModuleDescriptionParserWin32Header.h"
+#include "ModuleDescriptionParserExport.h"
 
 #include "ModuleDescription.h"
 

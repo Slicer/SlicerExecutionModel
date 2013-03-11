@@ -15,7 +15,7 @@
 #ifndef __ModuleDescription_h
 #define __ModuleDescription_h
 
-#include "ModuleDescriptionParserWin32Header.h"
+#include "ModuleDescriptionParserExport.h"
 
 #include "ModuleParameterGroup.h"
 

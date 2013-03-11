@@ -17,9 +17,9 @@
 #include <utility>
 #include <vector>
 
-#include "ModuleDescriptionParserWin32Header.h"
+#include "ModuleDescriptionParserExport.h"
 
-#if !defined(WIN32)
+#if !defined(_WIN32)
 #include <bfd.h>
 
 /// Implementation for Linux, Mac, etc. to allow us to peek into an

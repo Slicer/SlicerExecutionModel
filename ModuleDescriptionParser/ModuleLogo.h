@@ -15,7 +15,7 @@
 #ifndef __ModuleLogo_h
 #define __ModuleLogo_h
 
-#include "ModuleDescriptionParserWin32Header.h"
+#include "ModuleDescriptionParserExport.h"
 #include <string>
 
 class ModuleDescriptionParser_EXPORT ModuleLogo

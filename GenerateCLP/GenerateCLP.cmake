@@ -3,7 +3,7 @@
 # arguments.
 #
 # Usage: GENERATECLP(foo_SRCS XML_FILE [LOGO_FILE])
-# 
+#
 # foo_SRCS should be a list of source containing foo.cxx.  The XML_FILE should
 # should have the same basename as the .cxx file, e.g. foo.xml.
 macro(GENERATECLP SOURCES XML_FILE)

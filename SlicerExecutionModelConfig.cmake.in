@@ -10,6 +10,7 @@
 #                    SlicerExecutionModel_USE_GENERATECLP
 #                    SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER
 #                    SlicerExecutionModel_USE_TCLAP
+#                    SlicerExecutionModel_USE_SERIALIZER
 
 # Check if components where passed to find_package()
 if(SlicerExecutionModel_FIND_COMPONENTS)
@@ -19,11 +20,26 @@ if(SlicerExecutionModel_FIND_COMPONENTS)
   endforeach()
 endif()
 
-# If no components are passed, let's assume all components are expected to be enabled
+# If no components are passed, let's assume all components built by default are expected to be enabled.
 if(NOT SlicerExecutionModel_FIND_COMPONENTS)
   set(SlicerExecutionModel_USE_GENERATECLP 1)
   set(SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER 1)
   set(SlicerExecutionModel_USE_TCLAP 1)
+endif()
+
+# SlicerExecutionModel_USE_SERIALIZER is optional and it must be turned on at
+# build time.
+if(SlicerExecutionModel_USE_SERIALIZER AND NOT "@SlicerExecutionModel_USE_SERIALIZER@")
+  message(SEND_ERROR "The SERIALIZER COMPONENT for SlicerExecutionModel was requested,
+  but SlicerExecutionModel was not built with SlicerExecutionModel_USE_SERIALIZER ON.")
+endif()
+set(SlicerExecutionModel_USE_SERIALIZER "@SlicerExecutionModel_USE_SERIALIZER@")
+if(SlicerExecutionModel_USE_SERIALIZER)
+  # Load JsonCppTargets.cmake so the libraries can be found.
+  set(_used_JsonCpp_config "@JsonCpp_DIR@/JsonCppConfig.cmake")
+  if(NOT DEFINED JsonCpp_LIBRARIES AND EXISTS "${_used_JsonCpp_config}")
+    include("${_used_JsonCpp_config}")
+  endif()
 endif()
 
 # Set SlicerExecutionModel variables 
@@ -32,6 +48,9 @@ set(SlicerExecutionModel_INCLUDE_DIRS
   )
 set(SlicerExecutionModel_LIBRARIES
   @SlicerExecutionModel_LIBRARIES_CONFIG@
+  )
+set(DEFAULT_SEM_TARGET_LIBRARIES
+  @DEFAULT_SEM_TARGET_LIBRARIES_CONFIG@
   )
 set(SlicerExecutionModel_USE_FILE
   "@SlicerExecutionModel_USE_FILE_CONFIG@"

@@ -11,6 +11,17 @@ set(ModuleDescriptionParser_USE_FILE
 
 set(ITK_DIR "@ITK_DIR_CONFIG@")
 
+set(ModuleDescriptionParser_USE_SERIALIZER "@ModuleDescriptionParser_USE_SERIALIZER@")
+
+# We need to know the location of the json library for linking.  Including the
+# ParameterSerializerConfig.cmake will do that for us.
+if(ModuleDescriptionParser_USE_SERIALIZER)
+  set(used_ParameterSerializer_config "@ParameterSerializer_DIR@/ParameterSerializerConfig.cmake")
+  if(NOT DEFINED ParameterSerializer_LIBRARIES AND EXISTS "${used_ParameterSerializer_config}")
+    include("${used_ParameterSerializer_config}")
+  endif()
+endif()
+
 # The ModuleDescriptionParser targets file.
 if(NOT TARGET ModuleDescriptionParser AND EXISTS "@CMAKE_CURRENT_BINARY_DIR@/ModuleDescriptionParserTargets.cmake")
   include("@CMAKE_CURRENT_BINARY_DIR@/ModuleDescriptionParserTargets.cmake")

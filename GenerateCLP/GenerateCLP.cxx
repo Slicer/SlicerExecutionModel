@@ -49,7 +49,7 @@
   streams.
 */
 
-#include "GenerateCLPConfig.h" // For GENERATECLP_USE_MD5
+#include "GenerateCLPConfig.h" // For GENERATECLP_USE_MD5, GenerateCLP_USE_SERIALIZER
 
 #include <cstdlib>
 #include <cstdio>
@@ -71,7 +71,13 @@
 #include "ModuleParameterGroup.h"
 #include "ModuleParameter.h"
 
-#if defined( WIN32 )
+#ifdef GenerateCLP_USE_SERIALIZER
+# include "itkJsonCppArchiver.h"
+# include "itkSEMModuleDescriptionSerializer.h"
+# include "ModuleDescriptionParser.h"
+#endif
+
+#if defined( _WIN32 )
 #pragma warning ( disable : 4996 )
 #endif
 
@@ -129,6 +135,24 @@ bool HasDefault(const ModuleParameter &parameter)
  * include files and code to process comma separated arguments.
  */
 void GeneratePre(std::ostream &, ModuleDescription &, int, char *[]);
+
+#ifdef GenerateCLP_USE_SERIALIZER
+/** Write the JSON description of the module in header. */
+void GenerateJson( std::ostream & sout,
+  itk::SEMModuleDescriptionSerializer::Pointer & serializer );
+
+/** GetJsonParameter is a helper function used in
+ * GenerateSerialization and GenerateDeSerialization. */
+void GenerateGetJsonParameter( std::ostream & sout );
+
+/** Create code to deserialize parameters from a file. */
+void GenerateDeSerialization( std::ostream & sout,
+  const ModuleDescription & module );
+
+/** Create code to serialize the parameters to a file. */
+void GenerateSerialization( std::ostream & sout,
+  const ModuleDescription & module );
+#endif // GenerateCLP_USE_SERIALIZER
 
 /* Generate the last statements. This defines the PARSE_ARGS macro */
 void GeneratePost(std::ostream &);
@@ -219,6 +243,16 @@ main(int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
+#ifdef GenerateCLP_USE_SERIALIZER
+  itk::SEMModuleDescription::Pointer itkModule =
+    itk::SEMModuleDescription::New();
+  itkModule->SetModuleDescription( module );
+  itk::SEMModuleDescriptionSerializer::Pointer serializer =
+    itk::SEMModuleDescriptionSerializer::New();
+  serializer->SetTargetObject( itkModule );
+  serializer->Serialize();
+#endif // GenerateCLP_USE_SERIALIZER
+
   std::stringstream parametersGroupsMsg;
 
   // Print each command line arg
@@ -270,6 +304,20 @@ main(int argc, char *argv[])
 
   GeneratePre(sout, module, argc, argv);
   GenerateExports(sout);
+#ifdef GenerateCLP_USE_SERIALIZER
+  GenerateJson( sout, serializer );
+  GenerateGetJsonParameter( sout );
+  try
+    {
+    GenerateDeSerialization( sout, module );
+    }
+  catch( const std::exception & error )
+    {
+    std::cerr << "Error: " << error.what() << std::endl;
+    return EXIT_FAILURE;
+    }
+  GenerateSerialization( sout, module );
+#endif // GenerateCLP_USE_SERIALIZER
   GeneratePluginEntryPoints(sout, logoFiles);
   GeneratePluginDataSymbols(sout, logoFiles, InputXML);
   GenerateSplitString(sout);
@@ -277,6 +325,34 @@ main(int argc, char *argv[])
   GeneratePluginProcedures(sout, logoFiles);
   GenerateLOGO(sout, logoFiles);
   GenerateXML(sout);
+
+#ifdef GenerateCLP_USE_SERIALIZER
+  ModuleParameterGroup serializationGroup;
+  serializationGroup.SetLabel("Parameter Serialization");
+
+  ModuleParameter parametersSerialize;
+  parametersSerialize.SetTag("file");
+  parametersSerialize.SetCPPType("std::string");
+  parametersSerialize.SetName("parametersSerialize");
+  parametersSerialize.SetLongFlag("serialize");
+  parametersSerialize.SetDescription("Store the module's parameters to a file.");
+  parametersSerialize.SetDefault("");
+  parametersSerialize.SetChannel("output");
+  serializationGroup.AddParameter(parametersSerialize);
+
+  ModuleParameter parametersDeSerialize;
+  parametersDeSerialize.SetTag("file");
+  parametersDeSerialize.SetCPPType("std::string");
+  parametersDeSerialize.SetName("parametersDeSerialize");
+  parametersDeSerialize.SetLongFlag("deserialize");
+  parametersDeSerialize.SetDescription("Restore the module's parameters that were previously archived.");
+  parametersDeSerialize.SetDefault("");
+  parametersDeSerialize.SetChannel("input");
+  serializationGroup.AddParameter(parametersDeSerialize);
+
+  module.AddParameterGroup(serializationGroup);
+#endif // GenerateCLP_USE_SERIALIZER
+
   GenerateTCLAP(sout, module);
   GenerateTCLAPAssignment(sout, module, true);
   GenerateEchoArgs(sout, module);
@@ -358,11 +434,281 @@ void GeneratePre(std::ostream &sout, ModuleDescription &, int argc, char *argv[]
   sout << "#include <map>" << std::endl;
   sout << std::endl;
   sout << "#include <sstream>" << std::endl;
+#ifdef GenerateCLP_USE_SERIALIZER
+  sout << "#include <fstream>\n";
+  sout << "#include <stdexcept>\n";
+  sout << std::endl;
+  sout << "#include \"json/json.h\"\n";
+#endif // GenerateCLP_USE_SERIALIZER
   sout << std::endl;
   sout << "#include \"tclap/CmdLine.h\"" << std::endl;
   sout << "#include \"ModuleProcessInformation.h\"" << std::endl;
   sout << std::endl;
 }
+
+#ifdef GenerateCLP_USE_SERIALIZER
+void GenerateJson( std::ostream & sout,
+  itk::SEMModuleDescriptionSerializer::Pointer & serializer )
+{
+  sout << "\nextern \"C\" {\n";
+  sout << "Module_EXPORT char JSONModuleDescription[] =" << std::endl;
+  std::ostringstream oStream;
+  itk::JsonCppArchiver::Pointer archiver =
+    dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+  archiver->WriteToStdStream( oStream );
+  std::istringstream iStream( oStream.str() );
+  while( !iStream.eof() )
+    {
+    std::string line;
+    std::getline( iStream, line );
+    size_t quotePosition = line.find( '"' );
+    while( quotePosition != std::string::npos )
+      {
+      line = line.replace( quotePosition, 1, "\\\"" );
+      quotePosition = line.find( '"', quotePosition + 2 );
+      }
+    sout << "\"" << line << "\\n\"\n";
+    }
+  sout << ";\n";
+  sout << "}" << std::endl;
+}
+
+void GenerateGetJsonParameter( std::ostream & sout )
+{
+  const std::string EOL("\n");
+  sout << "namespace {" << EOL;
+  sout << "Json::Value &" << EOL;
+  sout << "getJsonParameter( const std::string & parameterGroupLabel," << EOL;
+  sout << "                  const std::string & parameterName," << EOL;
+  sout << "                  Json::Value & parameterGroups )" << EOL;
+  sout << "{" << EOL;
+  sout << "  unsigned int groupIndex = 0;" << EOL;
+  sout << "  bool groupFound = false;" << EOL;
+  sout << "  for( unsigned int ii = 0; ii < parameterGroups.size(); ++ii )" << EOL;
+  sout << "    {" << EOL;
+  sout << "    if( parameterGroups[ii][\"Label\"].asString() == parameterGroupLabel )" << EOL;
+  sout << "      {" << EOL;
+  sout << "      groupFound = true;" << EOL;
+  sout << "      groupIndex = ii;" << EOL;
+  sout << "      break;" << EOL;
+  sout << "      }" << EOL;
+  sout << "    }" << EOL;
+  sout << "  if( !groupFound )" << EOL;
+  sout << "    {" << EOL;
+  sout << "    // returns Json::nullValue" << EOL;
+  sout << "    return parameterGroups[parameterGroups.size()];" << EOL;
+  sout << "    }" << EOL;
+  sout << "" << EOL;
+  sout << "  Json::Value & parameters = parameterGroups[groupIndex][\"Parameters\"];" << EOL;
+  sout << "  unsigned int parameterIndex = 0;" << EOL;
+  sout << "  bool parameterFound = false;" << EOL;
+  sout << "  for( unsigned int ii = 0; ii < parameters.size(); ++ii )" << EOL;
+  sout << "    {" << EOL;
+  sout << "    const std::string & name = parameters[ii][\"Name\"].asString();" << EOL;
+  sout << "    if( name == parameterName )" << EOL;
+  sout << "      {" << EOL;
+  sout << "      parameterFound = true;" << EOL;
+  sout << "      parameterIndex = ii;" << EOL;
+  sout << "      break;" << EOL;
+  sout << "      }" << EOL;
+  sout << "    }" << EOL;
+  sout << "  if( !parameterFound )" << EOL;
+  sout << "    {" << EOL;
+  sout << "    // returns Json::nullValue" << EOL;
+  sout << "    return parameters[parameters.size()];" << EOL;
+  sout << "    }" << EOL;
+  sout << "" << EOL;
+  sout << "  return parameters[parameterIndex];" << EOL;
+  sout << "}" << EOL;
+  sout << "} // end anonymous namespace" << EOL;
+  sout << std::endl;
+}
+
+void GenerateDeSerialization( std::ostream & sout,
+  const ModuleDescription & module )
+{
+  typedef std::map< std::string, std::string > CPPTypeToJsonCppConversionType;
+  CPPTypeToJsonCppConversionType cppTypeToJsonCppConversion;
+  cppTypeToJsonCppConversion["std::string"] = "String";
+  cppTypeToJsonCppConversion["int"] = "Int";
+  cppTypeToJsonCppConversion["unsigned int"] = "UInt";
+  cppTypeToJsonCppConversion["float"] = "Float";
+  cppTypeToJsonCppConversion["double"] = "Double";
+  cppTypeToJsonCppConversion["bool"] = "Bool";
+  cppTypeToJsonCppConversion["std::vector<std::string>"] = "String";
+  cppTypeToJsonCppConversion["std::vector<int>"] = "Int";
+  cppTypeToJsonCppConversion["std::vector<unsigned int>"] = "UInt";
+  cppTypeToJsonCppConversion["std::vector<float>"] = "Float";
+  cppTypeToJsonCppConversion["std::vector<double>"] = "Double";
+  cppTypeToJsonCppConversion["std::vector<bool>"] = "Bool";
+  cppTypeToJsonCppConversion["std::vector<std::vector<float> >"] = "Float";
+
+  const std::string EOL(" \\\n");
+  sout << "#define GENERATE_DESERIALIZATION" << EOL;
+  std::string indent( "    " );
+  sout << indent << "if( parametersDeSerializeArg.isSet() )" << EOL;
+  sout << indent << "  {" << EOL;
+  sout << indent << "  std::ifstream fStream( parametersDeSerializeArg.getValue().c_str() );" << EOL;
+  sout << indent << "  if( !fStream.is_open() )" << EOL;
+  sout << indent << "    {" << EOL;
+  sout << indent << "    std::cerr << \"Could not open file: \" << parametersDeSerializeArg.getValue() << \" for writing.\" << std::endl;" << EOL;
+  sout << indent << "    return EXIT_FAILURE;" << EOL;
+  sout << indent << "    }" << EOL;
+  sout << indent << "  Json::Value root;" << EOL;
+  sout << indent << "  Json::Reader reader;" << EOL;
+  sout << indent << "  reader.parse( fStream, root );" << EOL;
+  sout << indent << "  Json::Value & parameterGroups = root[\"ParameterGroups\"];" << EOL;
+  typedef std::vector<ModuleParameterGroup> ModuleParameterGroupsType;
+  const ModuleParameterGroupsType & parameterGroups = module.GetParameterGroups();
+  for( ModuleParameterGroupsType::const_iterator groupIt = parameterGroups.begin();
+       groupIt != parameterGroups.end();
+       ++groupIt )
+    {
+    const std::string & groupLabel = groupIt->GetLabel();
+    typedef std::vector< ModuleParameter > ModuleParametersType;
+    const ModuleParametersType & parameters = groupIt->GetParameters();
+    for( ModuleParametersType::const_iterator paramIt = parameters.begin();
+         paramIt != parameters.end();
+         ++paramIt )
+      {
+      // Use LongFlag if present, Name otherwise
+      const std::string & parameterName = paramIt->GetName();
+
+      sout << indent << "      {" << EOL;
+      sout << indent << "      Json::Value & parameter = getJsonParameter( \""
+           << groupLabel << "\", \""
+           << parameterName << "\", parameterGroups );" << EOL;
+      sout << indent << "      if( !parameter.isNull() )" << EOL;
+      sout << indent << "        {" << EOL;
+
+      const std::string & cppType = paramIt->GetCPPType();
+      CPPTypeToJsonCppConversionType::const_iterator conversionIt =
+        cppTypeToJsonCppConversion.find( cppType );
+      if( conversionIt == cppTypeToJsonCppConversion.end() )
+        {
+        std::string errorMessage( "Unknown CPPType: " );
+        errorMessage += cppType;
+        throw std::runtime_error( errorMessage.c_str() );
+        }
+      if( cppType.find( "vector" ) == std::string::npos )
+        {
+        sout << indent << "    " << paramIt->GetName()
+             << " = parameter[\"Value\"].as" << conversionIt->second
+             << "();" << EOL;
+        }
+      else if( cppType.find( "vector<std::vector" ) == std::string::npos )
+        {
+        sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
+        sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
+        sout << indent << "      for( size_t ii = 0; ii < "
+             << paramIt->GetName() << ".size(); ++ii )" << EOL;
+        sout << indent << "        {" << EOL;
+        sout << indent << "        "
+             << paramIt->GetName() << "[ii] = parameterArray[static_cast<int>(ii)].as"
+             << conversionIt->second << "();" << EOL;
+        sout << indent << "        }" << EOL;
+        }
+      else
+        {
+        sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
+        sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
+        sout << indent << "      for( size_t ii = 0; ii < "
+             << paramIt->GetName() << ".size(); ++ii )" << EOL;
+        sout << indent << "        {" << EOL;
+        sout << indent << "        " << paramIt->GetName() << "[ii].resize( parameterArray[static_cast<int>(ii)].size() );" << EOL;
+        sout << indent << "        for( size_t jj = 0; jj < "
+             << paramIt->GetName() << "[ii].size(); ++jj )" << EOL;
+        sout << indent << "          {" << EOL;
+        sout << indent << "          "
+             << paramIt->GetName() << "[ii][jj] = parameterArray[static_cast<int>(ii)][static_cast<int>(jj)].as"
+             << conversionIt->second << "();" << EOL;
+        sout << indent << "          }" << EOL;
+        sout << indent << "        }" << EOL;
+        }
+      sout << indent << "      }" << EOL;
+      sout << indent << "    }" << EOL;
+      }
+    }
+  sout << indent << "  }" << std::endl;
+}
+
+void GenerateSerialization( std::ostream & sout,
+  const ModuleDescription & module )
+{
+  const std::string EOL(" \\\n");
+  sout << "#define GENERATE_SERIALIZATION" << EOL;
+  std::string indent( "    " );
+  sout << indent << "if( parametersSerializeArg.isSet() )" << EOL;
+  sout << indent << "  {" << EOL;
+  sout << indent << "  Json::Value root;" << EOL;
+  sout << indent << "  Json::Reader reader;" << EOL;
+  sout << indent << "  std::istringstream iStream( JSONModuleDescription );" << EOL;
+  sout << indent << "  reader.parse( JSONModuleDescription, root );" << EOL;
+  sout << indent << "  Json::Value & parameterGroups = root[\"ParameterGroups\"];" << EOL;
+  typedef std::vector<ModuleParameterGroup> ModuleParameterGroupsType;
+  const ModuleParameterGroupsType & parameterGroups = module.GetParameterGroups();
+  for( ModuleParameterGroupsType::const_iterator groupIt = parameterGroups.begin();
+       groupIt != parameterGroups.end();
+       ++groupIt )
+    {
+    const std::string & groupLabel = groupIt->GetLabel();
+    typedef std::vector< ModuleParameter > ModuleParametersType;
+    const ModuleParametersType & parameters = groupIt->GetParameters();
+    for( ModuleParametersType::const_iterator paramIt = parameters.begin();
+         paramIt != parameters.end();
+         ++paramIt )
+      {
+      const std::string & parameterName = paramIt->GetName();
+      const std::string & cppType = paramIt->GetCPPType();
+      sout << indent << "    {" << EOL;
+      sout << indent << "    Json::Value & parameter = getJsonParameter( \""
+           << groupLabel << "\", \""
+           << parameterName << "\", parameterGroups );" << EOL;
+      if( cppType.find( "vector" ) == std::string::npos )
+        {
+        sout << indent << "    parameter[\"Value\"] = " << paramIt->GetName() << ";" << EOL;
+        }
+      else if( cppType.find( "vector<std::vector" ) == std::string::npos )
+        {
+        sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
+        sout << indent << "    for( size_t ii = 0; ii < "
+             << paramIt->GetName() << ".size(); ++ii )" << EOL;
+        sout << indent << "      {" << EOL;
+        sout << indent << "      valueArray.append( " << paramIt->GetName() << "[ii] );" << EOL;
+        sout << indent << "      }" << EOL;
+        sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
+        }
+      else // std::vector<std::vector<float> >
+        {
+        sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
+        sout << indent << "    for( size_t ii = 0; ii < "
+             << paramIt->GetName() << ".size(); ++ii )" << EOL;
+        sout << indent << "      {" << EOL;
+        sout << indent << "      Json::Value nestedValueArray( Json::arrayValue );" << EOL;
+        sout << indent << "      for( size_t jj = 0; jj < "
+             << paramIt->GetName() << "[ii].size(); ++jj )" << EOL;
+        sout << indent << "        {" << EOL;
+        sout << indent << "        nestedValueArray.append( " << paramIt->GetName() << "[ii][jj] );" << EOL;
+        sout << indent << "        }" << EOL;
+        sout << indent << "      valueArray.append( nestedValueArray );" << EOL;
+        sout << indent << "      }" << EOL;
+        sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
+        }
+      sout << indent << "    }" << EOL;
+      }
+    }
+  sout << indent << "  std::ofstream fStream( parametersSerializeArg.getValue().c_str() );" << EOL;
+  sout << indent << "  if( !fStream.is_open() )" << EOL;
+  sout << indent << "    {" << EOL;
+  sout << indent << "    std::cerr << \"Could not open file: \" << parametersSerializeArg.getValue() << \" for writing.\" << std::endl;" << EOL;
+  sout << indent << "    return EXIT_FAILURE;" << EOL;
+  sout << indent << "    }" << EOL;
+  sout << indent << "  Json::StyledStreamWriter writer;" << EOL;
+  sout << indent << "  writer.write( fStream, root );" << EOL;
+  sout << indent << "  fStream.close();" << EOL;
+  sout << indent << "  }" << std::endl;
+}
+#endif // GenerateCLP_USE_SERIALIZER
 
 void GenerateSplitString(std::ostream &sout)
 {
@@ -428,10 +774,10 @@ void GenerateSplitFilenames(std::ostream &sout)
 
 void GenerateExports(std::ostream &sout)
 {
-  sout << "#ifdef WIN32" << std::endl;
+  sout << "#ifdef _WIN32" << std::endl;
   sout << "#define Module_EXPORT __declspec(dllexport)" << std::endl;
   sout << "#else" << std::endl;
-  sout << "#define Module_EXPORT " << std::endl;
+  sout << "#define Module_EXPORT" << std::endl;
   sout << "#endif" << std::endl;
   sout << std::endl;
 }
@@ -470,7 +816,7 @@ void GeneratePluginDataSymbols(std::ostream &sout, std::vector<std::string>& log
     {
     std::string logo = logos[0];
     std::string fileName = itksys::SystemTools::GetFilenameWithoutExtension (logo);
-    
+
     sout << "#define static Module_EXPORT" << std::endl;
     sout << "#define const" << std::endl;
     sout << "#define image_" << fileName << "_width ModuleLogoWidth"
@@ -623,7 +969,7 @@ void GenerateEchoArgs(std::ostream &sout, ModuleDescription &module)
              << EOL << std::endl;
         sout << "std::cout <<std::endl;"
              << EOL << std::endl;
-        
+
         }
       else if (NeedsTemp(*pit) && pit->GetMultiple() == "true")
         {
@@ -690,7 +1036,7 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
 {
   GenerateTCLAPParse(sout, module);
   GenerateTCLAPAssignment(sout, module);
-  sout << "#define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT " << std::endl;
+  sout << "#define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT" << std::endl;
 }
 
 void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
@@ -1442,7 +1788,11 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
 
 void GeneratePost(std::ostream &sout)
 {
+#ifdef GenerateCLP_USE_SERIALIZER
+  sout << "#define PARSE_ARGS GENERATE_LOGO;GENERATE_XML;GENERATE_TCLAP;GENERATE_DESERIALIZATION;GENERATE_TCLAP_ASSIGNMENT_IFSET;GENERATE_ECHOARGS;GENERATE_ProcessInformationAddressDecoding;GENERATE_SERIALIZATION" << std::endl;
+#else
   sout << "#define PARSE_ARGS GENERATE_LOGO;GENERATE_XML;GENERATE_TCLAP;GENERATE_ECHOARGS;GENERATE_ProcessInformationAddressDecoding;" << std::endl;
+#endif // GenerateCLP_USE_SERIALIZER
 }
 
 void GenerateProcessInformationAddressDecoding(std::ostream &sout)

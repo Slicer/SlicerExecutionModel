@@ -20,7 +20,7 @@
 // (2) provide a mechanism to execute code before the entry point of module
 // compiled either as the [executable only] or [executable + shared library].
 
-#if defined(WIN32) && !defined(MODULE_STATIC)
+#if defined(_WIN32) && !defined(MODULE_STATIC)
 #define MODULE_IMPORT __declspec(dllimport)
 #else
 #define MODULE_IMPORT
