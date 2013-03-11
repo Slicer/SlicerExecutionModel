@@ -57,6 +57,10 @@ public:
     this->Parameters.push_back(parameter);
   }
 
+  void SetParameters(const std::vector<ModuleParameter> &parameters) {
+    this->Parameters = parameters;
+  }
+
   const std::vector<ModuleParameter>& GetParameters() const {
     return this->Parameters;
   }
