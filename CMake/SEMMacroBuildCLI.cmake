@@ -117,41 +117,29 @@ macro(SEMMacroBuildCLI)
   endif()
 
   set(cli_targets)
-
   if(NOT LOCAL_SEM_EXECUTABLE_ONLY)
-
-    add_library(${CLP}Lib SHARED ${${CLP}_SOURCE})
-    set_target_properties(${CLP}Lib PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint")
-    if(DEFINED LOCAL_SEM_TARGET_LIBRARIES)
-      target_link_libraries(${CLP}Lib ${LOCAL_SEM_TARGET_LIBRARIES})
-    endif()
-
-    add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
-    set(cli_executable_libraries ${CLP}Lib)
-    if(DEFINED SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES)
-      list(APPEND cli_executable_libraries ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES})
-    endif()
-    target_link_libraries(${CLP} ${cli_executable_libraries})
-
-    set(cli_targets ${CLP} ${CLP}Lib)
-
+    set(cli_library_type SHARED)
+    set(cli_executable_compile_flags "")
   else()
-
-    add_executable(${CLP} ${${CLP}_SOURCE})
-    set(cli_executable_libraries "")
-    if(DEFINED LOCAL_SEM_TARGET_LIBRARIES)
-      list(APPEND cli_executable_libraries ${LOCAL_SEM_TARGET_LIBRARIES})
-    endif()
-    if(DEFINED SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES)
-      list(APPEND cli_executable_libraries ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES})
-    endif()
-    if(NOT "${cli_executable_libraries}" STREQUAL "")
-      target_link_libraries(${CLP} ${cli_executable_libraries})
-    endif()
-
-    set(cli_targets ${CLP})
-
+    set(cli_library_type STATIC)
+    set(cli_executable_compile_flags "-DMODULE_STATIC")
   endif()
+
+  add_library(${CLP}Lib ${cli_library_type} ${${CLP}_SOURCE})
+  set_target_properties(${CLP}Lib PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint")
+  if(DEFINED LOCAL_SEM_TARGET_LIBRARIES)
+    target_link_libraries(${CLP}Lib ${LOCAL_SEM_TARGET_LIBRARIES})
+  endif()
+
+  add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
+  set_target_properties(${CLP} PROPERTIES COMPILE_FLAGS "${cli_executable_compile_flags}")
+  set(cli_executable_libraries ${CLP}Lib)
+  if(DEFINED SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES)
+    list(APPEND cli_executable_libraries ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES})
+  endif()
+  target_link_libraries(${CLP} ${cli_executable_libraries})
+
+  set(cli_targets ${CLP} ${CLP}Lib)
 
   # Set labels associated with the target.
   set_target_properties(${cli_targets} PROPERTIES LABELS ${CLP})
@@ -198,7 +186,7 @@ macro(SEMMacroBuildCLI)
     install(TARGETS ${cli_targets}
       RUNTIME DESTINATION ${LOCAL_SEM_INSTALL_RUNTIME_DESTINATION} COMPONENT RuntimeLibraries
       LIBRARY DESTINATION ${LOCAL_SEM_INSTALL_LIBRARY_DESTINATION} COMPONENT RuntimeLibraries
-      ARCHIVE DESTINATION ${LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION} COMPONENT RuntimeLibraries
+      ARCHIVE DESTINATION ${LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION} COMPONENT Development
       )
   endif()
 
