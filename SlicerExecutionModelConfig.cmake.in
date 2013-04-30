@@ -38,16 +38,24 @@ set(SlicerExecutionModel_USE_FILE
   )
 set(SlicerExecutionModel_CMAKE_DIR ${SlicerExecutionModel_DIR}/CMake)
 
-# Default "output directories" used by SEMMacroBuildCLI.cmake
-set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY 
-  "@SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG@"
-  )
-set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY_CONFIG@"
-  )
-set(SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "@SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY_CONFIG@"
-  )
+# If not already defined, set default "output directories" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
+    "@SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
+    "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
+    "@SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
 
 # If not already defined, set default "install destination" used by SEMMacroBuildCLI.cmake
 if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION)
@@ -68,9 +76,12 @@ if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
     )
 endif()
 
-set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX
-  "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG@"
-  )
+# If not already defined, set default library wrapper used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX
+    "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG@"
+    )
+endif()
 
 # The SlicerExecutionModel targets file.
 if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
