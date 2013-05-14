@@ -38,10 +38,18 @@ extern "C" {
 
     double ElapsedTime;
 
+    ModuleProcessInformation()
+      {
+        ProgressCallbackFunction = 0;
+        ProgressCallbackClientData = 0;
+        Initialize();
+      }
+
     void Initialize()
       {
         Abort = 0;
         Progress = 0;
+        StageProgress = 0;
         strcpy(ProgressMessage, "");
         ElapsedTime = 0.0;
       };
