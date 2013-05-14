@@ -40,6 +40,8 @@ ModuleDescription::ModuleDescription()
   std::stringstream ss;
   ss << (unsigned short) -1;
   ss >> this->Index;
+
+  this->ProcessInformation.Initialize();
 }
 
 //----------------------------------------------------------------------------
