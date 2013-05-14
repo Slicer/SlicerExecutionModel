@@ -131,6 +131,17 @@ macro(SEMMacroBuildCLI)
     target_link_libraries(${CLP}Lib ${LOCAL_SEM_TARGET_LIBRARIES})
   endif()
 
+  # Specify which link flags should be associated with CLI library
+  set(_cli_library_link_flags )
+  if(NOT DEFINED SlicerExecutionModel_CLI_LIBRARY_LINK_FLAGS)
+    set(_cli_library_link_flags ${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS})
+  else()
+    set(_cli_library_link_flags ${SlicerExecutionModel_CLI_LIBRARY_LINK_FLAGS})
+  endif()
+  if(NOT "${_cli_library_link_flags}" STREQUAL "")
+    set_target_properties(${CLP}Lib PROPERTIES LINK_FLAGS ${_cli_library_link_flags})
+  endif()
+
   add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
   set_target_properties(${CLP} PROPERTIES COMPILE_FLAGS "${cli_executable_compile_flags}")
   set(cli_executable_libraries ${CLP}Lib)
@@ -140,6 +151,17 @@ macro(SEMMacroBuildCLI)
   target_link_libraries(${CLP} ${cli_executable_libraries})
 
   set(cli_targets ${CLP} ${CLP}Lib)
+
+  # Specify which link flags should be associated with CLI executable
+  set(_cli_executable_link_flags )
+  if(NOT DEFINED SlicerExecutionModel_CLI_EXECUTABLE_LINK_FLAGS)
+    set(_cli_executable_link_flags ${SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS})
+  else()
+    set(_cli_executable_link_flags ${SlicerExecutionModel_CLI_EXECUTABLE_LINK_FLAGS})
+  endif()
+  if(NOT "${_cli_executable_link_flags}" STREQUAL "")
+    set_target_properties(${CLP} PROPERTIES LINK_FLAGS ${_cli_executable_link_flags})
+  endif()
 
   # Set labels associated with the target.
   set_target_properties(${cli_targets} PROPERTIES LABELS ${CLP})
@@ -155,8 +177,6 @@ macro(SEMMacroBuildCLI)
       if(LOCAL_SEM_VERBOSE)
         message(STATUS "Defaulting ${type}_OUTPUT_DIRECTORY to ${LOCAL_SEM_${type}_OUTPUT_DIRECTORY}")
       endif()
-      
-      
     endif()
   endforeach()
 
