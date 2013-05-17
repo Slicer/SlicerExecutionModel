@@ -76,6 +76,19 @@ if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
     )
 endif()
 
+# If not already defined, set rpath flags used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS)
+  set(SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS
+    "@SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS
+    "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS@"
+    )
+endif()
+
 # If not already defined, set default library wrapper used by SEMMacroBuildCLI.cmake
 if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX)
   set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX
