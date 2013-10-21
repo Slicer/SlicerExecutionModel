@@ -2020,7 +2020,7 @@ ModuleDescriptionParser::Parse( const std::string& xml, ModuleDescription& descr
   // Parse the XML
   done = true;
   int status = 0;
-  if (XML_Parse(parser, xml.c_str(), xml.size(), done) == 0)
+  if (XML_Parse(parser, xml.c_str(), static_cast< int >(xml.size()), done) == 0)
     {
     std::cerr << XML_ErrorString(XML_GetErrorCode(parser))
               << " at line "

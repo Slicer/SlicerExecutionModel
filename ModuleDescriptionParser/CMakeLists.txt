@@ -1,7 +1,7 @@
 project(ModuleDescriptionParser)
 
 #-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 2.8.6)
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -31,6 +31,15 @@ if(NOT DEFINED BUILD_SHARED_LIBS)
   option(BUILD_SHARED_LIBS "Build with shared libraries." ON)
 endif()
 
+if(NOT DEFINED ModuleDescriptionParser_USE_SERIALIZER)
+  option(ModuleDescriptionParser_USE_SERIALIZER "Serialization and deserialization support is added for ModuleDescriptionParser objects." OFF)
+  mark_as_advanced(ModuleDescriptionParser_USE_SERIALIZER)
+endif()
+if(ModuleDescriptionParser_USE_SERIALIZER)
+  find_package(ParameterSerializer REQUIRED)
+  include_directories(${ParameterSerializer_INCLUDE_DIRS})
+endif()
+
 #-----------------------------------------------------------------------------
 # Testing
 #-----------------------------------------------------------------------------
@@ -45,7 +54,7 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
      AND NOT EXISTS ${ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY})
     message(FATAL_ERROR "ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY is set to a non-existing directory [${ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY}]")
   endif()
-  
+
   if(NOT DEFINED ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY)
     set(ModuleDescriptionParser_CMAKE_${type}_OUTPUT_DIRECTORY ${ModuleDescriptionParser_BINARY_DIR}/bin)
   endif()
@@ -86,6 +95,7 @@ if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
 endif()
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
   file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+  list(APPEND headers "${CMAKE_CURRENT_BINARY_DIR}/ModuleDescriptionParserExport.h")
   install(
     FILES ${headers} "${CMAKE_CURRENT_BINARY_DIR}/${configure_header_file}"
     DESTINATION include/${PROJECT_NAME} COMPONENT Development
@@ -106,6 +116,13 @@ set(ModuleDescriptionParser_SRCS
   ModuleFactory.cxx
   BatchMakeUtilities.cxx
   )
+if(ModuleDescriptionParser_USE_SERIALIZER)
+  list(APPEND ModuleDescriptionParser_SRCS
+    itkSEMModuleDescriptionSerializer.cxx
+    itkSEMModuleParameterSerializer.cxx
+    itkSEMModuleParameterGroupSerializer.cxx
+    )
+endif()
 
 # --------------------------------------------------------------------------
 # Enable Binary File Descriptor support if available
@@ -148,7 +165,15 @@ endif()
 # Build library
 # --------------------------------------------------------------------------
 set(lib_name ModuleDescriptionParser)
+include(GenerateExportHeader)
+add_compiler_export_flags()
 add_library(${lib_name} ${ModuleDescriptionParser_SRCS})
+generate_export_header(${lib_name}
+  BASE_NAME ${lib_name}
+  EXPORT_MACRO_NAME ${lib_name}_EXPORT
+  EXPORT_FILE_NAME ${lib_name}Export.h
+  STATIC_DEFINE ${lib_name}_STATIC
+  )
 
 ## Always build an explicitly static library for linking against GenerateCLP so that
 ## GenerateCLP can be run from CMake without having to set DYLD_LIBRARY_PATH or LD_LIBRARY_PATH
@@ -179,6 +204,10 @@ endif()
 
 if(NOT WIN32 AND HAVE_BFD)
   list(APPEND libs bfd iberty)
+endif()
+
+if(ModuleDescriptionParser_USE_SERIALIZER)
+  list(APPEND libs ${ParameterSerializer_LIBRARIES})
 endif()
 
 target_link_libraries(${lib_name} ${libs})

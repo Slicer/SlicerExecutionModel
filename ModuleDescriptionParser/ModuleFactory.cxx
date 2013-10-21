@@ -33,11 +33,11 @@
 #include <algorithm>
 #include <deque>
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #pragma warning ( disable : 4996 )
 #endif
 
-#if !defined(WIN32) && defined(HAVE_BFD)
+#if !defined(_WIN32) && defined(HAVE_BFD)
 #include "BinaryFileDescriptor.h"
 #endif
 

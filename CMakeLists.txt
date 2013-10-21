@@ -48,6 +48,15 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
   endif()
 endforeach()
 
+#-----------------------------------------------------------------------------
+# ParameterSerializer support for ModuleDescriptionParser and GenerateCLP subprojects
+#-----------------------------------------------------------------------------
+option(SlicerExecutionModel_USE_SERIALIZER "Enable ParameterSerializer support for ModuleDescriptionParser and GenerateCLP." OFF)
+if(SlicerExecutionModel_USE_SERIALIZER)
+  find_package(JsonCpp REQUIRED)
+  set(ModuleDescriptionParser_USE_SERIALIZER ON)
+  set(GenerateCLP_USE_SERIALIZER ON)
+endif()
 
 #-----------------------------------------------------------------------------
 # Note: The default values defined below could be overwritten if passed when configuring

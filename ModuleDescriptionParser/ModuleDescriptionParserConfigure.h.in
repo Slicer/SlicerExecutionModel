@@ -3,7 +3,7 @@
  * These values should only change when the target compile platform changes.
  */
 
-#if defined(WIN32) && !defined(ModuleDescriptionParser_STATIC)
+#if defined(_MSC_VER) && !defined(ModuleDescriptionParser_STATIC)
 #pragma warning ( disable : 4275 )
 #endif
 

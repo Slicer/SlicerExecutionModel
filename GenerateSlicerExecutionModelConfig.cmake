@@ -8,6 +8,9 @@
 set(SlicerExecutionModel_INCLUDE_DIRS_CONFIG ${SlicerExecutionModel_INCLUDE_DIRS})
 
 set(SlicerExecutionModel_LIBRARIES_CONFIG ModuleDescriptionParser)
+if(SlicerExecutionModel_USE_SERIALIZER)
+  set(DEFAULT_SEM_TARGET_LIBRARIES_CONFIG ${JsonCpp_LIBRARIES})
+endif()
 
 set(SlicerExecutionModel_USE_FILE_CONFIG
   ${SlicerExecutionModel_BINARY_DIR}/UseSlicerExecutionModel.cmake)

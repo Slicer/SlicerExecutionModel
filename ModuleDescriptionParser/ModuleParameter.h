@@ -14,7 +14,7 @@
 #ifndef __ModuleParameter_h
 #define __ModuleParameter_h
 
-#include "ModuleDescriptionParserWin32Header.h"
+#include "ModuleDescriptionParserExport.h"
 
 #include <string>
 #include <vector>
@@ -350,7 +350,11 @@ public:
     return this->Elements;
   }
 
-  
+  virtual void SetElements(const std::vector<std::string> & elements)
+  {
+    this->Elements = elements;
+  }
+
 protected:
 
   

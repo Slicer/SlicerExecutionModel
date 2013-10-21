@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include "ModuleDescriptionParserWin32Header.h"
+#include "ModuleDescriptionParserExport.h"
 
 class ModuleDescription;
 class ModuleParameter;
