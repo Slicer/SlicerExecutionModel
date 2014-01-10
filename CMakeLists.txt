@@ -136,10 +136,15 @@ add_subdirectory(GenerateCLP)
 # --------------------------------------------------------------------------
 # Set INCLUDE_DIRS variable
 # --------------------------------------------------------------------------
+set(_additional_include_dirs )
+if(SlicerExecutionModel_USE_SERIALIZER)
+  set(_additional_include_dirs ${ParameterSerializer_INCLUDE_DIRS} ${JsonCpp_INCLUDE_DIRS} )
+endif()
 set(${PROJECT_NAME}_INCLUDE_DIRS
   ${ModuleDescriptionParser_INCLUDE_DIRS}
   ${GenerateCLP_INCLUDE_DIRS}
   ${TCLAP_INCLUDE_DIRS}
+  ${_additional_include_dirs}
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE
   )
 
