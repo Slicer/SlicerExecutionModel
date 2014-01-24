@@ -35,14 +35,10 @@ if(SlicerExecutionModel_USE_SERIALIZER AND NOT "@SlicerExecutionModel_USE_SERIAL
 endif()
 set(SlicerExecutionModel_USE_SERIALIZER "@SlicerExecutionModel_USE_SERIALIZER@")
 if(SlicerExecutionModel_USE_SERIALIZER)
-  # Load JsonCppTargets.cmake so the libraries can be found.
-  set(_used_JsonCpp_config "@JsonCpp_DIR@/JsonCppConfig.cmake")
-  if(NOT DEFINED JsonCpp_LIBRARIES AND EXISTS "${_used_JsonCpp_config}")
-    include("${_used_JsonCpp_config}")
-  endif()
+  find_package(ParameterSerializer REQUIRED)
 endif()
 
-# Set SlicerExecutionModel variables 
+# Set SlicerExecutionModel variables
 set(SlicerExecutionModel_INCLUDE_DIRS
   "@SlicerExecutionModel_INCLUDE_DIRS_CONFIG@"
   )
