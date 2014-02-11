@@ -899,7 +899,7 @@ startElement(void *userData, const char *element, const char **attrs)
           }
         else
           {
-          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid value for the attribute \"" + "type" + "\". Only \"linear\" and \"nonlinear\" are accepted.");
+          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid value for the attribute \"" + "type" + "\". Only \"linear\", \"bspline\" and \"nonlinear\" are accepted.");
           if (ps->ErrorDescription.size() == 0)
             {
             ps->ErrorDescription = error;
