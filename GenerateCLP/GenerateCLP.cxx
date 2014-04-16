@@ -1692,6 +1692,11 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
          pit != git->GetParameters().end();
          ++pit)
       {
+      if ((*pit).IsReturnParameter())
+        {
+        continue;
+        }
+
       if (NeedsTemp(*pit) && pit->GetMultiple() != "true")
         {
         if( onlyIfSet )
