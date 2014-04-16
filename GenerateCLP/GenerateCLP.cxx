@@ -590,25 +590,13 @@ void GenerateDeSerialization( std::ostream & sout,
         errorMessage += cppType;
         throw std::runtime_error( errorMessage.c_str() );
         }
-      if( cppType.find( "vector" ) == std::string::npos )
+      if( paramIt->GetMultiple() == "false" )
         {
         sout << indent << "    " << paramIt->GetName()
              << " = parameter[\"Value\"].as" << conversionIt->second
              << "();" << EOL;
         }
-      else if( cppType.find( "vector<std::vector" ) == std::string::npos )
-        {
-        sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
-        sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
-        sout << indent << "      for( size_t ii = 0; ii < "
-             << paramIt->GetName() << ".size(); ++ii )" << EOL;
-        sout << indent << "        {" << EOL;
-        sout << indent << "        "
-             << paramIt->GetName() << "[ii] = parameterArray[static_cast<int>(ii)].as"
-             << conversionIt->second << "();" << EOL;
-        sout << indent << "        }" << EOL;
-        }
-      else
+      else if( cppType.find( "vector<std::vector" ) != std::string::npos )
         {
         sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
         sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
@@ -623,6 +611,18 @@ void GenerateDeSerialization( std::ostream & sout,
              << paramIt->GetName() << "[ii][jj] = parameterArray[static_cast<int>(ii)][static_cast<int>(jj)].as"
              << conversionIt->second << "();" << EOL;
         sout << indent << "          }" << EOL;
+        sout << indent << "        }" << EOL;
+        }
+      else
+        {
+        sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
+        sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
+        sout << indent << "      for( size_t ii = 0; ii < "
+             << paramIt->GetName() << ".size(); ++ii )" << EOL;
+        sout << indent << "        {" << EOL;
+        sout << indent << "        "
+             << paramIt->GetName() << "[ii] = parameterArray[static_cast<int>(ii)].as"
+             << conversionIt->second << "();" << EOL;
         sout << indent << "        }" << EOL;
         }
       sout << indent << "      }" << EOL;
@@ -664,21 +664,11 @@ void GenerateSerialization( std::ostream & sout,
       sout << indent << "    Json::Value & parameter = getJsonParameter( \""
            << groupLabel << "\", \""
            << parameterName << "\", parameterGroups );" << EOL;
-      if( cppType.find( "vector" ) == std::string::npos )
+      if( paramIt->GetMultiple() == "false" )
         {
         sout << indent << "    parameter[\"Value\"] = " << paramIt->GetName() << ";" << EOL;
         }
-      else if( cppType.find( "vector<std::vector" ) == std::string::npos )
-        {
-        sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
-        sout << indent << "    for( size_t ii = 0; ii < "
-             << paramIt->GetName() << ".size(); ++ii )" << EOL;
-        sout << indent << "      {" << EOL;
-        sout << indent << "      valueArray.append( " << paramIt->GetName() << "[ii] );" << EOL;
-        sout << indent << "      }" << EOL;
-        sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
-        }
-      else // std::vector<std::vector<float> >
+      else if( cppType.find( "vector<std::vector" ) != std::string::npos )
         {
         sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
         sout << indent << "    for( size_t ii = 0; ii < "
@@ -691,6 +681,16 @@ void GenerateSerialization( std::ostream & sout,
         sout << indent << "        nestedValueArray.append( " << paramIt->GetName() << "[ii][jj] );" << EOL;
         sout << indent << "        }" << EOL;
         sout << indent << "      valueArray.append( nestedValueArray );" << EOL;
+        sout << indent << "      }" << EOL;
+        sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
+        }
+      else
+        {
+        sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
+        sout << indent << "    for( size_t ii = 0; ii < "
+             << paramIt->GetName() << ".size(); ++ii )" << EOL;
+        sout << indent << "      {" << EOL;
+        sout << indent << "      valueArray.append( " << paramIt->GetName() << "[ii] );" << EOL;
         sout << indent << "      }" << EOL;
         sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
         }
