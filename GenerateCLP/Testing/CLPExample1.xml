@@ -135,6 +135,12 @@
       <index>2</index>
       <description>Resampled Moving Image</description>
     </file>
+    <float-vector>
+      <name>CostFunctionProgression</name>
+      <description>Cost function value progression</description>
+      <label>Cost Function Progression</label>
+      <channel>output</channel>
+    </float-vector>
   </parameters>
 
 </executable>
