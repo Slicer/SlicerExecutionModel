@@ -590,13 +590,7 @@ void GenerateDeSerialization( std::ostream & sout,
         errorMessage += cppType;
         throw std::runtime_error( errorMessage.c_str() );
         }
-      if( paramIt->GetMultiple() == "false" )
-        {
-        sout << indent << "    " << paramIt->GetName()
-             << " = parameter[\"Value\"].as" << conversionIt->second
-             << "();" << EOL;
-        }
-      else if( cppType.find( "vector<std::vector" ) != std::string::npos )
+      if( cppType.find( "vector<std::vector" ) != std::string::npos )
         {
         sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
         sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
@@ -613,7 +607,7 @@ void GenerateDeSerialization( std::ostream & sout,
         sout << indent << "          }" << EOL;
         sout << indent << "        }" << EOL;
         }
-      else
+      else if( paramIt->GetMultiple() == "true" || cppType.find( "vector" ) != std::string::npos )
         {
         sout << indent << "      const Json::Value & parameterArray = parameter[\"Value\"];" << EOL;
         sout << indent << "      " << paramIt->GetName() << ".resize( parameterArray.size() );" << EOL;
@@ -624,6 +618,12 @@ void GenerateDeSerialization( std::ostream & sout,
              << paramIt->GetName() << "[ii] = parameterArray[static_cast<int>(ii)].as"
              << conversionIt->second << "();" << EOL;
         sout << indent << "        }" << EOL;
+        }
+      else // not Multiple or a vector argument
+        {
+        sout << indent << "    " << paramIt->GetName()
+             << " = parameter[\"Value\"].as" << conversionIt->second
+             << "();" << EOL;
         }
       sout << indent << "      }" << EOL;
       sout << indent << "    }" << EOL;
@@ -664,11 +664,7 @@ void GenerateSerialization( std::ostream & sout,
       sout << indent << "    Json::Value & parameter = getJsonParameter( \""
            << groupLabel << "\", \""
            << parameterName << "\", parameterGroups );" << EOL;
-      if( paramIt->GetMultiple() == "false" )
-        {
-        sout << indent << "    parameter[\"Value\"] = " << paramIt->GetName() << ";" << EOL;
-        }
-      else if( cppType.find( "vector<std::vector" ) != std::string::npos )
+      if( cppType.find( "vector<std::vector" ) != std::string::npos )
         {
         sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
         sout << indent << "    for( size_t ii = 0; ii < "
@@ -684,7 +680,7 @@ void GenerateSerialization( std::ostream & sout,
         sout << indent << "      }" << EOL;
         sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
         }
-      else
+      else if( paramIt->GetMultiple() == "true" || cppType.find( "vector" ) != std::string::npos )
         {
         sout << indent << "    Json::Value valueArray( Json::arrayValue );" << EOL;
         sout << indent << "    for( size_t ii = 0; ii < "
@@ -693,6 +689,10 @@ void GenerateSerialization( std::ostream & sout,
         sout << indent << "      valueArray.append( " << paramIt->GetName() << "[ii] );" << EOL;
         sout << indent << "      }" << EOL;
         sout << indent << "    parameter[\"Value\"] = valueArray;" << EOL;
+        }
+      else
+        {
+        sout << indent << "    parameter[\"Value\"] = " << paramIt->GetName() << ";" << EOL;
         }
       sout << indent << "    }" << EOL;
       }
