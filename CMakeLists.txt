@@ -174,8 +174,14 @@ include(GenerateSlicerExecutionModelConfig.cmake)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/UseSlicerExecutionModel.cmake COPYONLY)
 
-file(GLOB allscripts "CMake/*")
-foreach(SCRIPT  ${allscripts})
+set(allscripts
+  CMake/FindJsonCpp.cmake
+  CMake/Pre283CMakeParseArguments.cmake
+  CMake/SEMCommandLineLibraryWrapper.cxx
+  CMake/SEMMacroBuildCLI.cmake
+  CMake/SEMToolTestName.cxx.in
+  )
+foreach(SCRIPT ${allscripts})
   get_filename_component(_fileName ${SCRIPT} NAME)
   configure_file(${SCRIPT}
     ${CMAKE_CURRENT_BINARY_DIR}/CMake/${_fileName} COPYONLY IMMEDIATE)
