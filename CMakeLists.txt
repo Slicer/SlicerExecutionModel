@@ -4,6 +4,8 @@ project(SlicerExecutionModel)
 cmake_minimum_required(VERSION 2.8.2)
 #-----------------------------------------------------------------------------
 
+include(CMakeDependentOption)
+
 set(CMAKE_MODULE_PATH ${SlicerExecutionModel_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
 
 if(DEFINED SlicerExecutionModel_INSTALL_BIN_DIR)
@@ -53,9 +55,16 @@ endforeach()
 #-----------------------------------------------------------------------------
 # ParameterSerializer support for ModuleDescriptionParser and GenerateCLP subprojects
 #-----------------------------------------------------------------------------
-option(SlicerExecutionModel_USE_SERIALIZER "Enable ParameterSerializer support for ModuleDescriptionParser and GenerateCLP." OFF)
-if(SlicerExecutionModel_USE_SERIALIZER)
+option(SlicerExecutionModel_USE_JSONCPP "Enable JSON serialization support for GenerateCLP." ON)
+if(SlicerExecutionModel_USE_JSONCPP)
   find_package(JsonCpp REQUIRED)
+  set(GenerateCLP_USE_JSONCPP ON)
+endif()
+cmake_dependent_option(SlicerExecutionModel_USE_SERIALIZER
+  "Enable ParameterSerializer support for ModuleDescriptionParser and GenerateCLP." OFF
+  "SlicerExecutionModel_USE_JSONCPP" OFF)
+if(SlicerExecutionModel_USE_SERIALIZER)
+  find_package(ParameterSerializer REQUIRED)
   set(ModuleDescriptionParser_USE_SERIALIZER ON)
   set(GenerateCLP_USE_SERIALIZER ON)
 endif()
@@ -137,8 +146,11 @@ add_subdirectory(GenerateCLP)
 # Set INCLUDE_DIRS variable
 # --------------------------------------------------------------------------
 set(_additional_include_dirs )
+if(SlicerExecutionModel_USE_JSONCPP)
+  list(APPEND _additional_include_dirs ${JsonCpp_INCLUDE_DIRS})
+endif()
 if(SlicerExecutionModel_USE_SERIALIZER)
-  set(_additional_include_dirs ${ParameterSerializer_INCLUDE_DIRS} ${JsonCpp_INCLUDE_DIRS} )
+  list(APPEND _additional_include_dirs ${ParameterSerializer_INCLUDE_DIRS})
 endif()
 set(${PROJECT_NAME}_INCLUDE_DIRS
   ${ModuleDescriptionParser_INCLUDE_DIRS}
@@ -162,8 +174,14 @@ include(GenerateSlicerExecutionModelConfig.cmake)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/UseSlicerExecutionModel.cmake COPYONLY)
 
-file(GLOB allscripts "CMake/*")
-foreach(SCRIPT  ${allscripts})
+set(allscripts
+  CMake/FindJsonCpp.cmake
+  CMake/Pre283CMakeParseArguments.cmake
+  CMake/SEMCommandLineLibraryWrapper.cxx
+  CMake/SEMMacroBuildCLI.cmake
+  CMake/SEMToolTestName.cxx.in
+  )
+foreach(SCRIPT ${allscripts})
   get_filename_component(_fileName ${SCRIPT} NAME)
   configure_file(${SCRIPT}
     ${CMAKE_CURRENT_BINARY_DIR}/CMake/${_fileName} COPYONLY IMMEDIATE)

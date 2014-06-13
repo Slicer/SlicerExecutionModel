@@ -8,7 +8,7 @@
 set(SlicerExecutionModel_INCLUDE_DIRS_CONFIG ${SlicerExecutionModel_INCLUDE_DIRS})
 
 set(SlicerExecutionModel_LIBRARIES_CONFIG ModuleDescriptionParser)
-if(SlicerExecutionModel_USE_SERIALIZER)
+if(SlicerExecutionModel_USE_JSONCPP)
   set(DEFAULT_SEM_TARGET_LIBRARIES_CONFIG ${JsonCpp_LIBRARIES})
 endif()
 

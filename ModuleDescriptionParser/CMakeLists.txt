@@ -94,11 +94,25 @@ if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
   set(${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT ON)
 endif()
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
-  file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-  list(APPEND headers "${CMAKE_CURRENT_BINARY_DIR}/ModuleDescriptionParserExport.h")
-  install(
-    FILES ${headers} "${CMAKE_CURRENT_BINARY_DIR}/${configure_header_file}"
-    DESTINATION include/${PROJECT_NAME} COMPONENT Development
+  install(FILES
+    BatchMakeUtilities.h
+    BinaryFileDescriptor.h
+    itkSEMModuleDescriptionSerializer.h
+    itkSEMModuleParameterGroupSerializer.h
+    itkSEMModuleParameterSerializer.h
+    JsonSerializationUtilities.h
+    ModuleDescription.h
+    ModuleDescriptionParser.h
+    ModuleDescriptionUtilities.h
+    ModuleFactory.h
+    ModuleLogo.h
+    ModuleParameterGroup.h
+    ModuleParameter.h
+    ModuleProcessInformation.h
+    ${CMAKE_CURRENT_BINARY_DIR}/ModuleDescriptionParserExport.h
+    ${CMAKE_CURRENT_BINARY_DIR}/${configure_header_file}
+    DESTINATION include/${PROJECT_NAME}
+    COMPONENT Development
     )
 endif()
 

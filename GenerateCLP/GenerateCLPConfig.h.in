@@ -27,6 +27,7 @@
  */
 
 #cmakedefine GENERATECLP_USE_MD5
+#cmakedefine GenerateCLP_USE_JSONCPP
 #cmakedefine GenerateCLP_USE_SERIALIZER
 
 #endif
