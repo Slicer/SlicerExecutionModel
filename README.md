@@ -28,8 +28,6 @@ Meta
 License
 -------
 
-Copyright (c) Kitware Inc.
-
 See http://www.slicer.org/copyright/copyright.txt for details.
 
 Unless required by applicable law or agreed to in writing, software
