@@ -1,3 +1,5 @@
+
+
 # The GenerateCLP source tree.
 set(GenerateCLP_INCLUDE_DIRS "@GenerateCLP_INCLUDE_DIRS_CONFIG@")
 set(GenerateCLP_LIBRARY_DIRS "@GenerateCLP_LIBRARY_DIRS_CONFIG@")
@@ -5,10 +7,20 @@ set(GenerateCLP_CMAKE_DIR "@GenerateCLP_CMAKE_DIR_CONFIG@")
 set(GenerateCLP_USE_FILE "@GenerateCLP_USE_FILE_CONFIG@")
 set(GenerateCLP_USE_JSONCPP "@GenerateCLP_USE_JSONCPP@")
 set(GenerateCLP_USE_SERIALIZER "@GenerateCLP_USE_SERIALIZER@")
-set(GENERATECLP_EXE "@GENERATECLP_EXE_CONFIG@")
 set(TCLAP_DIR "@TCLAP_DIR@")
 set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
 set(ITK_DIR "@ITK_DIR_CONFIG@")
+
+find_program(GENERATECLP_EXE
+  NAMES GenerateCLPLauncher GenerateCLP
+  PATHS
+    "@GenerateCLP_CONFIG_DIR@/bin"
+    "@GenerateCLP_CONFIG_DIR@/bin/Release"
+    "@GenerateCLP_CONFIG_DIR@/bin/RelWithDebInfo"
+    "@GenerateCLP_CONFIG_DIR@/bin/MinSizeRel"
+    "@GenerateCLP_CONFIG_DIR@/bin/Debug"
+  NO_DEFAULT_PATH
+  )
 
 # The GenerateCLP targets file.
 if(NOT TARGET GenerateCLP AND EXISTS "@CMAKE_CURRENT_BINARY_DIR@/GenerateCLPTargets.cmake")
