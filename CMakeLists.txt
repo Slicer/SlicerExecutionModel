@@ -67,7 +67,7 @@ endforeach()
 #-----------------------------------------------------------------------------
 # ParameterSerializer support for ModuleDescriptionParser and GenerateCLP subprojects
 #-----------------------------------------------------------------------------
-option(SlicerExecutionModel_USE_JSONCPP "Enable JSON serialization support for GenerateCLP." ON)
+option(SlicerExecutionModel_USE_JSONCPP "Enable JSON serialization support for GenerateCLP." OFF)
 if(SlicerExecutionModel_USE_JSONCPP)
   find_package(JsonCpp REQUIRED)
   set(GenerateCLP_USE_JSONCPP ON)
