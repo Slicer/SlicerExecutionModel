@@ -1,11 +1,22 @@
 
-find_package(ITK REQUIRED)
-include(${ITK_USE_FILE})
-
+#
+# TCLAP
+#
 find_package(TCLAP REQUIRED)
 include(${TCLAP_USE_FILE})
 
+#
+# ModuleDescriptionParser
+#
 find_package(ModuleDescriptionParser REQUIRED)
 include(${ModuleDescriptionParser_USE_FILE})
+
+#
+# ITK - Import ITK targets required by ModuleDescriptionParser
+#
+set(${PROJECT_NAME}_ITK_COMPONENTS
+  ${ModuleDescriptionParser_ITK_COMPONENTS}
+  )
+find_package(ITK 4.5 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
 
 include(${GenerateCLP_CMAKE_DIR}/GenerateCLP.cmake)
