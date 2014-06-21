@@ -29,9 +29,20 @@ endif()
 # --------------------------------------------------------------------------
 # Prerequisites
 # --------------------------------------------------------------------------
-find_package(ITK REQUIRED) ## ITK is required for expat.h
+
+#
+# ITK
+#
+set(${PROJECT_NAME}_ITK_COMPONENTS
+  ITKCommon# For itksys
+  ITKIOXML # For ITKEXPAT
+  )
+find_package(ITK 4.5 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
 include(${ITK_USE_FILE})
 
+#
+# PythonLibs
+#
 if(ModuleDescriptionParser_USE_PYTHON)
   find_package(PythonLibs)
 endif()
@@ -209,8 +220,7 @@ generate_export_header(${lib_name}
   ## )
 
 set(libs
-  ITKEXPAT
-  itksys
+  ${ITK_LIBRARIES}
   )
 
 #
@@ -220,6 +230,7 @@ if(ModuleDescriptionParser_USE_PYTHON)
   list(APPEND libs ${PYTHON_LIBRARIES})
 endif()
 
+# XXX Should this be removed ?
 if(NOT WIN32 AND NOT APPLE AND NOT UNIX)
   list(APPEND libs util pthread)
 endif()

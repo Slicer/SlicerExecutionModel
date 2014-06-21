@@ -35,7 +35,14 @@ include(${ModuleDescriptionParser_USE_FILE})
 find_package(TCLAP REQUIRED)
 include(${TCLAP_USE_FILE})
 
-find_package(ITK REQUIRED)
+#
+# ITK
+#
+set(${PROJECT_NAME}_ITK_COMPONENTS
+  ${ModuleDescriptionParser_ITK_COMPONENTS}
+  )
+find_package(ITK 4.5 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+set(ITK_NO_IO_FACTORY_REGISTER_MANAGER 1) # See Slicer/Libs/ITKFactoryRegistration/CMakeLists.txt
 include(${ITK_USE_FILE})
 
 # --------------------------------------------------------------------------
@@ -116,8 +123,8 @@ target_link_libraries(${executable_name}
   # shared libs.
   ${ParameterSerializer_LIBRARIES}
   ModuleDescriptionParser
-  itksys
-  ITKEXPAT)
+  ${ITK_LIBRARIES}
+  )
 
 # --------------------------------------------------------------------------
 # Install executable
