@@ -228,12 +228,12 @@ main(int argc, char *argv[])
   XML[len] = '\0';
 
   // Parse the module description
-  std::cerr << "GenerateCLP";
+  std::cout << "GenerateCLP";
   for (int i = 1; i < argc; i++)
     {
-    std::cerr << " " << argv[i];
+    std::cout << " " << argv[i];
     }
-  std::cerr << std::endl;
+  std::cout << std::endl;
 
   if (parser.Parse(XML, module))
     {
