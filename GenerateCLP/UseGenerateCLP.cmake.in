@@ -18,5 +18,7 @@ set(${PROJECT_NAME}_ITK_COMPONENTS
   ${ModuleDescriptionParser_ITK_COMPONENTS}
   )
 find_package(ITK 4.5 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+# Allow other projects to specify a different list of COMPONENTS
+set(ITK_FOUND FALSE)
 
 include(${GenerateCLP_CMAKE_DIR}/GenerateCLP.cmake)
