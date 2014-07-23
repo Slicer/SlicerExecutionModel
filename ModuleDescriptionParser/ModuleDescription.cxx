@@ -316,11 +316,14 @@ bool ModuleDescription ::ReadParameterFile(const std::string& filename)
 
     std::string::size_type start = line.find_first_not_of(" \t");
     std::string::size_type stop = line.find_first_of("=", start);
-    
+
     key = line.substr(start, stop-start);
     start = line.find_first_not_of(" \t", stop+1);
-    value = line.substr(start, line.length() - start + 1);
-    
+    if (start != std::string::npos)
+      {
+      value = line.substr(start, line.length() - start + 1);
+      }
+
     trimLeadingAndTrailing(key);
     trimLeadingAndTrailing(value);
     
