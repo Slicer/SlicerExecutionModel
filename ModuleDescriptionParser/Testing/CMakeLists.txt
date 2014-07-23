@@ -1,18 +1,17 @@
-project(ModuleDescriptionParserTesting)
 
-#-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 2.8.2)
-#-----------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+set(INPUT ${CMAKE_CURRENT_SOURCE_DIR}/TestData)
 
-#-----------------------------------------------------------------------------
-# See http://cmake.org/cmake/help/cmake-2-8-docs.html#section_Policies for details
-#-----------------------------------------------------------------------------
-if(POLICY CMP0016)
-  cmake_policy(SET CMP0016 NEW)
-endif()
-if(POLICY CMP0017)
-  cmake_policy(SET CMP0017 OLD)
-endif()
+# --------------------------------------------------------------------------
+# Build tests
+# --------------------------------------------------------------------------
+set(KIT ${PROJECT_NAME})
+create_test_sourcelist(Tests ${KIT}CxxTests.cxx
+  ModuleDescriptionTest.cxx
+  )
+
+add_executable(${KIT}CxxTests ${Tests})
+target_link_libraries(${KIT}CxxTests ${KIT})
 
 # --------------------------------------------------------------------------
 # Build Parser1Test executable
@@ -44,6 +43,11 @@ add_test(
 add_test(
   NAME Parser1Test2
   COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:Parser1Test> ${TEST_DATA}/ParserTest2.xml)
+
+add_test(
+  NAME ModuleDescriptionTest
+  COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:${KIT}CxxTests> ModuleDescriptionTest ${INPUT}
+  )
 
 #add_test(
 #  NAME ModuleFactoryTest
