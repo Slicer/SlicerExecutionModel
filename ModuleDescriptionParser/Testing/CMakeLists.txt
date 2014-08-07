@@ -1,7 +1,3 @@
-
-# --------------------------------------------------------------------------
-set(INPUT ${CMAKE_CURRENT_SOURCE_DIR}/TestData)
-
 # --------------------------------------------------------------------------
 # Build tests
 # --------------------------------------------------------------------------
@@ -34,7 +30,7 @@ target_link_libraries(Parser1Test ModuleDescriptionParser )
 # --------------------------------------------------------------------------
 # Add tests
 # --------------------------------------------------------------------------
-set(TEST_DATA ${ModuleDescriptionParserTesting_SOURCE_DIR}/TestData)
+set(TEST_DATA ${CMAKE_CURRENT_SOURCE_DIR}/TestData)
 add_test(
   NAME Parser1Test1
   COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:Parser1Test> ${TEST_DATA}/ParserTest1.xml
@@ -46,7 +42,7 @@ add_test(
 
 add_test(
   NAME ModuleDescriptionTest
-  COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:${KIT}CxxTests> ModuleDescriptionTest ${INPUT}
+  COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:${KIT}CxxTests> ModuleDescriptionTest ${TEST_DATA}
   )
 
 #add_test(
