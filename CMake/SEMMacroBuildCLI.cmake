@@ -97,7 +97,6 @@ macro(SEMMacroBuildCLI)
 
   set(CLP ${LOCAL_SEM_NAME})
 
-  # SlicerExecutionModel
   find_package(SlicerExecutionModel REQUIRED GenerateCLP)
   include(${GenerateCLP_USE_FILE})
 

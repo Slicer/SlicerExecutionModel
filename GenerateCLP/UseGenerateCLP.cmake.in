@@ -17,7 +17,28 @@ include(${ModuleDescriptionParser_USE_FILE})
 set(${PROJECT_NAME}_ITK_COMPONENTS
   ${ModuleDescriptionParser_ITK_COMPONENTS}
   )
-find_package(ITK 4.5 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+
+#
+# The following is needed because if find_package(ITK COMPONENTS) has already been called,
+# calling it again here will nuke the existing modules list.
+set(ITK_COMPONENTS_TO_FIND ${${PROJECT_NAME}_ITK_COMPONENTS})
+
+if(ITK_FOUND)
+  foreach(x LIBRARIES INCLUDE_DIRS LIBRARY_DIRS)
+    set(PUSH_${x} ${ITK_${x}})
+  endforeach()
+endif()
+
+find_package(ITK 4.5 COMPONENTS ${ITK_COMPONENTS_TO_FIND} REQUIRED)
+
+foreach(x LIBRARIES INCLUDE_DIRS LIBRARY_DIRS)
+  if(PUSH_${x})
+    set(_TEMP_${x} ${ITK_${x}} ${PUSH_${x}})
+    list(REMOVE_DUPLICATES _TEMP_${x})
+    set(ITK_${x} ${_TEMP_${x}})
+  endif()
+endforeach()
+
 # Allow other projects to specify a different list of COMPONENTS
 set(ITK_FOUND FALSE)
 
