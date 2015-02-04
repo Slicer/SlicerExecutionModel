@@ -15,6 +15,7 @@ macro(SEMMacroBuildCLI)
     )
   set(oneValueArgs
     NAME LOGO_HEADER
+    FOLDER
     CLI_XML_FILE
     CLI_LIBRARY_WRAPPER_CXX
     CLI_SHARED_LIBRARY_WRAPPER_CXX # Deprecated
@@ -215,6 +216,15 @@ macro(SEMMacroBuildCLI)
       ARCHIVE DESTINATION ${LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION} COMPONENT Development
       )
   endif()
+
+  # Folder
+  if(NOT DEFINED LOCAL_SEM_FOLDER)
+    set(LOCAL_SEM_FOLDER "${SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX}${LOCAL_SEM_NAME}")
+  endif()
+  foreach(target ${cli_targets})
+    set_target_properties(${target} PROPERTIES FOLDER ${LOCAL_SEM_FOLDER})
+  endforeach()
+  set(${MODULE_NAME}_TARGETS_FOLDER ${LOCAL_SEM_FOLDER})
 
 endmacro()
 
