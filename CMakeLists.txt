@@ -121,6 +121,13 @@ if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX)
 endif()
 
 #-----------------------------------------------------------------------------
+# Define default "cli targets folder prefix" used by SEMMacroBuildCLI.cmake
+#-----------------------------------------------------------------------------
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX)
+  set(SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX "")
+endif()
+
+#-----------------------------------------------------------------------------
 # Testing
 #-----------------------------------------------------------------------------
 include(CTest)
