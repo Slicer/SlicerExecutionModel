@@ -2,7 +2,7 @@
 # Depends on:
 #  CMakeParseArguments.cmake from Cmake 2.8.4 or greater
 #
-if(CMAKE_PATCH_VERSION LESS 3)
+if(CMAKE_VERSION VERSION_LESS 2.8.3)
   include(${SlicerExecutionModel_CMAKE_DIR}/Pre283CMakeParseArguments.cmake)
 else()
   include(CMakeParseArguments)
