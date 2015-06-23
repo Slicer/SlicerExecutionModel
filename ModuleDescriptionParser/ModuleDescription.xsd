@@ -31,6 +31,7 @@
         <xsd:element name="string" type="paramType"/>
         <xsd:element name="string-vector" type="paramType"/>
         <xsd:element name="point" type="pointType"/>
+        <xsd:element name="pointfile" type="pointType"/>
         <xsd:element name="point-vector" type="pointType"/>
         <xsd:element name="region" type="pointType"/>
         <xsd:element name="region-vector" type="pointType"/>
