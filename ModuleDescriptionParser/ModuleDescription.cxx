@@ -384,7 +384,8 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
                   && (*pit).GetTag() != "transform"
                   && (*pit).GetTag() != "table"
                   && (*pit).GetTag() != "measurement"
-                  && (*pit).GetTag() != "point"  // point and region are special
+                  && (*pit).GetTag() != "point"  // point and point file and region are special
+                  && (*pit).GetTag() != "pointfile"
                   && (*pit).GetTag() != "region")))
         {
         rtp << (*pit).GetName() << " = " 
