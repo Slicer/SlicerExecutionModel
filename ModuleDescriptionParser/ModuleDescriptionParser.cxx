@@ -78,7 +78,7 @@ startElement(void *userData, const char *element, const char **attrs)
   ps->LastData[ps->Depth].clear();
 
   // Check for a valid module description file
-  //  
+  //
   if (ps->Depth == 0 && (name != "executable") )
     {
     std::string error("ModuleDescriptionParser Error: <executable> must be the outer most tag. <" + name + std::string("> was found instead."));
@@ -510,6 +510,97 @@ startElement(void *userData, const char *element, const char **attrs)
       parameter->SetCPPType("std::vector<float>");
       parameter->SetArgType("float");
       parameter->SetStringToType("atof");
+      }
+    parameter->SetTag(name);
+    }
+  else if (name == "pointfile")
+    {
+    if (!group || (ps->OpenTags.top() != "parameters"))
+      {
+      std::string error("ModuleDescriptionParser Error: <" + name + "> can only be used inside <parameters> but was found inside <" + ps->OpenTags.top() + ">");
+      if (ps->ErrorDescription.size() == 0)
+        {
+        ps->ErrorDescription = error;
+        ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+        ps->Error = true;
+        }
+      ps->OpenTags.push(name);
+      delete parameter;
+      return;
+      }
+    parameter = new ModuleParameter;
+    int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
+
+    // Parse attribute pairs
+    parameter->SetCPPType("std::string");
+    parameter->SetType("scalar");
+    for (int attr=0; attr < (attrCount / 2); attr++)
+      {
+      if ((strcmp(attrs[2*attr], "multiple") == 0))
+        {
+        if ((strcmp(attrs[2*attr+1], "true") == 0) ||
+            (strcmp(attrs[2*attr+1], "false") == 0))
+          {
+          parameter->SetMultiple(attrs[2*attr+1]);
+          if (strcmp(attrs[2*attr+1], "true") == 0)
+            {
+            parameter->SetCPPType("std::vector<std::string>");
+            parameter->SetArgType("std::string");
+            }
+          }
+        else
+          {
+          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid argument for the attribute \"multiple\". Only \"true\" and \"false\" are accepted.");
+          if (ps->ErrorDescription.size() == 0)
+            {
+            ps->ErrorDescription = error;
+            ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+            ps->Error = true;
+            }
+          ps->OpenTags.push(name);
+          delete parameter;
+          return;
+          }
+        }
+      else if ((strcmp(attrs[2*attr], "fileExtensions") == 0))
+        {
+        parameter->SetFileExtensionsAsString(attrs[2*attr+1]);
+        }
+      else if ((strcmp(attrs[2*attr], "coordinateSystem") == 0))
+        {
+        if ((strcmp(attrs[2*attr+1], "ijk") == 0) ||
+            (strcmp(attrs[2*attr+1], "lps") == 0) ||
+            (strcmp(attrs[2*attr+1], "ras") == 0))
+          {
+          parameter->SetCoordinateSystem(attrs[2*attr+1]);
+          }
+        else
+          {
+          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid coordinate system. Only \"ijk\", \"lps\" and \"ras\" are accepted.");
+          if (ps->ErrorDescription.size() == 0)
+            {
+            ps->ErrorDescription = error;
+            ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+            ps->Error = true;
+            }
+          ps->OpenTags.push(name);
+          delete parameter;
+          return;
+          }
+        }
+      else
+        {
+        std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr]) + "\" is not a valid attribute for \"" + name + "\". Only \"multiple\" and \"fileExtensions\" are accepted.");
+        if (ps->ErrorDescription.size() == 0)
+          {
+          ps->ErrorDescription = error;
+          ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+          ps->Error = true;
+          }
+        ps->OpenTags.push(name);
+        delete parameter;
+        return;
+        }
       }
     parameter->SetTag(name);
     }
@@ -1615,6 +1706,15 @@ endElement(void *userData, const char *element)
     ps->CurrentParameter = 0;
     }
   else if (group && parameter && (name == "point"))
+    {
+    ps->CurrentGroup->AddParameter(*parameter);
+    if (ps->CurrentParameter)
+      {
+      delete ps->CurrentParameter;
+      }
+    ps->CurrentParameter = 0;
+    }
+  else if (group && parameter && (name == "pointfile"))
     {
     ps->CurrentGroup->AddParameter(*parameter);
     if (ps->CurrentParameter)
