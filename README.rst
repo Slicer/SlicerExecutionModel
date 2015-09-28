@@ -1,6 +1,7 @@
 SlicerExecutionModel
 ====================
-
+.. image:: https://circleci.com/gh/LucasGandel/SlicerExecutionModel.svg?style=svg
+    :target: https://circleci.com/gh/LucasGandel/SlicerExecutionModel
 Overview
 --------
 
