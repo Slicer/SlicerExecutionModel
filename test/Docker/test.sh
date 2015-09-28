@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is a script to build the modules and run the test suite in the base
+# This is a script to build the project and run the test suite in the base
 # Docker container.
 
 die() {
