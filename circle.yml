@@ -5,10 +5,10 @@ machine:
 dependencies:
   override:
     - docker info
-    - docker pull lucasgandel/slicerexecutionmodel
+    - docker pull slicer/slicerexecutionmodel
 
 test:
   override:
     - mkdir ~/SlicerExecutionModel-build
-    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build lucasgandel/slicerexecutionmodel /usr/src/SlicerExecutionModel/test/Docker/test.sh
+    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel /usr/src/SlicerExecutionModel/test/Docker/test.sh
 
