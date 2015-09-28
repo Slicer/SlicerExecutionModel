@@ -42,6 +42,6 @@ RUN git clone git://itk.org/ITK.git && \
     -DModule_ITKCommon:BOOL=ON \
     -DModule_ITKIOXML:BOOL=ON \
     ../ITK && \
-  ninja install&& \
+  ninja install && \
   rm -rf ITK ITK-build
 
