@@ -36,6 +36,7 @@ endif()
 set(${PROJECT_NAME}_ITK_COMPONENTS
   ITKCommon# For itksys
   ITKIOXML # For ITKEXPAT
+  ITKExpat
   )
 find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
 include(${ITK_USE_FILE})
