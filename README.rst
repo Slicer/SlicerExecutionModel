@@ -1,7 +1,7 @@
 SlicerExecutionModel
 ====================
-.. image:: https://circleci.com/gh/LucasGandel/SlicerExecutionModel.svg?style=svg
-    :target: https://circleci.com/gh/LucasGandel/SlicerExecutionModel
+.. image:: https://circleci.com/gh/Slicer/SlicerExecutionModel.svg?style=svg
+    :target: https://circleci.com/gh/Slicer/SlicerExecutionModel
 Overview
 --------
 
@@ -40,4 +40,3 @@ limitations under the License.
 
 [fk]: http://help.github.com/forking/
 [is]: http://github.com/Slicer/SlicerExecutionModel/issues
-
