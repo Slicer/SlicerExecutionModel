@@ -1,0 +1,14 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker pull slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off
+
+test:
+  override:
+    - mkdir ~/SlicerExecutionModel-build
+    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off /usr/src/SlicerExecutionModel/test/Docker/test.sh
+
