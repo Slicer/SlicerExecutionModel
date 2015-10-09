@@ -1,6 +1,8 @@
 SlicerExecutionModel
 ====================
 
+[![Circle CI](https://circleci.com/gh/Slicer/SlicerExecutionModel.svg?style=svg)](https://circleci.com/gh/Slicer/SlicerExecutionModel)
+
 Overview
 --------
 
