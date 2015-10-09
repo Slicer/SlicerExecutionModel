@@ -1,5 +1,19 @@
 #!/bin/sh
 
-script_dir="`cd $(dirname $0); pwd`"
+die() {
+  echo "Error: $@" 1>&2
+  exit 1;
+}
 
-docker build -t slicer/slicerexecutionmodel $script_dir
+if [ ! $1 ];
+then
+  die "Empty Image Tag "
+fi
+
+if [ ! $2 ];
+then
+  die "Empty Path to Dockerfile "
+fi
+
+lower_case_tag="`echo $1 | tr "[:upper:]" "[:lower:]" `"
+docker build -t slicer/slicerexecutionmodel:$lower_case_tag $2

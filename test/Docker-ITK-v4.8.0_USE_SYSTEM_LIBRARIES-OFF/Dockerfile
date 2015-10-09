@@ -3,26 +3,17 @@ MAINTAINER Insight Software Consortium <community@itk.org>
 
 RUN apt-get update && apt-get install -y \
   build-essential \
-  curl \
   cmake \
   git \
-  libexpat1-dev \
-  libhdf5-dev \
-  libjpeg-dev \
-  libpng12-dev \
-  libpython3-dev \
-  libtiff5-dev \
   python \
   ninja-build \
   wget \
-  vim \
-  zlib1g-dev
+  vim
 
 RUN mkdir -p /usr/src/SlicerExecutionModel-build
 WORKDIR /usr/src
 
-# 2015-09-24
-ENV ITK_GIT_TAG cf05d9658da5f27c3ad6652028f563b50cf194b2
+ENV ITK_GIT_TAG v4.8.0
 RUN git clone git://itk.org/ITK.git && \
   cd ITK && \
   git checkout ${ITK_GIT_TAG} && \
@@ -38,10 +29,10 @@ RUN git clone git://itk.org/ITK.git && \
     -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON \
     -DITK_LEGACY_REMOVE:BOOL=ON \
     -DITK_BUILD_DEFAULT_MODULES:BOOL=OFF \
-    -DITK_USE_SYSTEM_LIBRARIES:BOOL=ON \
+    -DITK_USE_SYSTEM_LIBRARIES:BOOL=OFF \
     -DModule_ITKCommon:BOOL=ON \
     -DModule_ITKIOXML:BOOL=ON \
+    -DModule_ITKExpat:BOOL=ON \
     ../ITK && \
   ninja install && \
   rm -rf ITK ITK-build
-
