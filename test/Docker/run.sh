@@ -13,4 +13,4 @@ docker run \
   --rm \
   -v $script_dir/../..:/usr/src/SlicerExecutionModel \
     slicer/slicerexecutionmodel:$lower_case_tag \
-      /usr/src/SlicerExecutionModel/test/Docker/test.sh
+      /usr/src/SlicerExecutionModel/test/Docker/test.sh $lower_case_tag
