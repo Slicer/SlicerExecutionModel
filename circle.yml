@@ -1,14 +1,16 @@
 machine:
   services:
     - docker
+  environment:
+    DOCKER_TAG_1: itk-v4.8.0_use_system_libraries-off
 
 dependencies:
   override:
     - docker info
-    - docker pull slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off
+    - docker pull slicer/slicerexecutionmodel:$DOCKER_TAG_1
 
 test:
   override:
     - mkdir ~/SlicerExecutionModel-build
-    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off /usr/src/SlicerExecutionModel/test/Docker/test.sh
+    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:$DOCKER_TAG_1 /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_1
 

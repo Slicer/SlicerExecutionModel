@@ -13,5 +13,6 @@ cd /usr/src/SlicerExecutionModel-build || die "Could not cd into the build direc
 cmake \
   -G Ninja \
   -DCMAKE_BUILD_TYPE:STRING=Release \
+  -DBUILDNAME:STRING=$1 \
     /usr/src/SlicerExecutionModel || die "CMake configuration failed"
 ctest -VV -D Experimental || die "ctest failed"
