@@ -49,8 +49,8 @@ macro(SEMMacroBuildCLI)
       message(STATUS "${curr_opt} = ${LOCAL_SEM_${curr_opt}}")
     endforeach()
   endif()
-  if(LOCAL_SEM_INSTALL_UNPARSED_ARGUMENTS)
-    message(AUTHOR_WARNING "Unparsed arguments given [${LOCAL_SEM_INSTALL_UNPARSED_ARGUMENTS}]")
+  if(LOCAL_SEM_UNPARSED_ARGUMENTS)
+    message(AUTHOR_WARNING "Unparsed arguments given [${LOCAL_SEM_UNPARSED_ARGUMENTS}]")
   endif()
   # --------------------------------------------------------------------------
   # Sanity checks
