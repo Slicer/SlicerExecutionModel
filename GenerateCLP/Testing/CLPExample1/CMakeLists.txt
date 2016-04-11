@@ -26,9 +26,8 @@ endif()
 set(${PROJECT_NAME}_SOURCE ${PROJECT_NAME}.cxx)
 GENERATECLP(${PROJECT_NAME}_SOURCE ${PROJECT_NAME}.xml)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
-if(_additional_link_libraries)
-  target_link_libraries(${PROJECT_NAME} ${_additional_link_libraries})
-endif()
+target_link_libraries(${PROJECT_NAME} ITKEXPAT ${_additional_link_libraries})
+
 #-----------------------------------------------------------------------------
 # Test
 #-----------------------------------------------------------------------------
