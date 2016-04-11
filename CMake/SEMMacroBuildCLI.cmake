@@ -128,6 +128,19 @@ macro(SEMMacroBuildCLI)
 
   add_library(${CLP}Lib ${cli_library_type} ${${CLP}_SOURCE})
   set_target_properties(${CLP}Lib PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint")
+  if(NOT WIN32 AND NOT CYGWIN AND ${cli_library_type} STREQUAL "SHARED")
+    include(GenerateExportHeader)
+    # The generated export header is not used, but this call is required to
+    # define COMPILER_HAS_HIDDEN_VISIBILITY and USE_COMPILER_HIDDEN_VISIBILITY
+    generate_export_header(${CLP}Lib)
+    if(COMPILER_HAS_HIDDEN_VISIBILITY AND USE_COMPILER_HIDDEN_VISIBILITY)
+      set_property(TARGET ${CLP}Lib
+        APPEND_STRING PROPERTY COMPILE_FLAGS " -DMODULE_HIDDEN_VISIBILITY")
+      set_target_properties(${CLP}Lib PROPERTIES CXX_VISIBILITY_PRESET hidden)
+      set_target_properties(${CLP}Lib PROPERTIES C_VISIBILITY_PRESET hidden)
+      set_target_properties(${CLP}Lib PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
+    endif()
+  endif()
   if(DEFINED LOCAL_SEM_TARGET_LIBRARIES)
     target_link_libraries(${CLP}Lib ${LOCAL_SEM_TARGET_LIBRARIES})
   endif()

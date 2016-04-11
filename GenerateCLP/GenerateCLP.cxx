@@ -666,6 +666,8 @@ void GenerateExports(std::ostream &sout)
 {
   sout << "#ifdef _WIN32" << std::endl;
   sout << "#define Module_EXPORT __declspec(dllexport)" << std::endl;
+  sout << "#elif defined(MODULE_HIDDEN_VISIBILITY)" << std::endl;
+  sout << "#define Module_EXPORT __attribute__((visibility(\"default\")))" << std::endl;
   sout << "#else" << std::endl;
   sout << "#define Module_EXPORT" << std::endl;
   sout << "#endif" << std::endl;
