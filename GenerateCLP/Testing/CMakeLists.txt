@@ -11,11 +11,25 @@ configure_file(
 #
 # Add test installing GenerateCLP
 #
+
+set(GenerateCLPTest_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLP-install)
+
+if(CMAKE_CONFIGURATION_TYPES)
+  set(_build_type ${CMAKE_CFG_INTDIR})
+else()
+  set(_build_type ${CMAKE_BUILD_TYPE})
+endif()
 add_test(NAME GenerateCLP-Install
   COMMAND ${CMAKE_COMMAND}
+    -DBUILD_TESTING:BOOL=OFF
+    -DCMAKE_BUILD_TYPE:STRING=${_build_type}
+    -DCMAKE_GENERATOR:STRING=${CMAKE_GENERATOR}
+    -DModuleDescriptionParser_DIR:PATH=${ModuleDescriptionParser_BINARY_DIR}
+    -DTCLAP_DIR:PATH=${TCLAP_BINARY_DIR}
     -DTEST_CMAKE_DIR:PATH=${GenerateCLP_SOURCE_DIR}/Testing/CMake
-    -DTEST_BINARY_DIR:PATH=${GenerateCLP_BINARY_DIR}
-    -DTEST_INSTALL_DIR:PATH=${CMAKE_INSTALL_PREFIX}
+    -DTEST_BINARY_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/GenerateCLP-build
+    -DTEST_INSTALL_DIR:PATH=${GenerateCLPTest_INSTALL_PREFIX}
+    -DTEST_SOURCE_DIR:PATH=${GenerateCLP_SOURCE_DIR}
     -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/GenerateCLP-Install.cmake)
 set_property(TEST GenerateCLP-Install PROPERTY LABELS ${PROJECT_NAME})
 
@@ -35,7 +49,7 @@ macro(generateclp_add_test cliname stepname)
       )
     if("${treetype}" STREQUAL "InstallTree" AND "${stepname}" STREQUAL "Configure")
       list(APPEND _test_args
-        -DGenerateCLP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/GenerateCLP/
+        -DGenerateCLP_DIR:PATH=${GenerateCLPTest_INSTALL_PREFIX}/lib/GenerateCLP/
         )
     endif()
 
