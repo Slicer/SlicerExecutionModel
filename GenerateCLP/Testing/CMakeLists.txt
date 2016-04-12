@@ -9,22 +9,54 @@ configure_file(
   )
 
 #
+# Add test installing GenerateCLP
+#
+add_test(NAME GenerateCLP-Install
+  COMMAND ${CMAKE_COMMAND}
+    -DTEST_CMAKE_DIR:PATH=${GenerateCLP_SOURCE_DIR}/Testing/CMake
+    -DTEST_BINARY_DIR:PATH=${GenerateCLP_BINARY_DIR}
+    -DTEST_INSTALL_DIR:PATH=${CMAKE_INSTALL_PREFIX}
+    -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/GenerateCLP-Install.cmake)
+set_property(TEST GenerateCLP-Install PROPERTY LABELS ${PROJECT_NAME})
+
+#
 # Helper macro
 #
 set(_previous_test "NODEPENDS")
 macro(generateclp_add_test cliname stepname)
-  set(testname GenerateCLPTest-${cliname}-${stepname})
-  add_test(NAME ${testname}
-    COMMAND ${CMAKE_COMMAND}
-    -DTEST_SOURCE_DIR:PATH=${CMAKE_CURRENT_SOURCE_DIR}/${cliname}
-    -DTEST_BINARY_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/${cliname}
-    -DTEST_CONFIGURATION:STRING=$<CONFIGURATION>
-    -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/GenerateCLPTest-${stepname}.cmake)
-  if(NOT ${_previous_test} STREQUAL "NODEPENDS")
-    set_tests_properties(${testname} PROPERTIES DEPENDS ${_previous_test})
+
+  macro(_generateclp_add_tree_test treetype)
+    set(testname GenerateCLPTest-${treetype}-${cliname}-${stepname})
+    set(_test_args
+      -DTEST_TREETYPE:STRING=${treetype}
+      -DTEST_SOURCE_DIR:PATH=${CMAKE_CURRENT_SOURCE_DIR}/${cliname}
+      -DTEST_BINARY_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/${treetype}-${cliname}
+      -DTEST_CONFIGURATION:STRING=$<CONFIGURATION>
+      )
+    if("${treetype}" STREQUAL "InstallTree" AND "${stepname}" STREQUAL "Configure")
+      list(APPEND _test_args
+        -DGenerateCLP_DIR:PATH=${CMAKE_INSTALL_PREFIX}/lib/GenerateCLP/
+        )
+    endif()
+
+    add_test(NAME ${testname}
+      COMMAND ${CMAKE_COMMAND} ${_test_args}
+      -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/GenerateCLPTest-${stepname}.cmake)
+    if(NOT ${_previous_test} STREQUAL "NODEPENDS")
+      set_tests_properties(${testname} PROPERTIES DEPENDS ${_previous_test})
+    endif()
+    set(_previous_test ${testname})
+    set_property(TEST ${testname} PROPERTY LABELS ${PROJECT_NAME})
+  endmacro()
+
+  # Build and install cases
+  _generateclp_add_tree_test(BuildTree)
+  _generateclp_add_tree_test(InstallTree)
+  if(stepname STREQUAL "Configure")
+    # Install case required GenerareCLP install tree
+    set_tests_properties(${testname} PROPERTIES DEPENDS GenerateCLP-Install)
   endif()
-  set(_previous_test ${testname})
-  set_property(TEST ${testname} PROPERTY LABELS ${PROJECT_NAME})
+
 endmacro()
 
 #

@@ -21,6 +21,11 @@ if(NOT EXISTS ${GenerateCLP_BINARY_DIR})
                       "GenerateCLP_BINARY_DIR [${GenerateCLP_BINARY_DIR}]")
 endif()
 
+if(NOT ("${TEST_TREETYPE}" STREQUAL "BuildTree" OR "${TEST_TREETYPE}" STREQUAL "InstallTree"))
+  message(FATAL_ERROR "Variable TEST_TREETYPE is expected to be set to either 'BuildTree' or 'InstallTree'.
+Current value is '${TEST_TREETYPE}'")
+endif()
+
 
 # --------------------------------------------------------------------------
 # Attempt to guess GenerateCLP build type
