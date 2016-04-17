@@ -1518,7 +1518,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
 
   // Wrapup the block and generate the catch block
   sout << "  }" << EOL << std::endl;
-  sout << "catch ( TCLAP::ArgException e )" << EOL << std::endl;
+  sout << "catch ( TCLAP::ArgException & e )" << EOL << std::endl;
   sout << "  {" << EOL << std::endl;
   sout << "  std::cerr << \"error: \" << e.error() << \" for arg \" << e.argId() << std::endl;" << EOL << std::endl;
   sout << "  return ( EXIT_FAILURE );" << EOL << std::endl;

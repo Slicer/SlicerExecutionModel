@@ -306,7 +306,7 @@ try \
      } \
     commandLine.parse ( vargs.size(), (char**) &(vargs[0]) ); \
   } \
-catch ( TCLAP::ArgException e ) \
+catch ( TCLAP::ArgException & e ) \
   { \
   std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl; \
   return ( EXIT_FAILURE ); \

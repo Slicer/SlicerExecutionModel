@@ -413,7 +413,7 @@ void CmdLine::parse(int argc, char** argv)
   if ( requiredCount > _numRequired )
     throw(CmdLineParseException("Too many arguments!"));
 
-  } catch ( ArgException e ) { _output->failure(*this,e); exit(1); }
+  } catch ( ArgException & e ) { _output->failure(*this,e); exit(1); }
 }
 
 bool CmdLine::_emptyCombined(const std::string& s)
