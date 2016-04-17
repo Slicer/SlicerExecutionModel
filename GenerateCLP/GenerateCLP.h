@@ -321,7 +321,6 @@ catch ( TCLAP::ArgException & e ) \
       for (unsigned int _i = 0; _i < logoFilesTemp.size(); _i++) \
         { \
         std::vector<std::string> words; \
-        std::vector<std::string> elements; \
         words.clear(); \
         splitFilenames(logoFilesTemp[_i], words); \
         for (unsigned int _j= 0; _j < words.size(); _j++) \
@@ -369,7 +368,6 @@ catch ( TCLAP::ArgException & e ) \
       for (unsigned int _i = 0; _i < logoFilesTemp.size(); _i++) \
         { \
         std::vector<std::string> words; \
-        std::vector<std::string> elements; \
         words.clear(); \
         splitFilenames(logoFilesTemp[_i], words); \
         for (unsigned int _j= 0; _j < words.size(); _j++) \
