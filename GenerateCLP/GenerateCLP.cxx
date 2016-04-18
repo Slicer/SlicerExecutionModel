@@ -1726,9 +1726,9 @@ bool ComputeFileMD5(const char* source, char* md5out)
 
   // Open files
 #if defined(_WIN32) || defined(__CYGWIN__)
-  itksys_ios::ifstream fin(source, itksys_ios::ios::binary | itksys_ios::ios::in);
+  std::ifstream fin(source, std::ios::binary | std::ios::in);
 #else
-  itksys_ios::ifstream fin(source);
+  std::ifstream fin(source);
 #endif
   if(!fin)
     {
