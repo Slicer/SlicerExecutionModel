@@ -203,29 +203,26 @@ try \
     std::map<std::string,std::string> deprecatedLongFlagAliasMap; \
     /* Remap flag aliases to the true flag */ \
     std::vector<std::string> targs; \
-    std::map<std::string,std::string>::iterator ait; \
-    std::map<std::string,std::string>::iterator dait; \
-    size_t ac; \
-    for (ac=0; ac < static_cast<size_t>(argc); ++ac)  \
+    for (size_t ac=0; ac < static_cast<size_t>(argc); ++ac)  \
        {  \
        if (strlen(argv[ac]) == 2 && argv[ac][0]=='-') \
          { \
          /* short flag case */ \
          std::string tflag(argv[ac], 1, strlen(argv[ac])-1); \
-         ait = flagAliasMap.find(tflag); \
-         dait = deprecatedFlagAliasMap.find(tflag); \
+         std::map<std::string,std::string>::const_iterator ait = flagAliasMap.find(tflag); \
+         std::map<std::string,std::string>::const_iterator dait = deprecatedFlagAliasMap.find(tflag); \
          if (ait != flagAliasMap.end() || dait != deprecatedFlagAliasMap.end()) \
            { \
            if (ait != flagAliasMap.end()) \
              { \
              /* remap the flag */ \
-             targs.push_back("-" + (*ait).second); \
+             targs.push_back(std::string("-") + ait->second); \
              } \
            else if (dait != deprecatedFlagAliasMap.end()) \
              { \
-             std::cout << "Flag \"" << argv[ac] << "\" is deprecated. Please use flag \"-" << (*dait).second << "\" instead. " << std::endl; \
+             std::cout << "Flag \"" << argv[ac] << "\" is deprecated. Please use flag \"-" << dait->second << "\" instead. " << std::endl; \
              /* remap the flag */ \
-             targs.push_back("-" + (*dait).second); \
+             targs.push_back(std::string("-") + dait->second); \
              } \
            } \
          else \
@@ -237,20 +234,20 @@ try \
          { \
          /* long flag case */ \
          std::string tflag(argv[ac], 2, strlen(argv[ac])-2); \
-         ait = longFlagAliasMap.find(tflag); \
-         dait = deprecatedLongFlagAliasMap.find(tflag); \
+         std::map<std::string,std::string>::const_iterator ait = longFlagAliasMap.find(tflag); \
+         std::map<std::string,std::string>::const_iterator dait = deprecatedLongFlagAliasMap.find(tflag); \
          if (ait != longFlagAliasMap.end() || dait != deprecatedLongFlagAliasMap.end()) \
            { \
            if (ait != longFlagAliasMap.end()) \
              { \
              /* remap the flag */ \
-             targs.push_back("--" + (*ait).second); \
+             targs.push_back("--" + ait->second); \
              } \
            else if (dait != deprecatedLongFlagAliasMap.end()) \
              { \
-             std::cout << "Long flag \"" << argv[ac] << "\" is deprecated. Please use long flag \"--" << (*dait).second << "\" instead. " << std::endl; \
+             std::cout << "Long flag \"" << argv[ac] << "\" is deprecated. Please use long flag \"--" << dait->second << "\" instead. " << std::endl; \
              /* remap the flag */ \
-             targs.push_back("--" + (*dait).second); \
+             targs.push_back("--" + dait->second); \
              } \
            } \
          else \
@@ -262,25 +259,25 @@ try \
          { \
          /* short flag case where multiple flags are given at once ala */ \
          /* "ls -ltr" */ \
-         std::string tflag(argv[ac], 1, strlen(argv[ac])-1); \
+         const std::string tflag(argv[ac], 1, strlen(argv[ac])-1); \
          std::string rflag("-"); \
          for (std::string::size_type fi=0; fi < tflag.size(); ++fi) \
            { \
-           std::string tf(tflag, fi, 1); \
-           ait = flagAliasMap.find(tf); \
-           dait = deprecatedFlagAliasMap.find(tf); \
+           const std::string tf(tflag, fi, 1); \
+           std::map<std::string,std::string>::const_iterator ait = flagAliasMap.find(tf); \
+           std::map<std::string,std::string>::const_iterator dait = deprecatedFlagAliasMap.find(tf); \
            if (ait != flagAliasMap.end() || dait != deprecatedFlagAliasMap.end()) \
              { \
              if (ait != flagAliasMap.end()) \
                { \
                /* remap the flag */ \
-               rflag += (*ait).second; \
+               rflag += ait->second; \
                } \
              else if (dait != deprecatedFlagAliasMap.end()) \
                { \
-               std::cout << "Flag \"-" << tf << "\" is deprecated. Please use flag \"-" << (*dait).second << "\" instead. " << std::endl; \
+               std::cout << "Flag \"-" << tf << "\" is deprecated. Please use flag \"-" << dait->second << "\" instead. " << std::endl; \
                /* remap the flag */ \
-               rflag += (*dait).second; \
+               rflag += dait->second; \
                } \
              } \
            else \
@@ -300,13 +297,13 @@ try \
  \
    /* Remap args to a structure that CmdLine::parse() can understand*/ \
    std::vector<char*> vargs; \
-   for (ac = 0; ac < targs.size(); ++ac) \
+   for (size_t ac = 0; ac < targs.size(); ++ac) \
      {  \
      vargs.push_back(const_cast<char *>(targs[ac].c_str())); \
      } \
     commandLine.parse ( vargs.size(), (char**) &(vargs[0]) ); \
   } \
-catch ( TCLAP::ArgException e ) \
+catch ( TCLAP::ArgException & e ) \
   { \
   std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl; \
   return ( EXIT_FAILURE ); \
@@ -324,7 +321,6 @@ catch ( TCLAP::ArgException e ) \
       for (unsigned int _i = 0; _i < logoFilesTemp.size(); _i++) \
         { \
         std::vector<std::string> words; \
-        std::vector<std::string> elements; \
         words.clear(); \
         splitFilenames(logoFilesTemp[_i], words); \
         for (unsigned int _j= 0; _j < words.size(); _j++) \
@@ -372,7 +368,6 @@ catch ( TCLAP::ArgException e ) \
       for (unsigned int _i = 0; _i < logoFilesTemp.size(); _i++) \
         { \
         std::vector<std::string> words; \
-        std::vector<std::string> elements; \
         words.clear(); \
         splitFilenames(logoFilesTemp[_i], words); \
         for (unsigned int _j= 0; _j < words.size(); _j++) \
