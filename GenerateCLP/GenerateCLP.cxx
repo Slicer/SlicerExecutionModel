@@ -1923,7 +1923,6 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
         sout << pit->GetName() << "Temp.size(); _i++)" << EOL << std::endl;
         sout << "        {" << EOL << std::endl;
         sout << "        std::vector<std::string> words;" << EOL << std::endl;
-        sout << "        std::vector<" << pit->GetArgType() << "> elements;" << EOL << std::endl;
         sout << "        words.clear();" << EOL << std::endl;
         if ((*pit).GetTag() == "file")
           {
@@ -1936,6 +1935,7 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
           }
         if (IsVectorOfVectors(*pit))
           {
+          sout << "        std::vector<" << pit->GetArgType() << "> elements;" << EOL << std::endl;
           sout << "        for (unsigned int _j= 0; _j < words.size(); _j++)" << EOL << std::endl;
           sout << "          {" << EOL << std::endl;
           sout << "          elements.push_back("
