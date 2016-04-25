@@ -133,6 +133,11 @@ if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
   set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION lib)
 endif()
 
+
+if(NOT DEFINED SlicerExecutionModel_SHARE_DESTINATION)
+  set(SlicerExecutionModel_SHARE_DESTINATION share)
+endif()
+
 #-----------------------------------------------------------------------------
 # Define default "cli library wrapper" used by SEMMacroBuildCLI.cmake
 #-----------------------------------------------------------------------------
@@ -224,4 +229,7 @@ foreach(SCRIPT ${allscripts})
   get_filename_component(_fileName ${SCRIPT} NAME)
   configure_file(${SCRIPT}
     ${CMAKE_CURRENT_BINARY_DIR}/CMake/${_fileName} COPYONLY IMMEDIATE)
+  install(FILES ${SCRIPT} DESTINATION ${SlicerExecutionModel_SHARE_DESTINATION}
+    COMPONENT Development
+    )
 endforeach()
