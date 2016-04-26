@@ -128,7 +128,7 @@ macro(SEMMacroBuildCLI)
 
   add_library(${CLP}Lib ${cli_library_type} ${${CLP}_SOURCE})
   set_target_properties(${CLP}Lib PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint")
-  if(NOT WIN32 AND NOT CYGWIN AND ${cli_library_type} STREQUAL "SHARED")
+  if(NOT WIN32 AND NOT CYGWIN AND ${cli_library_type} STREQUAL "SHARED" AND ITK_BUILD_SHARED)
     include(GenerateExportHeader)
     # The generated export header is not used, but this call is required to
     # define COMPILER_HAS_HIDDEN_VISIBILITY and USE_COMPILER_HIDDEN_VISIBILITY
