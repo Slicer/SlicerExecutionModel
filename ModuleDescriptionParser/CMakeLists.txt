@@ -128,7 +128,6 @@ if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
     ModuleDescription.h
     ModuleDescriptionParser.h
     ModuleDescriptionUtilities.h
-    ModuleFactory.h
     ModuleLogo.h
     ModuleParameterGroup.h
     ModuleParameter.h
@@ -151,7 +150,6 @@ set(ModuleDescriptionParser_SRCS
   ModuleDescriptionParser.cxx
   ModuleProcessInformation.cxx
   ModuleLogo.cxx
-  ModuleFactory.cxx
   BatchMakeUtilities.cxx
   )
 if(ModuleDescriptionParser_USE_SERIALIZER)
