@@ -399,3 +399,239 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
   rtp.close();
   return true;
 }
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetCategory(const std::string &cat)
+{
+  this->Category = cat;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetCategory() const
+{
+  return this->Category;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetIndex(const std::string &ind)
+{
+  this->Index = ind;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetIndex() const
+{
+  return this->Index;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetTitle(const std::string &title)
+{
+  this->Title = title;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetTitle() const
+{
+  return this->Title;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetDescription(const std::string &description)
+{
+  this->Description = description;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetDescription() const
+{
+  return this->Description;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetVersion(const std::string &version)
+{
+  this->Version = version;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetVersion() const
+{
+  return this->Version;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetDocumentationURL(const std::string &documentationURL)
+{
+  this->DocumentationURL = documentationURL;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetDocumentationURL() const
+{
+  return this->DocumentationURL;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetLicense(const std::string &license)
+{
+  this->License = license;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetLicense() const
+{
+  return this->License;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetAcknowledgements(const std::string &acknowledgements)
+{
+  this->Acknowledgements = acknowledgements;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetAcknowledgements() const
+{
+  return this->Acknowledgements;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetContributor(const std::string &contributor)
+{
+  this->Contributor = contributor;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetContributor() const
+{
+  return this->Contributor;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetType(const std::string &type)
+{
+  if (type == "SharedObjectModule"
+      || type == "CommandLineModule"
+      || type == "PythonModule")
+    {
+    this->Type = type;
+    }
+  else
+    {
+    this->Type = "Unknown";
+    }
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetType() const
+{
+  return this->Type;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetAlternativeType(const std::string &type)
+{
+  if (type == "SharedObjectModule"
+      || type == "CommandLineModule"
+      || type == "PythonModule")
+    {
+    this->AlternativeType = type;
+    }
+  else
+    {
+    this->AlternativeType = "Unknown";
+    }
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetAlternativeType() const
+{
+  return this->AlternativeType;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetTarget(const std::string &target)
+{
+  this->Target = target;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetTarget() const
+{
+  return this->Target;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetAlternativeTarget(const std::string &target)
+{
+  this->AlternativeTarget = target;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetAlternativeTarget() const
+{
+  return this->AlternativeTarget;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetLocation(const std::string &target)
+{
+  this->Location = target;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetLocation() const
+{
+  return this->Location;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetAlternativeLocation(const std::string &target)
+{
+  this->AlternativeLocation = target;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetAlternativeLocation() const
+{
+  return this->AlternativeLocation;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::AddParameterGroup(const ModuleParameterGroup &group)
+{
+  this->ParameterGroups.push_back(group);
+}
+
+//----------------------------------------------------------------------------
+const std::vector<ModuleParameterGroup>&
+ModuleDescription::GetParameterGroups() const
+{
+  return this->ParameterGroups;
+}
+
+//----------------------------------------------------------------------------
+std::vector<ModuleParameterGroup>& ModuleDescription::GetParameterGroups()
+{
+  return this->ParameterGroups;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::
+SetParameterGroups(const std::vector<ModuleParameterGroup>& groups)
+{
+    this->ParameterGroups = groups;
+}
+
+//----------------------------------------------------------------------------
+const ModuleProcessInformation* ModuleDescription::GetProcessInformation() const
+{
+  return &ProcessInformation;
+}
+
+//----------------------------------------------------------------------------
+ModuleProcessInformation* ModuleDescription::GetProcessInformation()
+{
+  return &ProcessInformation;
+}
