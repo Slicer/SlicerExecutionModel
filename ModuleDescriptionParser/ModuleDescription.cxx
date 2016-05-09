@@ -33,9 +33,6 @@ ModuleDescription::ModuleDescription()
   this->Contributor = "Anonymous";
   this->Target = "";
   this->Location = "";
-  this->AlternativeType = "";
-  this->AlternativeTarget = "";
-  this->AlternativeLocation = "";
 
   std::stringstream ss;
   ss << (unsigned short) -1;
@@ -57,9 +54,6 @@ ModuleDescription::ModuleDescription(const ModuleDescription &md)
   this->Type = md.Type;
   this->Target = md.Target;
   this->Location = md.Location;
-  this->AlternativeType = md.AlternativeType;
-  this->AlternativeTarget = md.AlternativeTarget;
-  this->AlternativeLocation = md.AlternativeLocation;
   this->ParameterGroups = md.ParameterGroups;
   this->Logo = md.Logo;
   
@@ -81,9 +75,6 @@ void ModuleDescription::operator=(const ModuleDescription &md)
   this->Type= md.Type;
   this->Target = md.Target;
   this->Location = md.Location;
-  this->AlternativeType= md.AlternativeType;
-  this->AlternativeTarget = md.AlternativeTarget;
-  this->AlternativeLocation = md.AlternativeLocation;
   this->ParameterGroups = md.ParameterGroups;
   this->ProcessInformation = md.ProcessInformation;
   this->Logo = md.Logo;
@@ -104,9 +95,6 @@ std::ostream & operator<<(std::ostream &os, const ModuleDescription &module)
   os << "Type: " << module.GetType() << std::endl;
   os << "Target: " << module.GetTarget() << std::endl;
   os << "Location: " << module.GetLocation() << std::endl;
-  os << "Alternative Type: " << module.GetAlternativeType() << std::endl;
-  os << "Alternative Target: " << module.GetAlternativeTarget() << std::endl;
-  os << "Alternative Location: " << module.GetAlternativeLocation() << std::endl;
   //os << "Logo: " << module.GetLogo() << std::endl;
 
   os << "ProcessInformation: " << std::endl
@@ -530,27 +518,6 @@ const std::string& ModuleDescription::GetType() const
 }
 
 //----------------------------------------------------------------------------
-void ModuleDescription::SetAlternativeType(const std::string &type)
-{
-  if (type == "SharedObjectModule"
-      || type == "CommandLineModule"
-      || type == "PythonModule")
-    {
-    this->AlternativeType = type;
-    }
-  else
-    {
-    this->AlternativeType = "Unknown";
-    }
-}
-
-//----------------------------------------------------------------------------
-const std::string& ModuleDescription::GetAlternativeType() const
-{
-  return this->AlternativeType;
-}
-
-//----------------------------------------------------------------------------
 void ModuleDescription::SetTarget(const std::string &target)
 {
   this->Target = target;
@@ -563,18 +530,6 @@ const std::string& ModuleDescription::GetTarget() const
 }
 
 //----------------------------------------------------------------------------
-void ModuleDescription::SetAlternativeTarget(const std::string &target)
-{
-  this->AlternativeTarget = target;
-}
-
-//----------------------------------------------------------------------------
-const std::string& ModuleDescription::GetAlternativeTarget() const
-{
-  return this->AlternativeTarget;
-}
-
-//----------------------------------------------------------------------------
 void ModuleDescription::SetLocation(const std::string &target)
 {
   this->Location = target;
@@ -584,18 +539,6 @@ void ModuleDescription::SetLocation(const std::string &target)
 const std::string& ModuleDescription::GetLocation() const
 {
   return this->Location;
-}
-
-//----------------------------------------------------------------------------
-void ModuleDescription::SetAlternativeLocation(const std::string &target)
-{
-  this->AlternativeLocation = target;
-}
-
-//----------------------------------------------------------------------------
-const std::string& ModuleDescription::GetAlternativeLocation() const
-{
-  return this->AlternativeLocation;
 }
 
 //----------------------------------------------------------------------------

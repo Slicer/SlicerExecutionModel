@@ -65,16 +65,6 @@ public:
   
   /// Get the type of the module: Unknown, SharedObjectModule, CommandLineModule
   const std::string& GetType() const;
-
-  /// Set the type of an alternative version of the module: Unknown,
-  /// SharedObjectModule, CommandLineModule. The alternative version is
-  /// usually a different type than the primary version.
-  void SetAlternativeType(const std::string &type);
-
-  /// Get the type of an alternative version of the module: Unknown,
-  /// SharedObjectModule, CommandLineModule. The alternative version is
-  /// usually a different type than the primary version.
-  const std::string& GetAlternativeType() const;
   
   /// Set the target for the module.  This is the entry point for a
   /// shared object module and the full command (with path) for an executable.
@@ -84,20 +74,6 @@ public:
   /// shared object module and the full command (with path) for an executable.
   const std::string& GetTarget() const;
 
-  /// Set the alternative target for the module.  This is the entry
-  /// point for a shared object module and the full command (with path)
-  /// for an executable. The alternative target is used for a second version
-  /// of a module (whose type differs from the primary target,
-  /// executable verses shared object).
-  void SetAlternativeTarget(const std::string &target);
-
-  /// Get the alternative target for the module.  This is the entry for a
-  /// shared object module and the full command (with path) for an
-  /// executable. The alternative target is used for a second version
-  /// of a module (whose type differs from the primary target,
-  /// executable verses shared object).
-  const std::string& GetAlternativeTarget() const;
-
   /// Set the location for the module.  This is path to the file (shared
   /// object or executable) for the module.
   void SetLocation(const std::string &target);
@@ -105,16 +81,6 @@ public:
   /// Get the location for the module.  This is path to the file (shared
   /// object or executable) for the module.
   const std::string& GetLocation() const;
-
-  /// Set the alternative location for the module.  This is path to the
-  /// file (shared object or executable) for a second version of the
-  /// module (usually a different type from the primary).
-  void SetAlternativeLocation(const std::string &target);
-
-  /// Get the alternative location for the module.  This is path to the
-  /// file (shared object or executable) for a second version of the
-  /// module (usually a different type from the primary).
-  const std::string& GetAlternativeLocation() const;
   
   void SetLogo(const ModuleLogo& logo);
   const ModuleLogo& GetLogo() const;
@@ -183,9 +149,6 @@ private:
   std::string Type;
   std::string Target;
   std::string Location;
-  std::string AlternativeType;
-  std::string AlternativeTarget;
-  std::string AlternativeLocation;
   std::vector<ModuleParameterGroup> ParameterGroups;  
 
   ModuleProcessInformation ProcessInformation;
