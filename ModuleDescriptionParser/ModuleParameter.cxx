@@ -13,6 +13,7 @@
 ==========================================================================*/
 #include "ModuleParameter.h"
 
+//----------------------------------------------------------------------------
 static void
 splitString (const std::string &text,
              const std::string &separators,
@@ -29,6 +30,7 @@ splitString (const std::string &text,
     }
 }
 
+//----------------------------------------------------------------------------
 ModuleParameter::ModuleParameter()
 {
     this->Tag = "";
@@ -60,6 +62,7 @@ ModuleParameter::ModuleParameter()
     this->DeprecatedLongFlagAliasesAsString = "";
 }
 
+//----------------------------------------------------------------------------
 ModuleParameter::ModuleParameter(const ModuleParameter& parameter)
 {
   this->Tag = parameter.Tag;
@@ -99,6 +102,7 @@ ModuleParameter::ModuleParameter(const ModuleParameter& parameter)
   this->CoordinateSystem = parameter.CoordinateSystem;
 }
 
+//----------------------------------------------------------------------------
 void ModuleParameter::operator=(const ModuleParameter& parameter)
 {
   this->Tag = parameter.Tag;

@@ -19,24 +19,31 @@
 
 namespace {
 
+//----------------------------------------------------------------------------
 void ReadJsonParameter( const Json::Value & parameter, int & value )
 { value = parameter.asInt(); }
 
+//----------------------------------------------------------------------------
 void ReadJsonParameter( const Json::Value & parameter, unsigned int & value )
 { value = parameter.asUInt(); }
 
+//----------------------------------------------------------------------------
 void ReadJsonParameter( const Json::Value & parameter, float & value )
 { value = parameter.asFloat(); }
 
+//----------------------------------------------------------------------------
 void ReadJsonParameter( const Json::Value & parameter, double & value )
 { value = parameter.asDouble(); }
 
+//----------------------------------------------------------------------------
 void ReadJsonParameter( const Json::Value & parameter, bool & value )
 { value = parameter.asBool(); }
 
+//----------------------------------------------------------------------------
 void ReadJsonParameter( const Json::Value & parameter, std::string & value )
 { value = parameter.asString(); }
 
+//----------------------------------------------------------------------------
 template <typename T>
 void ReadJsonParameter( const Json::Value & parameter, std::vector<T> & value )
 {
@@ -48,6 +55,7 @@ void ReadJsonParameter( const Json::Value & parameter, std::vector<T> & value )
     }
 }
 
+//----------------------------------------------------------------------------
 template <typename T>
 void ReadJsonParameter(
   const Json::Value & parameters,
@@ -61,10 +69,12 @@ void ReadJsonParameter(
     }
 }
 
+//----------------------------------------------------------------------------
 template <typename T>
 Json::Value JsonSerialize( const T & value )
 { return value; }
 
+//----------------------------------------------------------------------------
 template <typename T>
 Json::Value JsonSerialize( const std::vector<T> & value )
 {

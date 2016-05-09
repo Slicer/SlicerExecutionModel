@@ -16,6 +16,7 @@
 #define __ModuleLogo_h
 
 #include "ModuleDescriptionParserExport.h"
+
 #include <string>
 
 class ModuleDescriptionParser_EXPORT ModuleLogo

@@ -27,18 +27,21 @@
  * Utility procedures for strings
  *********************/
 
+//----------------------------------------------------------------------------
 static bool
 startsWithValidVariableChar(std::string &s)
 {
   return (s.find_first_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") == 0);
 }
 
+//----------------------------------------------------------------------------
 static bool
 validVariable(std::string &s)
 {
   return (startsWithValidVariableChar(s) && s.find_first_not_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") == std::string::npos);
 }
 
+//----------------------------------------------------------------------------
 /* ParserState: A class to keep state information for the parser. This
  * is passed to the expat code as user data.
  */
@@ -59,9 +62,18 @@ public:
   int ErrorLine;                               /* Error line number */
   int Depth;                                   /* The depth of the tag */
 
-  ParserState():LastData(10),CurrentGroup(0),CurrentParameter(0),Debug(false),Error(false),ErrorLine(-1),Depth(-1){};
+  ParserState():
+    LastData(10),
+    CurrentGroup(0),
+    CurrentParameter(0),
+    Debug(false),
+    Error(false),
+    ErrorLine(-1),
+    Depth(-1)
+  {}
 };
 
+//----------------------------------------------------------------------------
 /***************************
  * expat callbacks to process the XML
  ***************************/
@@ -1538,6 +1550,7 @@ startElement(void *userData, const char *element, const char **attrs)
 
 }
 
+//----------------------------------------------------------------------------
 void
 endElement(void *userData, const char *element)
 {
@@ -2062,6 +2075,7 @@ endElement(void *userData, const char *element)
     }
 }
 
+//----------------------------------------------------------------------------
 bool
 ModuleDescriptionParser::processHiddenAttribute(const char* value, ModuleParameter* parameter, ParserState* ps)
 {
@@ -2084,6 +2098,7 @@ ModuleDescriptionParser::processHiddenAttribute(const char* value, ModuleParamet
     }
 } 
 
+//----------------------------------------------------------------------------
 void
 charData(void *userData, const char *s, int len)
 {
@@ -2095,6 +2110,7 @@ charData(void *userData, const char *s, int len)
     }
 }
 
+//----------------------------------------------------------------------------
 int
 ModuleDescriptionParser::Parse( const std::string& xml, ModuleDescription& description)
 {
@@ -2150,5 +2166,4 @@ ModuleDescriptionParser::Parse( const std::string& xml, ModuleDescription& descr
 
   description = parserState.CurrentDescription;
   return status;
-
 }

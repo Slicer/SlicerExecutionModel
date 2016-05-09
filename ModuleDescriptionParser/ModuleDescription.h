@@ -122,13 +122,11 @@ public:
   const ModuleProcessInformation* GetProcessInformation() const;
   ModuleProcessInformation* GetProcessInformation();
 
-  ///
   /// Read a parameter file. Syntax of file is "name: value" for each
   /// parameter. Returns a bool indicating whether any parameter value
   /// was modified.
   bool ReadParameterFile(const std::string& filename);
 
-  ///
   /// Write a parameter file. By default, the method writes out all
   /// the parameters.  The "withHandlesToBulkParameters" parameter
   /// controls whether the handles to the bulk parameters (image,

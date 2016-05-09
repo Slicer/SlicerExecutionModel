@@ -26,8 +26,8 @@ class ParserState;
 class ModuleDescriptionParser_EXPORT ModuleDescriptionParser
 {
 public:
-  ModuleDescriptionParser() {};
-  ~ModuleDescriptionParser() {};
+  ModuleDescriptionParser() {}
+  ~ModuleDescriptionParser() {}
 
   int Parse( const std::string& xml, ModuleDescription& description);
 
