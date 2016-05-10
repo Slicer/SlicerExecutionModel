@@ -37,6 +37,9 @@ ModuleDescription::ModuleDescription()
   std::stringstream ss;
   ss << (unsigned short) -1;
   ss >> this->Index;
+
+  this->LibraryLoader = 0;
+  this->TargetCallback = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -56,6 +59,8 @@ ModuleDescription::ModuleDescription(const ModuleDescription &md)
   this->Location = md.Location;
   this->ParameterGroups = md.ParameterGroups;
   this->Logo = md.Logo;
+  this->LibraryLoader = md.LibraryLoader;
+  this->TargetCallback = md.TargetCallback;
   
   this->ProcessInformation.Initialize();
 }
@@ -78,6 +83,8 @@ void ModuleDescription::operator=(const ModuleDescription &md)
   this->ParameterGroups = md.ParameterGroups;
   this->ProcessInformation = md.ProcessInformation;
   this->Logo = md.Logo;
+  this->LibraryLoader = md.LibraryLoader;
+  this->TargetCallback = md.TargetCallback;
 }
 
 //----------------------------------------------------------------------------
@@ -526,6 +533,11 @@ void ModuleDescription::SetTarget(const std::string &target)
 //----------------------------------------------------------------------------
 const std::string& ModuleDescription::GetTarget() const
 {
+  // Lazyily set the target
+  if (this->Target.empty() && this->LibraryLoader && this->TargetCallback)
+    {
+    (*TargetCallback)(this->LibraryLoader, *const_cast<ModuleDescription*>(this));
+    }
   return this->Target;
 }
 
@@ -577,4 +589,24 @@ const ModuleProcessInformation* ModuleDescription::GetProcessInformation() const
 ModuleProcessInformation* ModuleDescription::GetProcessInformation()
 {
   return &ProcessInformation;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::
+SetTargetCallback(void* LibraryLoader, TargetCallbackType targetCallback)
+{
+  this->LibraryLoader = LibraryLoader;
+  this->TargetCallback = targetCallback;
+}
+
+//----------------------------------------------------------------------------
+void* ModuleDescription::GetLibraryLoader()const
+{
+  return this->LibraryLoader;
+}
+
+//----------------------------------------------------------------------------
+ModuleDescription::TargetCallbackType ModuleDescription::GetTargetCallback()
+{
+  return this->TargetCallback;
 }

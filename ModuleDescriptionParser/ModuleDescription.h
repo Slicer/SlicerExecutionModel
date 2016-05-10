@@ -133,6 +133,26 @@ public:
   /// geometry, etc.) are writte to the file.
   bool WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters = true);
 
+  /// Define a function used to lazily load the CLI shared library
+  /// and resolve symbols.
+  typedef void (*TargetCallbackType)(void* libraryLoader, ModuleDescription& md);
+
+  /// Set callback function allowing \a libraryLoader to load the CLI shared
+  /// library, resolve symbols and set ModuleDescription properties.
+  ///
+  /// The module descrition properties expected to be set are the \a Target
+  /// and the \a Logo.
+  ///
+  /// The \a Target is the entrypoint, it is usually defined as a string
+  /// of the form "slicer:%p" where "%p" is the address of the
+  /// \a ModuleEntryPoint symbol.
+  ///
+  /// \sa TargetCallbackType, GetLibraryLoader(), GetTargetCallback()
+  /// \sa SetTarget(const std::string &target), SetLogo(const ModuleLogo& logo)
+  void SetTargetCallback(void* libraryLoader, TargetCallbackType targetCallback);
+
+  void* GetLibraryLoader()const;
+  TargetCallbackType GetTargetCallback();
 
 private:
   std::string Title;
@@ -151,6 +171,9 @@ private:
 
   ModuleProcessInformation ProcessInformation;
   ModuleLogo Logo;
+
+  void* LibraryLoader;
+  TargetCallbackType TargetCallback;
 };
 
 ModuleDescriptionParser_EXPORT std::ostream & operator<<(std::ostream &os, const ModuleDescription &module);

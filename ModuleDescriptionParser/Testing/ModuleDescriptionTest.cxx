@@ -11,6 +11,7 @@
 int TestDefaults();
 int TestReadParameterFileWithMissingValue();
 int TestParameterFileWithPointFile();
+int TestTargetCallback();
 
 //---------------------------------------------------------------------------
 namespace
@@ -32,6 +33,7 @@ int ModuleDescriptionTest(int argc, char * argv[])
   CHECK_EXIT_SUCCESS(TestDefaults());
   CHECK_EXIT_SUCCESS(TestReadParameterFileWithMissingValue());
   CHECK_EXIT_SUCCESS(TestParameterFileWithPointFile());
+  CHECK_EXIT_SUCCESS(TestTargetCallback());
 
   return EXIT_SUCCESS;
 }
@@ -59,6 +61,7 @@ int TestDefaults()
   CHECK_STD_STRING(desc.GetContributor(),      "Anonymous");
   CHECK_STD_STRING(desc.GetType(),             "Unknown");
   CHECK_STD_STRING(desc.GetTarget(),           "");
+  CHECK_POINTER(desc.GetLibraryLoader(),       0);
   CHECK_STD_STRING(desc.GetLocation(),         "");
   CHECK_BOOL(desc.HasParameter(""),            false);
   CHECK_BOOL(desc.HasReturnParameters(),       false);
@@ -198,6 +201,52 @@ int TestParameterFileWithPointFile()
               << std::endl;
     return EXIT_FAILURE;
     }
+
+  return EXIT_SUCCESS;
+}
+
+//---------------------------------------------------------------------------
+int TestTargetCallback()
+{
+  struct Loader
+  {
+    Loader():Invoked(0){}
+    static void loadAndResolve(void* libraryLoader, ModuleDescription& desc)
+    {
+      Loader* loader = reinterpret_cast<Loader*>(libraryLoader);
+      loader->Invoked++;
+      desc.SetTarget("loaded-from-callback");
+    }
+    int Invoked;
+  };
+
+  Loader loader;
+  ModuleDescription desc;
+
+  // Without lazy loading
+  desc.SetTarget("loaded");
+  CHECK_STD_STRING(desc.GetTarget(), "loaded");
+  CHECK_INT(loader.Invoked, 0);
+
+  // Invalid library loader
+  desc.SetTargetCallback(0, Loader::loadAndResolve);
+  desc.SetTarget("");
+  CHECK_STD_STRING(desc.GetTarget(), "");
+  CHECK_INT(loader.Invoked, 0);
+
+  // Invalid callback
+  desc.SetTargetCallback(&loader, 0);
+  desc.SetTarget("");
+  CHECK_STD_STRING(desc.GetTarget(), "");
+  CHECK_INT(loader.Invoked, 0);
+
+  // Lazy loading should work
+  desc.SetTargetCallback(&loader, Loader::loadAndResolve);
+  desc.SetTarget("");
+  CHECK_STD_STRING(desc.GetTarget(), "loaded-from-callback");
+  CHECK_STD_STRING(desc.GetTarget(), "loaded-from-callback");
+  CHECK_INT(loader.Invoked, 1);
+
 
   return EXIT_SUCCESS;
 }
