@@ -6,7 +6,12 @@ create_test_sourcelist(Tests ${KIT}CxxTests.cxx
   ModuleDescriptionTest.cxx
   )
 
-add_executable(${KIT}CxxTests ${Tests})
+add_executable(${KIT}CxxTests
+  ModuleDescriptionTestingMacros.h
+  ModuleDescriptionTestingUtilities.cxx
+  ModuleDescriptionTestingUtilities.h
+  ${Tests}
+  )
 target_link_libraries(${KIT}CxxTests ${KIT})
 
 # --------------------------------------------------------------------------

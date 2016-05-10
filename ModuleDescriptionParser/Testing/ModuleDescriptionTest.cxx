@@ -1,14 +1,15 @@
 
 // ModuleDescriptionParser includes
 #include "ModuleDescription.h"
+#include "ModuleDescriptionTestingMacros.h"
 
 // STD includes
 #include <cstdlib>
 #include <string>
 
 //---------------------------------------------------------------------------
-bool TestReadParameterFileWithMissingValue();
-bool TestParameterFileWithPointFile();
+int TestReadParameterFileWithMissingValue();
+int TestParameterFileWithPointFile();
 
 //---------------------------------------------------------------------------
 namespace
@@ -27,21 +28,14 @@ int ModuleDescriptionTest(int argc, char * argv[])
 
   INPUT_DIR = std::string(argv[1]);
 
-  if (!TestReadParameterFileWithMissingValue())
-    {
-    return EXIT_FAILURE;
-    }
-
-  if (!TestParameterFileWithPointFile())
-    {
-    return EXIT_FAILURE;
-    }
+  CHECK_EXIT_SUCCESS(TestReadParameterFileWithMissingValue());
+  CHECK_EXIT_SUCCESS(TestParameterFileWithPointFile());
 
   return EXIT_SUCCESS;
 }
 
 //---------------------------------------------------------------------------
-bool TestReadParameterFileWithMissingValue()
+int TestReadParameterFileWithMissingValue()
 {
   std::string input = INPUT_DIR
       + "/parameter-file-with-missing-value-slicer-issue2712.params";
@@ -68,7 +62,7 @@ bool TestReadParameterFileWithMissingValue()
     std::cerr << "Line " << __LINE__
               << " - Parameters are expected."
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
   if (!desc.ReadParameterFile(input))
@@ -76,7 +70,7 @@ bool TestReadParameterFileWithMissingValue()
     std::cerr << "Line " << __LINE__
               << " - 'SUVMean' set to a new value. Modification are expected."
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
   if (!desc.HasParameter("OutputLabel") || !desc.HasParameter("SUVMean"))
@@ -84,7 +78,7 @@ bool TestReadParameterFileWithMissingValue()
     std::cerr << "Line " << __LINE__
               << " - Problem reading parameters - Parameters are expected."
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
   if (desc.GetParameterDefaultValue("OutputLabel") != "")
@@ -92,7 +86,7 @@ bool TestReadParameterFileWithMissingValue()
     std::cerr << "Line " << __LINE__
               << " - Problem reading parameters - Value is expected to be empty."
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
   if (desc.GetParameterDefaultValue("SUVMean") != "2")
@@ -100,14 +94,14 @@ bool TestReadParameterFileWithMissingValue()
     std::cerr << "Line " << __LINE__
               << " - Problem reading parameters - Value is expected to be '2'."
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
-  return true;
+  return EXIT_SUCCESS;
 }
 
 //---------------------------------------------------------------------------
-bool TestParameterFileWithPointFile()
+int TestParameterFileWithPointFile()
 {
   std::string input = INPUT_DIR
       + "/parameter-file-with-pointfile-slicer-issue2979.params";
@@ -146,7 +140,7 @@ bool TestParameterFileWithPointFile()
     std::cerr << "Line " << __LINE__
               << " - Parameters are expected."
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
   if (!desc.WriteParameterFile(input, true))
     {
@@ -154,7 +148,7 @@ bool TestParameterFileWithPointFile()
               << " - Unable to write parameter file "
               << input
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
   ModuleDescription readDesc;
@@ -165,8 +159,8 @@ bool TestParameterFileWithPointFile()
               << ", but it was reading into an empty description "
               << input
               << std::endl;
-    return false;
+    return EXIT_FAILURE;
     }
 
-  return true;
+  return EXIT_SUCCESS;
 }
