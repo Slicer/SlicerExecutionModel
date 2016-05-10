@@ -15,8 +15,8 @@
 #ifndef __ModuleProcessInformation_h
 #define __ModuleProcessInformation_h
 
-#include <ostream>
 #include <cstring>
+#include <ostream>
 #include <string.h>
 
 #if defined(_WIN32)
@@ -52,15 +52,15 @@ extern "C" {
         StageProgress = 0;
         strcpy(ProgressMessage, "");
         ElapsedTime = 0.0;
-      };
+      }
 
     void SetProgressCallback( void (*fun)(void *), void *who )
       {
         ProgressCallbackFunction = fun;
         ProgressCallbackClientData = who;
-      };
+      }
   };
-};
+}
 
 std::ostream& operator<<(std::ostream &os, const ModuleProcessInformation &p);
     

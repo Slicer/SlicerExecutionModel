@@ -1,6 +1,7 @@
 #include "ModuleDescriptionUtilities.h"
 #include <string>
 
+//----------------------------------------------------------------------------
 void
 replaceSubWithSub(std::string& s, const char *o, const char  *n)
 {
@@ -16,6 +17,7 @@ replaceSubWithSub(std::string& s, const char *o, const char  *n)
     }
 }
 
+//----------------------------------------------------------------------------
 void
 trimLeading(std::string& s, const char* extraneousChars)
 {
@@ -33,6 +35,7 @@ trimLeading(std::string& s, const char* extraneousChars)
     }
 }
 
+//----------------------------------------------------------------------------
 void
 trimTrailing(std::string& s, const char* extraneousChars)
 {
@@ -50,6 +53,7 @@ trimTrailing(std::string& s, const char* extraneousChars)
     }
 }
 
+//----------------------------------------------------------------------------
 void
 trimLeadingAndTrailing(std::string& s, const char* extraneousChars)
 {

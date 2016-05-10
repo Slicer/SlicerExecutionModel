@@ -33,230 +33,64 @@ public:
 
   void operator=(const ModuleDescription &md);
 
-  void SetCategory(const std::string &cat)
-  {
-    this->Category = cat;
-  }
+  void SetCategory(const std::string &cat);
+  const std::string&  GetCategory() const;
 
-  const std::string&  GetCategory() const
-  {
-    return this->Category;
-  }
-
-  void SetIndex(const std::string &ind)
-  {
-    this->Index = ind;
-  }
-
-  const std::string& GetIndex() const
-  {
-    return this->Index;
-  }
+  void SetIndex(const std::string &ind);
+  const std::string& GetIndex() const;
   
-  void SetTitle(const std::string &title)
-  {
-    this->Title = title;
-  }
+  void SetTitle(const std::string &title);
+  const std::string& GetTitle() const;
 
-  const std::string& GetTitle() const
-  {
-    return this->Title;
-  }
+  void SetDescription(const std::string &description);
+  const std::string& GetDescription() const;
 
-  void SetDescription(const std::string &description)
-  {
-    this->Description = description;
-  }
+  void SetVersion(const std::string &version);
+  const std::string& GetVersion() const;
 
-  const std::string& GetDescription() const
-  {
-    return this->Description;
-  }
+  void SetDocumentationURL(const std::string &documentationURL);
+  const std::string& GetDocumentationURL() const;
 
-  void SetVersion(const std::string &version)
-  {
-    this->Version = version;
-  }
+  void SetLicense(const std::string &license);
+  const std::string& GetLicense() const;
 
-  const std::string& GetVersion() const
-  {
-    return this->Version;
-  }
+  void SetAcknowledgements(const std::string &acknowledgements);
+  const std::string& GetAcknowledgements() const;
 
-  void SetDocumentationURL(const std::string &documentationURL)
-  {
-    this->DocumentationURL = documentationURL;
-  }
-
-  const std::string& GetDocumentationURL() const
-  {
-    return this->DocumentationURL;
-  }
-
-  void SetLicense(const std::string &license)
-  {
-    this->License = license;
-  }
-
-  const std::string& GetLicense() const
-  {
-    return this->License;
-  }
-
-  void SetAcknowledgements(const std::string &acknowledgements)
-  {
-    this->Acknowledgements = acknowledgements;
-  }
-
-  const std::string& GetAcknowledgements() const
-  {
-    return this->Acknowledgements;
-  }
-
-  void SetContributor(const std::string &contributor)
-  {
-    this->Contributor = contributor;
-  }
-
-  const std::string& GetContributor() const
-  {
-    return this->Contributor;
-  }
+  void SetContributor(const std::string &contributor);
+  const std::string& GetContributor() const;
 
   /// Set the type of module: Unknown, SharedObjectModule, CommandLineModule
-  void SetType(const std::string &type)
-  {
-    if (type == "SharedObjectModule" 
-        || type == "CommandLineModule"
-        || type == "PythonModule")
-      {
-      this->Type = type;
-      }
-    else
-      {
-      this->Type = "Unknown";
-      }
-  }
-
+  void SetType(const std::string &type);
   
   /// Get the type of the module: Unknown, SharedObjectModule, CommandLineModule
-  const std::string& GetType() const
-  {
-    return this->Type;
-  }
-
-  /// Set the type of an alternative version of the module: Unknown,
-  /// SharedObjectModule, CommandLineModule. The alternative version is
-  /// usually a different type than the primary version.
-  void SetAlternativeType(const std::string &type)
-  {
-    if (type == "SharedObjectModule" 
-        || type == "CommandLineModule"
-        || type == "PythonModule")
-      {
-      this->AlternativeType = type;
-      }
-    else
-      {
-      this->AlternativeType = "Unknown";
-      }
-  }
-
-  
-  /// Get the type of an alternative version of the module: Unknown,
-  /// SharedObjectModule, CommandLineModule. The alternative version is
-  /// usually a different type than the primary version.
-  const std::string& GetAlternativeType() const
-  {
-    return this->AlternativeType;
-  }
+  const std::string& GetType() const;
   
   /// Set the target for the module.  This is the entry point for a
   /// shared object module and the full command (with path) for an executable.
-  void SetTarget(const std::string &target)
-  {
-    this->Target = target;
-  }
+  void SetTarget(const std::string &target);
 
   /// Get the target for the module.  This is the entry point for a
   /// shared object module and the full command (with path) for an executable.
-  const std::string& GetTarget() const
-  {
-    return this->Target;
-  }
-
-  /// Set the alternative target for the module.  This is the entry
-  /// point for a shared object module and the full command (with path)
-  /// for an executable. The alternative target is used for a second version
-  /// of a module (whose type differs from the primary target,
-  /// executable verses shared object).
-  void SetAlternativeTarget(const std::string &target)
-  {
-    this->AlternativeTarget = target;
-  }
-
-  /// Get the alternative target for the module.  This is the entry for a
-  /// shared object module and the full command (with path) for an
-  /// executable. The alternative target is used for a second version
-  /// of a module (whose type differs from the primary target,
-  /// executable verses shared object).
-  const std::string& GetAlternativeTarget() const
-  {
-    return this->AlternativeTarget;
-  }
+  const std::string& GetTarget() const;
 
   /// Set the location for the module.  This is path to the file (shared
   /// object or executable) for the module.
-  void SetLocation(const std::string &target)
-  {
-    this->Location = target;
-  }
+  void SetLocation(const std::string &target);
 
   /// Get the location for the module.  This is path to the file (shared
   /// object or executable) for the module.
-  const std::string& GetLocation() const
-  {
-    return this->Location;
-  }
-
-  /// Set the alternative location for the module.  This is path to the
-  /// file (shared object or executable) for a second version of the
-  /// module (usually a different type from the primary).
-  void SetAlternativeLocation(const std::string &target)
-  {
-    this->AlternativeLocation = target;
-  }
-
-  /// Get the alternative location for the module.  This is path to the
-  /// file (shared object or executable) for a second version of the
-  /// module (usually a different type from the primary).
-  const std::string& GetAlternativeLocation() const
-  {
-    return this->AlternativeLocation;
-  }
+  const std::string& GetLocation() const;
   
   void SetLogo(const ModuleLogo& logo);
   const ModuleLogo& GetLogo() const;
   
-  void AddParameterGroup(const ModuleParameterGroup &group)
-  {
-    this->ParameterGroups.push_back(group);
-  }
+  void AddParameterGroup(const ModuleParameterGroup &group);
 
-  const std::vector<ModuleParameterGroup>& GetParameterGroups() const
-  {
-    return this->ParameterGroups;
-  }
-
-  std::vector<ModuleParameterGroup>& GetParameterGroups()
-  {
-    return this->ParameterGroups;
-  }
+  const std::vector<ModuleParameterGroup>& GetParameterGroups() const;
+  std::vector<ModuleParameterGroup>& GetParameterGroups();
   
-  void SetParameterGroups(const std::vector<ModuleParameterGroup>& groups)
-  {
-      this->ParameterGroups = groups;
-  }
+  void SetParameterGroups(const std::vector<ModuleParameterGroup>& groups);
 
   /// Return true if the module has a parameter matching the \a name.
   /// \sa HasReturnParameters()
@@ -285,25 +119,40 @@ public:
   /// \sa SetParameterDefaultValue()
   std::string GetParameterDefaultValue(const std::string& name) const;
 
-  const ModuleProcessInformation* GetProcessInformation() const
-    {return &ProcessInformation;}
-  
-  ModuleProcessInformation* GetProcessInformation()
-    {return &ProcessInformation;}
+  const ModuleProcessInformation* GetProcessInformation() const;
+  ModuleProcessInformation* GetProcessInformation();
 
-  ///
   /// Read a parameter file. Syntax of file is "name: value" for each
   /// parameter. Returns a bool indicating whether any parameter value
   /// was modified.
   bool ReadParameterFile(const std::string& filename);
 
-  ///
   /// Write a parameter file. By default, the method writes out all
   /// the parameters.  The "withHandlesToBulkParameters" parameter
   /// controls whether the handles to the bulk parameters (image,
   /// geometry, etc.) are writte to the file.
   bool WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters = true);
 
+  /// Define a function used to lazily load the CLI shared library
+  /// and resolve symbols.
+  typedef void (*TargetCallbackType)(void* libraryLoader, ModuleDescription& md);
+
+  /// Set callback function allowing \a libraryLoader to load the CLI shared
+  /// library, resolve symbols and set ModuleDescription properties.
+  ///
+  /// The module descrition properties expected to be set are the \a Target
+  /// and the \a Logo.
+  ///
+  /// The \a Target is the entrypoint, it is usually defined as a string
+  /// of the form "slicer:%p" where "%p" is the address of the
+  /// \a ModuleEntryPoint symbol.
+  ///
+  /// \sa TargetCallbackType, GetLibraryLoader(), GetTargetCallback()
+  /// \sa SetTarget(const std::string &target), SetLogo(const ModuleLogo& logo)
+  void SetTargetCallback(void* libraryLoader, TargetCallbackType targetCallback);
+
+  void* GetLibraryLoader()const;
+  TargetCallbackType GetTargetCallback();
 
 private:
   std::string Title;
@@ -318,13 +167,13 @@ private:
   std::string Type;
   std::string Target;
   std::string Location;
-  std::string AlternativeType;
-  std::string AlternativeTarget;
-  std::string AlternativeLocation;
   std::vector<ModuleParameterGroup> ParameterGroups;  
 
   ModuleProcessInformation ProcessInformation;
   ModuleLogo Logo;
+
+  void* LibraryLoader;
+  TargetCallbackType TargetCallback;
 };
 
 ModuleDescriptionParser_EXPORT std::ostream & operator<<(std::ostream &os, const ModuleDescription &module);

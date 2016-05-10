@@ -18,8 +18,8 @@
 #include "ModuleDescriptionParserExport.h"
 #include "ModuleParameter.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class ModuleDescriptionParser_EXPORT ModuleParameterGroup
 {

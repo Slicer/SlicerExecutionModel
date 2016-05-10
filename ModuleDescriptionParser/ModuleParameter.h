@@ -16,9 +16,9 @@
 
 #include "ModuleDescriptionParserExport.h"
 
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 /** \class ModuleParameter
  *  \brief Class to describe a single parameter to a module.

@@ -8,6 +8,7 @@
 #include <vector>
 #include <stdlib.h>
 
+//----------------------------------------------------------------------------
 std::string GenerateBatchMakeWrapper(const ModuleDescription& module)
 {
   std::ostringstream wrapper;

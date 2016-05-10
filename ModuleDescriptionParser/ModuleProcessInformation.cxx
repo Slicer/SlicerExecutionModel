@@ -13,7 +13,7 @@
 ==========================================================================*/
 #include "ModuleProcessInformation.h"
 
-
+//----------------------------------------------------------------------------
 std::ostream& operator<<(std::ostream &os, const ModuleProcessInformation &p)
 {
   os << "  Abort: " << (short) p.Abort << std::endl;

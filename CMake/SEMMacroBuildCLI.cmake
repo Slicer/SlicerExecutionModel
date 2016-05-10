@@ -206,6 +206,15 @@ macro(SEMMacroBuildCLI)
     ARCHIVE_OUTPUT_DIRECTORY "${LOCAL_SEM_ARCHIVE_OUTPUT_DIRECTORY}"
     )
 
+  # Copy the XML file along side the executable
+  get_filename_component(cli_xml_filename ${cli_xml_file} NAME)
+  add_custom_command(TARGET ${CLP} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      ${cli_xml_file}
+      ${LOCAL_SEM_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${cli_xml_filename}
+    COMMENT "Copying XML file '${cli_xml_filename}' along side the executable"
+    )
+
   if(NOT LOCAL_SEM_NO_INSTALL)
     # Define default install destination if it applies
     foreach(type RUNTIME LIBRARY ARCHIVE)
@@ -228,6 +237,13 @@ macro(SEMMacroBuildCLI)
       LIBRARY DESTINATION ${LOCAL_SEM_INSTALL_LIBRARY_DESTINATION} COMPONENT RuntimeLibraries
       ARCHIVE DESTINATION ${LOCAL_SEM_INSTALL_ARCHIVE_DESTINATION} COMPONENT Development
       )
+
+    # Install the XML file
+    install(FILES ${cli_xml_file}
+      DESTINATION ${LOCAL_SEM_INSTALL_RUNTIME_DESTINATION}
+      COMPONENT RuntimeLibraries
+      )
+
   endif()
 
   # Folder

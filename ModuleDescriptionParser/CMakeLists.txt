@@ -120,7 +120,6 @@ endif()
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
   install(FILES
     BatchMakeUtilities.h
-    BinaryFileDescriptor.h
     itkSEMModuleDescriptionSerializer.h
     itkSEMModuleParameterGroupSerializer.h
     itkSEMModuleParameterSerializer.h
@@ -128,7 +127,6 @@ if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
     ModuleDescription.h
     ModuleDescriptionParser.h
     ModuleDescriptionUtilities.h
-    ModuleFactory.h
     ModuleLogo.h
     ModuleParameterGroup.h
     ModuleParameter.h
@@ -151,7 +149,6 @@ set(ModuleDescriptionParser_SRCS
   ModuleDescriptionParser.cxx
   ModuleProcessInformation.cxx
   ModuleLogo.cxx
-  ModuleFactory.cxx
   BatchMakeUtilities.cxx
   )
 if(ModuleDescriptionParser_USE_SERIALIZER)
@@ -166,37 +163,8 @@ endif()
 # Enable Binary File Descriptor support if available
 # --------------------------------------------------------------------------
 if(USE_BFD)
-  if(NOT WIN32)
-    include(CheckIncludeFile)
-    check_include_file(bfd.h HAVE_BFD_HEADER)
-
-    if(HAVE_BFD_HEADER)
-      # make sure we can build with libbfd
-      message(STATUS "Testing libbfd")
-      try_compile(HAVE_BFD
-        ${CMAKE_CURRENT_BINARY_DIR}/CMake
-        ${CMAKE_CURRENT_SOURCE_DIR}/CMake
-        TestBFD
-        CMAKE_FLAGS
-        -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
-        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        OUTPUT_VARIABLE OUTPUT)
-      message(${OUTPUT})
-
-      if(HAVE_BFD)
-        message(STATUS "Testing libbfd - ok. ModuleFactory will look for global symbols in plugin executables.")
-      else()
-        message(STATUS "Testing libbfd - error.  ModuleFactory will not look for global symbols in plugin executables.")
-      endif()
-
-    endif()
-
-    if(HAVE_BFD)
-      set(ModuleDescriptionParser_SRCS
-        ${ModuleDescriptionParser_SRCS}
-        BinaryFileDescriptor.cxx)
-    endif()
-  endif()
+  message(AUTHOR_WARNING
+    "Option USE_BFD has no effect. BinaryFileDescriptor support has been removed.")
 endif()
 
 # --------------------------------------------------------------------------
@@ -238,10 +206,6 @@ endif()
 
 if(UNIX)
   list(APPEND libs pthread)
-endif()
-
-if(NOT WIN32 AND HAVE_BFD)
-  list(APPEND libs bfd iberty)
 endif()
 
 if(ModuleDescriptionParser_USE_SERIALIZER)

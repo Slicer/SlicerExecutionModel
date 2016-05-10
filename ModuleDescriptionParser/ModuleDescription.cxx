@@ -33,13 +33,13 @@ ModuleDescription::ModuleDescription()
   this->Contributor = "Anonymous";
   this->Target = "";
   this->Location = "";
-  this->AlternativeType = "";
-  this->AlternativeTarget = "";
-  this->AlternativeLocation = "";
 
   std::stringstream ss;
   ss << (unsigned short) -1;
   ss >> this->Index;
+
+  this->LibraryLoader = 0;
+  this->TargetCallback = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -57,11 +57,10 @@ ModuleDescription::ModuleDescription(const ModuleDescription &md)
   this->Type = md.Type;
   this->Target = md.Target;
   this->Location = md.Location;
-  this->AlternativeType = md.AlternativeType;
-  this->AlternativeTarget = md.AlternativeTarget;
-  this->AlternativeLocation = md.AlternativeLocation;
   this->ParameterGroups = md.ParameterGroups;
   this->Logo = md.Logo;
+  this->LibraryLoader = md.LibraryLoader;
+  this->TargetCallback = md.TargetCallback;
   
   this->ProcessInformation.Initialize();
 }
@@ -81,12 +80,11 @@ void ModuleDescription::operator=(const ModuleDescription &md)
   this->Type= md.Type;
   this->Target = md.Target;
   this->Location = md.Location;
-  this->AlternativeType= md.AlternativeType;
-  this->AlternativeTarget = md.AlternativeTarget;
-  this->AlternativeLocation = md.AlternativeLocation;
   this->ParameterGroups = md.ParameterGroups;
   this->ProcessInformation = md.ProcessInformation;
   this->Logo = md.Logo;
+  this->LibraryLoader = md.LibraryLoader;
+  this->TargetCallback = md.TargetCallback;
 }
 
 //----------------------------------------------------------------------------
@@ -104,9 +102,6 @@ std::ostream & operator<<(std::ostream &os, const ModuleDescription &module)
   os << "Type: " << module.GetType() << std::endl;
   os << "Target: " << module.GetTarget() << std::endl;
   os << "Location: " << module.GetLocation() << std::endl;
-  os << "Alternative Type: " << module.GetAlternativeType() << std::endl;
-  os << "Alternative Target: " << module.GetAlternativeTarget() << std::endl;
-  os << "Alternative Location: " << module.GetAlternativeLocation() << std::endl;
   //os << "Logo: " << module.GetLogo() << std::endl;
 
   os << "ProcessInformation: " << std::endl
@@ -398,4 +393,220 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
 
   rtp.close();
   return true;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetCategory(const std::string &cat)
+{
+  this->Category = cat;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetCategory() const
+{
+  return this->Category;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetIndex(const std::string &ind)
+{
+  this->Index = ind;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetIndex() const
+{
+  return this->Index;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetTitle(const std::string &title)
+{
+  this->Title = title;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetTitle() const
+{
+  return this->Title;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetDescription(const std::string &description)
+{
+  this->Description = description;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetDescription() const
+{
+  return this->Description;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetVersion(const std::string &version)
+{
+  this->Version = version;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetVersion() const
+{
+  return this->Version;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetDocumentationURL(const std::string &documentationURL)
+{
+  this->DocumentationURL = documentationURL;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetDocumentationURL() const
+{
+  return this->DocumentationURL;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetLicense(const std::string &license)
+{
+  this->License = license;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetLicense() const
+{
+  return this->License;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetAcknowledgements(const std::string &acknowledgements)
+{
+  this->Acknowledgements = acknowledgements;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetAcknowledgements() const
+{
+  return this->Acknowledgements;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetContributor(const std::string &contributor)
+{
+  this->Contributor = contributor;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetContributor() const
+{
+  return this->Contributor;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetType(const std::string &type)
+{
+  if (type == "SharedObjectModule"
+      || type == "CommandLineModule"
+      || type == "PythonModule")
+    {
+    this->Type = type;
+    }
+  else
+    {
+    this->Type = "Unknown";
+    }
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetType() const
+{
+  return this->Type;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetTarget(const std::string &target)
+{
+  this->Target = target;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetTarget() const
+{
+  // Lazyily set the target
+  if (this->Target.empty() && this->LibraryLoader && this->TargetCallback)
+    {
+    (*TargetCallback)(this->LibraryLoader, *const_cast<ModuleDescription*>(this));
+    }
+  return this->Target;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::SetLocation(const std::string &target)
+{
+  this->Location = target;
+}
+
+//----------------------------------------------------------------------------
+const std::string& ModuleDescription::GetLocation() const
+{
+  return this->Location;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::AddParameterGroup(const ModuleParameterGroup &group)
+{
+  this->ParameterGroups.push_back(group);
+}
+
+//----------------------------------------------------------------------------
+const std::vector<ModuleParameterGroup>&
+ModuleDescription::GetParameterGroups() const
+{
+  return this->ParameterGroups;
+}
+
+//----------------------------------------------------------------------------
+std::vector<ModuleParameterGroup>& ModuleDescription::GetParameterGroups()
+{
+  return this->ParameterGroups;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::
+SetParameterGroups(const std::vector<ModuleParameterGroup>& groups)
+{
+    this->ParameterGroups = groups;
+}
+
+//----------------------------------------------------------------------------
+const ModuleProcessInformation* ModuleDescription::GetProcessInformation() const
+{
+  return &ProcessInformation;
+}
+
+//----------------------------------------------------------------------------
+ModuleProcessInformation* ModuleDescription::GetProcessInformation()
+{
+  return &ProcessInformation;
+}
+
+//----------------------------------------------------------------------------
+void ModuleDescription::
+SetTargetCallback(void* LibraryLoader, TargetCallbackType targetCallback)
+{
+  this->LibraryLoader = LibraryLoader;
+  this->TargetCallback = targetCallback;
+}
+
+//----------------------------------------------------------------------------
+void* ModuleDescription::GetLibraryLoader()const
+{
+  return this->LibraryLoader;
+}
+
+//----------------------------------------------------------------------------
+ModuleDescription::TargetCallbackType ModuleDescription::GetTargetCallback()
+{
+  return this->TargetCallback;
 }

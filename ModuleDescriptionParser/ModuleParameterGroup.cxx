@@ -14,6 +14,7 @@
 
 #include "ModuleParameterGroup.h"
 
+//----------------------------------------------------------------------------
 ModuleParameterGroup
 ::ModuleParameterGroup(const ModuleParameterGroup &parameters)
 {
@@ -23,6 +24,7 @@ ModuleParameterGroup
   this->Advanced = parameters.Advanced;
 }
 
+//----------------------------------------------------------------------------
 void
 ModuleParameterGroup
 ::operator=(const ModuleParameterGroup &parameters)
@@ -33,6 +35,7 @@ ModuleParameterGroup
   this->Advanced = parameters.Advanced;
 }
 
+//----------------------------------------------------------------------------
 std::ostream & operator<<(std::ostream &os, const ModuleParameterGroup &group)
 { 
   os << "  Advanced: " << group.GetAdvanced() << std::endl;

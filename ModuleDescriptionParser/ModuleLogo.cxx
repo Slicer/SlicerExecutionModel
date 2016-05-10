@@ -14,11 +14,13 @@
 
 #include "ModuleLogo.h"
 
+//----------------------------------------------------------------------------
 ModuleLogo::ModuleLogo()
   : Width(0), Height(0), PixelSize(0), BufferLength(0), Options(0), Logo("")
 {
 }
 
+//----------------------------------------------------------------------------
 ModuleLogo::ModuleLogo(const ModuleLogo& logo)
 {
   this->Width = logo.Width;
@@ -29,6 +31,7 @@ ModuleLogo::ModuleLogo(const ModuleLogo& logo)
   this->Logo = logo.Logo;
 }
 
+//----------------------------------------------------------------------------
 void
 ModuleLogo::operator=(const ModuleLogo &logo)
 {
@@ -40,11 +43,13 @@ ModuleLogo::operator=(const ModuleLogo &logo)
   this->Logo = logo.Logo;
 }
 
+//----------------------------------------------------------------------------
 ModuleLogo::~ModuleLogo()
 {
 
 }
 
+//----------------------------------------------------------------------------
 void
 ModuleLogo
 ::SetLogo(char const * logo, int width, int height, int pixelSize, unsigned long bufferLength, int options)
@@ -57,6 +62,7 @@ ModuleLogo
   this->Logo = std::string(logo, bufferLength);
 }
 
+//----------------------------------------------------------------------------
 int
 ModuleLogo
 ::GetWidth() const
@@ -64,6 +70,7 @@ ModuleLogo
   return this->Width;
 }
 
+//----------------------------------------------------------------------------
 int
 ModuleLogo
 ::GetHeight() const
@@ -71,6 +78,7 @@ ModuleLogo
   return this->Height;
 }
 
+//----------------------------------------------------------------------------
 int
 ModuleLogo
 ::GetPixelSize() const
@@ -78,6 +86,7 @@ ModuleLogo
   return this->PixelSize;
 }
 
+//----------------------------------------------------------------------------
 unsigned long
 ModuleLogo
 ::GetBufferLength() const
@@ -85,6 +94,7 @@ ModuleLogo
   return this->BufferLength;
 }
 
+//----------------------------------------------------------------------------
 int
 ModuleLogo
 ::GetOptions() const
@@ -92,6 +102,7 @@ ModuleLogo
   return this->Options;
 }
 
+//----------------------------------------------------------------------------
 const char *
 ModuleLogo
 ::GetLogo() const

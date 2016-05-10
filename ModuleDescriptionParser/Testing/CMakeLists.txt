@@ -6,7 +6,12 @@ create_test_sourcelist(Tests ${KIT}CxxTests.cxx
   ModuleDescriptionTest.cxx
   )
 
-add_executable(${KIT}CxxTests ${Tests})
+add_executable(${KIT}CxxTests
+  ModuleDescriptionTestingMacros.h
+  ModuleDescriptionTestingUtilities.cxx
+  ModuleDescriptionTestingUtilities.h
+  ${Tests}
+  )
 target_link_libraries(${KIT}CxxTests ${KIT})
 
 # --------------------------------------------------------------------------
@@ -15,17 +20,6 @@ target_link_libraries(${KIT}CxxTests ${KIT})
 set(PARSER1TEST_SOURCE Parser1Test.cxx )
 add_executable(Parser1Test ${PARSER1TEST_SOURCE})
 target_link_libraries(Parser1Test ModuleDescriptionParser )
-
-# --------------------------------------------------------------------------
-# Build ModuleFactoryTest executable
-# --------------------------------------------------------------------------
-#set(ModuleFactoryTest_SOURCE ModuleFactoryTest.cxx)
-#add_executable(ModuleFactoryTest ${ModuleFactoryTest_SOURCE})
-#target_link_libraries(ModuleFactoryTest ModuleDescriptionParser )
-
-#include_directories(
-#  ${ModuleDescriptionParser_SOURCE_DIR}
-#  )
 
 # --------------------------------------------------------------------------
 # Add tests
@@ -48,10 +42,3 @@ add_test(
   NAME ModuleDescriptionTest
   COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:${KIT}CxxTests> ModuleDescriptionTest ${TEST_DATA}
   )
-
-#add_test(
-#  NAME ModuleFactoryTest
-#  COMMAND ${Slicer_LAUNCH_COMMAND} $<TARGET_FILE:ModuleFactoryTest>
-#    ${Slicer_BINARY_DIR}/${Slicer_INSTALL_PLUGINS_BIN_DIR}/
-#  )
-
