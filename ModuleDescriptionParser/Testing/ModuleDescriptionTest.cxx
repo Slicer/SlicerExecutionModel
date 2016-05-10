@@ -8,6 +8,7 @@
 #include <string>
 
 //---------------------------------------------------------------------------
+int TestDefaults();
 int TestReadParameterFileWithMissingValue();
 int TestParameterFileWithPointFile();
 
@@ -28,8 +29,44 @@ int ModuleDescriptionTest(int argc, char * argv[])
 
   INPUT_DIR = std::string(argv[1]);
 
+  CHECK_EXIT_SUCCESS(TestDefaults());
   CHECK_EXIT_SUCCESS(TestReadParameterFileWithMissingValue());
   CHECK_EXIT_SUCCESS(TestParameterFileWithPointFile());
+
+  return EXIT_SUCCESS;
+}
+
+//---------------------------------------------------------------------------
+int TestDefaults()
+{
+  ModuleLogo logo;
+  CHECK_INT(logo.GetWidth(),        0);
+  CHECK_INT(logo.GetHeight(),       0);
+  CHECK_INT(logo.GetPixelSize(),    0);
+  CHECK_INT(logo.GetBufferLength(), 0);
+  CHECK_INT(logo.GetOptions(),      0);
+  CHECK_STRING(logo.GetLogo(),      "");
+
+  ModuleDescription desc;
+  CHECK_STD_STRING(desc.GetCategory(),         "Unspecified");
+  CHECK_STD_STRING(desc.GetIndex(),            "65535");
+  CHECK_STD_STRING(desc.GetTitle(),            "Unknown");
+  CHECK_STD_STRING(desc.GetDescription(),      "No description provided");
+  CHECK_STD_STRING(desc.GetVersion(),          "Unspecified");
+  CHECK_STD_STRING(desc.GetDocumentationURL(), "");
+  CHECK_STD_STRING(desc.GetLicense(),          "");
+  CHECK_STD_STRING(desc.GetAcknowledgements(), "Thank you everyone.");
+  CHECK_STD_STRING(desc.GetContributor(),      "Anonymous");
+  CHECK_STD_STRING(desc.GetType(),             "Unknown");
+  CHECK_STD_STRING(desc.GetTarget(),           "");
+  CHECK_STD_STRING(desc.GetLocation(),         "");
+  CHECK_BOOL(desc.HasParameter(""),            false);
+  CHECK_BOOL(desc.HasReturnParameters(),       false);
+  CHECK_INT(desc.GetParameterGroups().size(),  0);
+  CHECK_BOOL(desc.ReadParameterFile(""),       false);
+  CHECK_BOOL(desc.WriteParameterFile(""),      false);
+
+  CHECK_POINTER_DIFFERENT(desc.GetProcessInformation(), 0);
 
   return EXIT_SUCCESS;
 }
