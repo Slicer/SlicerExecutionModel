@@ -1504,7 +1504,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
    sout << "     }" << EOL << std::endl;
 
   // Generate the code to parse the command line
-  sout << "    commandLine.parse ( vargs.size(), (char**) &(vargs[0]) );" << EOL << std::endl;
+  sout << "    commandLine.parse ( static_cast<int>(vargs.size()), (char**) &(vargs[0]) );" << EOL << std::endl;
 
   // Wrapup the block and generate the catch block
   sout << "  }" << EOL << std::endl;

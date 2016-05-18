@@ -301,7 +301,7 @@ try \
      {  \
      vargs.push_back(const_cast<char *>(targs[ac].c_str())); \
      } \
-    commandLine.parse ( vargs.size(), (char**) &(vargs[0]) ); \
+    commandLine.parse ( static_cast<int>(vargs.size()), (char**) &(vargs[0]) ); \
   } \
 catch ( TCLAP::ArgException & e ) \
   { \
