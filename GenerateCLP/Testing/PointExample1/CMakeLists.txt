@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 2.8.6)
 project(PointExample1)
 
 find_package(GenerateCLP NO_MODULE REQUIRED)
