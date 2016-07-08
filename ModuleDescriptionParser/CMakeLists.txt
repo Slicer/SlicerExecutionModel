@@ -189,13 +189,10 @@ if(ModuleDescriptionParser_USE_PYTHON)
   list(APPEND libs ${PYTHON_LIBRARIES})
 endif()
 
-# XXX Should this be removed ?
-if(NOT WIN32 AND NOT APPLE AND NOT UNIX)
-  list(APPEND libs util pthread)
-endif()
-
 if(UNIX)
-  list(APPEND libs pthread)
+  set(CMAKE_THREAD_PREFER_PTHREAD 1)
+  find_package(Threads REQUIRED)
+  list(APPEND libs ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 if(ModuleDescriptionParser_USE_SERIALIZER)
