@@ -176,12 +176,6 @@ set(libs
 # Append extra platform dependent libraries required for linking
 #
 
-if(UNIX)
-  set(CMAKE_THREAD_PREFER_PTHREAD 1)
-  find_package(Threads REQUIRED)
-  list(APPEND libs ${CMAKE_THREAD_LIBS_INIT})
-endif()
-
 if(ModuleDescriptionParser_USE_SERIALIZER)
   list(APPEND libs ${ParameterSerializer_LIBRARIES})
 endif()
