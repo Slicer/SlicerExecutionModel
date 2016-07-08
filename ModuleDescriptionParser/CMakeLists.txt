@@ -31,13 +31,6 @@ set(${PROJECT_NAME}_ITK_COMPONENTS
 find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
 include(${ITK_USE_FILE})
 
-#
-# PythonLibs
-#
-if(ModuleDescriptionParser_USE_PYTHON)
-  find_package(PythonLibs)
-endif()
-
 # --------------------------------------------------------------------------
 # Option(s)
 # --------------------------------------------------------------------------
@@ -82,13 +75,6 @@ set(include_dirs
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   )
-
-if(ModuleDescriptionParser_USE_PYTHON)
-  set(include_dirs ${include_dirs} ${PYTHON_INCLUDE_PATH})
-  if(WIN32)
-    set(include_dirs ${include_dirs} ${PYTHON_INCLUDE_PATH}/../PC)
-  endif()
-endif()
 
 include_directories(${include_dirs})
 
@@ -150,11 +136,15 @@ if(ModuleDescriptionParser_USE_SERIALIZER)
 endif()
 
 # --------------------------------------------------------------------------
-# Enable Binary File Descriptor support if available
+# Author warnings for unavailable features
 # --------------------------------------------------------------------------
-if(USE_BFD)
+if(DEFINED USE_BFD)
   message(AUTHOR_WARNING
     "Option USE_BFD has no effect. BinaryFileDescriptor support has been removed.")
+endif()
+if(DEFINED ModuleDescriptionParser_USE_PYTHON)
+  message(AUTHOR_WARNING
+    "Option ModuleDescriptionParser_USE_PYTHON has no effect. Python support has been removed.")
 endif()
 
 # --------------------------------------------------------------------------
@@ -185,9 +175,6 @@ set(libs
 #
 # Append extra platform dependent libraries required for linking
 #
-if(ModuleDescriptionParser_USE_PYTHON)
-  list(APPEND libs ${PYTHON_LIBRARIES})
-endif()
 
 if(UNIX)
   set(CMAKE_THREAD_PREFER_PTHREAD 1)
