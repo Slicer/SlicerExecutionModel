@@ -507,8 +507,7 @@ const std::string& ModuleDescription::GetContributor() const
 void ModuleDescription::SetType(const std::string &type)
 {
   if (type == "SharedObjectModule"
-      || type == "CommandLineModule"
-      || type == "PythonModule")
+      || type == "CommandLineModule")
     {
     this->Type = type;
     }
