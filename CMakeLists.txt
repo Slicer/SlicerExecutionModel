@@ -1,7 +1,7 @@
 project(SlicerExecutionModel)
 
 #-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 2.8.6)
 #-----------------------------------------------------------------------------
 
 include(CMakeDependentOption)
@@ -195,7 +195,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
 
 set(allscripts
   CMake/FindJsonCpp.cmake
-  CMake/Pre283CMakeParseArguments.cmake
   CMake/SEMCommandLineLibraryWrapper.cxx
   CMake/SEMMacroBuildCLI.cmake
   CMake/SEMToolTestName.cxx.in

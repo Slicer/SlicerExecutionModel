@@ -5,16 +5,6 @@ cmake_minimum_required(VERSION 2.8.6)
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-# See http://cmake.org/cmake/help/cmake-2-8-docs.html#section_Policies for details
-#-----------------------------------------------------------------------------
-if(POLICY CMP0016)
-  cmake_policy(SET CMP0016 NEW)
-endif()
-if(POLICY CMP0017)
-  cmake_policy(SET CMP0017 OLD)
-endif()
-
-#-----------------------------------------------------------------------------
 # Set a default build type if none was specified
 #-----------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -199,13 +189,10 @@ if(ModuleDescriptionParser_USE_PYTHON)
   list(APPEND libs ${PYTHON_LIBRARIES})
 endif()
 
-# XXX Should this be removed ?
-if(NOT WIN32 AND NOT APPLE AND NOT UNIX)
-  list(APPEND libs util pthread)
-endif()
-
 if(UNIX)
-  list(APPEND libs pthread)
+  set(CMAKE_THREAD_PREFER_PTHREAD 1)
+  find_package(Threads REQUIRED)
+  list(APPEND libs ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 if(ModuleDescriptionParser_USE_SERIALIZER)
