@@ -58,6 +58,10 @@ if(NOT DEFINED GenerateCLP_USE_JSONCPP)
   option(GenerateCLP_USE_JSONCPP "Automatic flags are added to serialize and deserialized the parameters." OFF)
   mark_as_advanced(GenerateCLP_USE_JSONCPP)
 endif()
+if(GenerateCLP_USE_JSONCPP)
+  include_directories(${JsonCpp_INCLUDE_DIRS})
+endif()
+
 if(NOT DEFINED GenerateCLP_USE_SERIALIZER)
   option(GenerateCLP_USE_SERIALIZER "Automatic flags are added to dump the json-ld schema for the parameters." OFF)
   mark_as_advanced(GenerateCLP_USE_SERIALIZER)
@@ -121,6 +125,7 @@ target_link_libraries(${executable_name}
   # Appearently windows does not like static libs mixed with shared libs ModuleDescriptionParser-static
   # A different solution will have to be investigated for makeing GenerateCLP work without
   # shared libs.
+  ${JsonCpp_LIBRARIES}
   ${ParameterSerializer_LIBRARIES}
   ModuleDescriptionParser
   ${ITK_LIBRARIES}
