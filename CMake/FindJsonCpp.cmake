@@ -27,7 +27,13 @@ if( JsonCpp_DIR )
     string( REGEX REPLACE "[^=]+[=]" "" _source_dir "${_source_dir_def}" )
     set( _jsoncpp_include_dir "${_source_dir}/include" )
   endif()
-  set( _jsoncpp_library ${JsonCpp_DIR}/lib
+  set( _jsoncpp_library
+    ${JsonCpp_DIR}/src/lib_json
+    ${JsonCpp_DIR}/src/lib_json/Release
+    ${JsonCpp_DIR}/src/lib_json/MinSizeRel
+    ${JsonCpp_DIR}/src/lib_json/RelWithDebInfo
+    ${JsonCpp_DIR}/src/lib_json/Debug
+    ${JsonCpp_DIR}/lib
     ${JsonCpp_DIR}/lib/Release
     ${JsonCpp_DIR}/lib/MinSizeRel
     ${JsonCpp_DIR}/lib/RelWithDebInfo

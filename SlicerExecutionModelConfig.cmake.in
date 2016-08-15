@@ -10,6 +10,7 @@
 #                    SlicerExecutionModel_USE_GENERATECLP
 #                    SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER
 #                    SlicerExecutionModel_USE_TCLAP
+#                    SlicerExecutionModel_USE_JSONCPP
 #                    SlicerExecutionModel_USE_SERIALIZER
 
 # Check if components where passed to find_package()
@@ -27,15 +28,27 @@ if(NOT SlicerExecutionModel_FIND_COMPONENTS)
   set(SlicerExecutionModel_USE_TCLAP 1)
 endif()
 
-# SlicerExecutionModel_USE_SERIALIZER is optional and it must be turned on at
+# SlicerExecutionModel_USE_JSONCPP is optional and it must be turned on at
 # build time.
-if(SlicerExecutionModel_USE_SERIALIZER AND NOT "@SlicerExecutionModel_USE_SERIALIZER@")
+set(SlicerExecutionModel_BUILD_WITH_JSONCPP "@SlicerExecutionModel_USE_JSONCPP@")
+if(SlicerExecutionModel_USE_JSONCPP AND NOT SlicerExecutionModel_BUILD_WITH_JSONCPP)
+  message(SEND_ERROR "The JSONCPP COMPONENT for SlicerExecutionModel was requested,
+  but SlicerExecutionModel was not built with SlicerExecutionModel_USE_JSONCPP ON.")
+endif()
+set(SlicerExecutionModel_USE_JSONCPP ${SlicerExecutionModel_BUILD_WITH_JSONCPP})
+
+# SlicerExecutionModel_USE_SERIALIZER is optional and it must be turned on at
+# build time. It also depends on SlicerExecutionModel_USE_JSONCPP.
+set(SlicerExecutionModel_BUILD_WITH_SERIALIZER "@SlicerExecutionModel_USE_SERIALIZER@")
+if(SlicerExecutionModel_USE_SERIALIZER AND NOT SlicerExecutionModel_BUILD_WITH_SERIALIZER)
   message(SEND_ERROR "The SERIALIZER COMPONENT for SlicerExecutionModel was requested,
   but SlicerExecutionModel was not built with SlicerExecutionModel_USE_SERIALIZER ON.")
 endif()
-set(SlicerExecutionModel_USE_SERIALIZER "@SlicerExecutionModel_USE_SERIALIZER@")
-if(SlicerExecutionModel_USE_SERIALIZER)
-  find_package(ParameterSerializer REQUIRED)
+set(SlicerExecutionModel_USE_SERIALIZER ${SlicerExecutionModel_BUILD_WITH_SERIALIZER})
+if(SlicerExecutionModel_USE_SERIALIZER AND NOT SlicerExecutionModel_USE_JSONCPP)
+  message(SEND_ERROR "The SERIALIZER COMPONENT for SlicerExecutionModel was requested,
+  but SlicerExecutionModel it depends on the JSONCPP component.
+  Make sure SlicerExecutionModel_USE_JSONCPP is ON.")
 endif()
 
 # Set SlicerExecutionModel variables
@@ -127,6 +140,8 @@ endif()
 set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
 set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
 set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
+set(JsonCpp_DIR "@JsonCpp_DIR@")
+set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
 
 #
 # Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated 
@@ -142,6 +157,20 @@ endif()
 
 if(SlicerExecutionModel_USE_TCLAP)
   find_package(TCLAP REQUIRED)
+endif()
+
+if(SlicerExecutionModel_USE_JSONCPP)
+  # Add FindJsonCpp.cmake to module path
+  set(CMAKE_MODULE_PATH ${SlicerExecutionModel_CMAKE_DIR} ${CMAKE_MODULE_PATH})
+  find_package(JsonCpp REQUIRED)
+
+  if(WIN32)
+    add_definitions(-DJSON_DLL)
+  endif()
+endif()
+
+if(SlicerExecutionModel_USE_SERIALIZER)
+  find_package(ParameterSerializer REQUIRED)
 endif()
 
 set(SlicerExecutionModel_LIBRARY_DIRS
