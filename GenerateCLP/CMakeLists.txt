@@ -164,11 +164,13 @@ set(GenerateCLP_FORWARD_DIR_BUILD "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 set(GenerateCLP_FORWARD_PATH_BUILD " \\
    \".\" CONFIG_DIR_POST, \\
    \"${ITK_DIR}/bin\" CONFIG_DIR_POST, \\
+   \"${JsonCpp_DIR}/src/lib_json\" CONFIG_DIR_POST, \\
    \"${ModuleDescriptionParser_DIR}/bin\" CONFIG_DIR_POST \\
 ")
 set(GenerateCLP_FORWARD_PATH_INSTALL " \\
    \".\", \\
    \"${ITK_DIR}/bin\", \\
+   \"${JsonCpp_DIR}/src/lib_json\", \\
    \"${ModuleDescriptionParser_DIR}/bin\" \\
 ")
 set(GenerateCLP_FORWARD_EXE GenerateCLP)
