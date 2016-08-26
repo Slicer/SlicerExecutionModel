@@ -38,6 +38,7 @@ set(TEMP ${PROJECT_BINARY_DIR}/Testing/Temporary)
 file(MAKE_DIRECTORY ${TEMP})
 
 if(GenerateCLP_USE_SERIALIZER)
+  # Test normal command line exec + serialization at the end
   add_test(NAME GenerateCLPSerializer-${PROJECT_NAME}-Test1
     COMMAND $<TARGET_FILE:${PROJECT_NAME}>
     --spatialsamples 3324
@@ -53,25 +54,23 @@ if(GenerateCLP_USE_SERIALIZER)
     WORKING_DIRECTORY ${TEMP}
     )
 
+  # Test deserialization with no other args
   add_test(NAME GenerateCLPSerializer-${PROJECT_NAME}-Test2
     COMMAND $<TARGET_FILE:${PROJECT_NAME}>
     --deserialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test1.json
     --serialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test2.json
-    2
-    Head.mha
-    ProgrammingHead.mha
-    ShrunkHead.mha
     WORKING_DIRECTORY ${TEMP}
     )
   set_tests_properties( GenerateCLPSerializer-${PROJECT_NAME}-Test2
     PROPERTIES DEPENDS GenerateCLPSerializer-${PROJECT_NAME}-Test1)
 
+  # Test with command line (flagged) args overwriting JSON args
   add_test(NAME GenerateCLPSerializer-${PROJECT_NAME}-Test3
     COMMAND $<TARGET_FILE:${PROJECT_NAME}>
     --deserialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test1.json
     --serialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test3.json
-    --spatialsamples 2112
-    --learningrate 0.001,0.001,0.0005,0.0003
+    -s 2112
+    -l 0.001,0.001,0.0005,0.0003
     2
     Head.mha
     ProgrammingHead.mha
@@ -80,4 +79,29 @@ if(GenerateCLP_USE_SERIALIZER)
     )
   set_tests_properties( GenerateCLPSerializer-${PROJECT_NAME}-Test3
     PROPERTIES DEPENDS GenerateCLPSerializer-${PROJECT_NAME}-Test1)
+
+  # Test with command line (positionnal) args overwriting JSON args
+  add_test(NAME GenerateCLPSerializer-${PROJECT_NAME}-Test4
+    COMMAND $<TARGET_FILE:${PROJECT_NAME}>
+    --deserialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test1.json
+    --serialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test4.json
+    5
+    OtherHead.mha
+    OtherProgrammingHead.mha
+    OtherShrunkHead.mha
+    WORKING_DIRECTORY ${TEMP}
+    )
+  set_tests_properties( GenerateCLPSerializer-${PROJECT_NAME}-Test4
+    PROPERTIES DEPENDS GenerateCLPSerializer-${PROJECT_NAME}-Test1)
+
+  # Test argument flag collision
+  add_test(NAME GenerateCLPSerializer-${PROJECT_NAME}-Test5
+    COMMAND $<TARGET_FILE:${PROJECT_NAME}>
+    --deserialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test1.json
+    --serialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test5.json
+    --translationscale 30
+    WORKING_DIRECTORY ${TEMP}
+    )
+  set_tests_properties( GenerateCLPSerializer-${PROJECT_NAME}-Test5
+    PROPERTIES DEPENDS GenerateCLPSerializer-${PROJECT_NAME}-Test1 WILL_FAIL ON)
 endif()

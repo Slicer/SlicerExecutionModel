@@ -172,6 +172,10 @@ void GeneratePluginProcedures(std::ostream &, std::vector<std::string> &);
 void GenerateLOGO(std::ostream &, std::vector<std::string> &);
 void GenerateXML(std::ostream &);
 
+/* Generate the code that uses TCLAP to declare the parameters.
+*/
+void GenerateDeclare(std::ostream &, ModuleDescription &);
+
 /* Generate the code that uses TCLAP to parse the command line
  * arguments.
  */
@@ -322,16 +326,6 @@ main(int argc, char *argv[])
   ModuleParameterGroup serializationGroup;
   serializationGroup.SetLabel("Parameter Serialization");
 
-  ModuleParameter parametersDeSerialize;
-  parametersDeSerialize.SetTag("file");
-  parametersDeSerialize.SetCPPType("std::string");
-  parametersDeSerialize.SetName("parametersDeSerialize");
-  parametersDeSerialize.SetLongFlag("deserialize");
-  parametersDeSerialize.SetDescription("Restore the module's parameters that were previously archived.");
-  parametersDeSerialize.SetDefault("");
-  parametersDeSerialize.SetChannel("input");
-  serializationGroup.AddParameter(parametersDeSerialize);
-
   ModuleParameter parametersSerialize;
   parametersSerialize.SetTag("file");
   parametersSerialize.SetCPPType("std::string");
@@ -344,7 +338,7 @@ main(int argc, char *argv[])
 
   module.AddParameterGroup(serializationGroup);
 #endif // GenerateCLP_USE_JSONCPP
-
+  GenerateDeclare(sout, module);
   GenerateTCLAP(sout, module);
   GenerateTCLAPAssignment(sout, module, true);
   GenerateEchoArgs(sout, module);
@@ -506,18 +500,23 @@ void GenerateDeSerialization( std::ostream & sout,
   const ModuleDescription & module )
 {
   MacroWriter w(sout, "GENERATE_DESERIALIZATION");
-  w | "if( parametersDeSerializeArg.isSet() )"
+
+  w | "if (argc >= 2)"
     | "  {"
-    | "  std::ifstream fStream( parametersDeSerializeArg.getValue().c_str() );"
-    | "  if( !fStream.is_open() )"
+    | "  for (int i = 0; i < argc; ++i)"
     | "    {"
-    | "    std::cerr << \"Could not open file: \" << parametersDeSerializeArg.getValue() << \" for writing.\" << std::endl;"
-    | "    return EXIT_FAILURE;"
-    | "    }"
-    | "  Json::Value root;"
-    | "  Json::Reader reader;"
-    | "  reader.parse( fStream, root );"
-    | "  const Json::Value & parameters = root[\"Parameters\"];";
+    | "    if (strcmp(argv[i],\"--deserialize\") == 0)"
+    | "      {"
+    | "      std::ifstream fStream( argv[i+1] );"
+    | "      if( !fStream.is_open() )"
+    | "        {"
+    | "        std::cerr << \"Could not open file: \" << argv[i+1] << \" for writing.\" << std::endl;"
+    | "        return EXIT_FAILURE;"
+    | "        }"
+    | "      Json::Value root;"
+    | "      Json::Reader reader;"
+    | "      reader.parse( fStream, root );"
+    | "      const Json::Value & parameters = root[\"Parameters\"];";
 
   typedef std::vector<ModuleParameterGroup> ModuleParameterGroupsType;
   const ModuleParameterGroupsType & parameterGroups = module.GetParameterGroups();
@@ -535,13 +534,64 @@ void GenerateDeSerialization( std::ostream & sout,
       // Use LongFlag if present, Name otherwise
       const std::string & parameterName = paramIt->GetName();
 
-      w | "  ReadJsonParameter( parameters, \""
-           + groupLabel + "\", \""
-           + parameterName + "\", "
-           + paramIt->GetName()
-           + " );";
+      if (paramIt->IsReturnParameter())
+        {
+        continue;
+        }
+
+      w | "      if (!parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"].isNull())"
+        | "        {";
+      std::string flag = "";
+      if (!paramIt->GetFlag().empty())
+        {
+        flag = "-" + paramIt->GetFlag();
+        }
+      else if (!paramIt->GetLongFlag().empty())
+        {
+        flag = "--" + paramIt->GetLongFlag();
+        }
+
+      if (flag != "")
+        {
+        if (paramIt->GetCPPType() == "bool")
+          {
+          w | "        if (parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"].asBool())"
+            | "          {"
+            | "          deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
+            | "          }";
+          }
+        else
+          {
+          w | "        deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
+            | "        Json::Value param = parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"];"
+            | "        std::string value = \"\";"
+            | "        if (param.isArray())"
+            | "          {"
+            | "          for (unsigned int i = 0; i < param.size(); ++i)"
+            | "            {"
+            | "            value += param[i].asString();"
+            | "            if (i < param.size() - 1)"
+            | "              {"
+            | "              value += \", \";"
+            | "              }"
+            | "            }"
+            | "          }"
+            | "        else"
+            | "          {"
+            | "          value = param.asString();"
+            | "          }"
+            | "        deserializedVectorFlaggedArgs.push_back(value);";
+          }
+        }
+      else
+        {
+        w | "        deserializedVectorPositionalArgs.push_back(parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"].asString());";
+        }
+      w | "        }";
       }
     }
+  w | "      }";
+  w | "    }";
   w | "  }";
 }
 
@@ -914,17 +964,10 @@ void GenerateEchoArgs(std::ostream &sout, ModuleDescription &module)
   sout << "}" << std::endl;
 }
 
-void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
-{
-  GenerateTCLAPParse(sout, module);
-  GenerateTCLAPAssignment(sout, module);
-  sout << "#define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT" << std::endl;
-}
-
-void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
+void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
 {
   std::string EOL(" \\");
-  sout << "#define GENERATE_TCLAP_PARSE \\" << std::endl;
+  sout << "#define GENERATE_DECLARE \\" << std::endl;
 
   ModuleParameterGroup autoParameters;
 
@@ -972,10 +1015,66 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
 
   // Add the parameter group to the module
   module.AddParameterGroup(autoParameters);
-  
-  // First pass generates argument declarations
+
+#ifdef GenerateCLP_USE_JSONCPP
+  // Add the deserialize argument to the serialization group
+  ModuleParameter parametersDeSerialize;
+  parametersDeSerialize.SetTag("file");
+  parametersDeSerialize.SetCPPType("std::string");
+  parametersDeSerialize.SetName("parametersDeSerialize");
+  parametersDeSerialize.SetLongFlag("deserialize");
+  parametersDeSerialize.SetDescription("Restore the module's parameters that were previously archived.");
+  parametersDeSerialize.SetDefault("");
+  parametersDeSerialize.SetChannel("input");
+
+  // Find the serialization group and add to it.
+  std::vector<ModuleParameterGroup>::iterator groupsIt;
+  for (groupsIt = module.GetParameterGroups().begin();
+    groupsIt != module.GetParameterGroups().end(); ++groupsIt)
+    {
+    if (groupsIt->GetLabel() == "Parameter Serialization")
+      {
+      groupsIt->AddParameter(parametersDeSerialize);
+      break;
+      }
+    }
+#endif
+
+  sout << "    /* These two vectors are used to store the JSON deserialized value */" << EOL << std::endl;
+  sout << "    /* that are then compiled with the command line. */" << EOL << std::endl;
+  sout << "    std::vector< std::string > deserializedVectorFlaggedArgs;" << EOL << std::endl;
+  sout << "    std::vector< std::string > deserializedVectorPositionalArgs;" << EOL << std::endl;
+  sout << EOL << std::endl;
+  sout << "    /* This vector is used to look up if a flag requires an argument after it. */" << EOL << std::endl;
+  sout << "    /* This is used to differentiate between: */" << EOL << std::endl;
+  sout << "    /* ./myExec --boolFlag /my/first/arg */" << EOL << std::endl;
+  sout << "    /* ./myExec --flag flagArg */" << EOL << std::endl;
+  sout << "    std::vector< std::string > nonbooleanFlags;" << EOL << std::endl;
   std::vector<ModuleParameterGroup>::const_iterator git;
   std::vector<ModuleParameter>::const_iterator pit;
+  for (git = module.GetParameterGroups().begin();
+       git != module.GetParameterGroups().end();
+       ++git)
+    {
+    for (pit = git->GetParameters().begin();
+         pit != git->GetParameters().end();
+         ++pit)
+      {
+      if (pit->GetCPPType() != "bool")
+        {
+        if(!pit->GetFlag().empty())
+          {
+          sout << "    nonbooleanFlags.push_back(\"-" << pit->GetFlag() <<"\");" << EOL << std::endl;
+          }
+        if (!pit->GetLongFlag().empty())
+          {
+          sout << "    nonbooleanFlags.push_back(\"--" << pit->GetLongFlag() <<"\");" << EOL << std::endl;
+          }
+        }
+      }
+    }
+
+  // First pass generates argument declarations
   for (git = module.GetParameterGroups().begin();
        git != module.GetParameterGroups().end();
        ++git)
@@ -1120,6 +1219,22 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         }
       }
     }
+
+  sout << std::endl;
+}
+
+void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
+{
+  GenerateTCLAPParse(sout, module);
+  GenerateTCLAPAssignment(sout, module);
+  sout << "#define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT" << std::endl;
+}
+
+void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
+{
+  std::string EOL(" \\");
+  sout << "#define GENERATE_TCLAP_PARSE \\" << std::endl;
+
   sout << "    std::string fullDescription(\"Description: \");" << EOL << std::endl;
   sout << "    fullDescription += \"" << module.GetDescription() << "\";" << EOL << std::endl;
   sout << "    if (!std::string(\"" << module.GetContributor() << "\").empty())" << EOL << std::endl;
@@ -1137,6 +1252,8 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "      std::ostringstream msg;" << EOL << std::endl;
 
   // Second pass generates TCLAP declarations
+  std::vector<ModuleParameterGroup>::const_iterator git;
+  std::vector<ModuleParameter>::const_iterator pit;
   for (git = module.GetParameterGroups().begin();
        git != module.GetParameterGroups().end();
        ++git)
@@ -1308,6 +1425,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         }
       }
     }
+
   sout << "try" << EOL << std::endl;
   sout << "  {" << EOL << std::endl;
 
@@ -1331,7 +1449,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         for (ait = pit->GetFlagAliases().begin();
              ait != pit->GetFlagAliases().end(); ++ait)
           {
-          sout << "    flagAliasMap[\"" << (*ait) << "\"] = \""
+          sout << "    flagAliasMap[\"-" << (*ait) << "\"] = \"-"
                << pit->GetFlag() << "\";" << EOL << std::endl;
           }
         }
@@ -1351,7 +1469,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         for (ait = pit->GetDeprecatedFlagAliases().begin();
              ait != pit->GetDeprecatedFlagAliases().end(); ++ait)
           {
-          sout << "    deprecatedFlagAliasMap[\"" << (*ait) << "\"] = \""
+          sout << "    deprecatedFlagAliasMap[\"-" << (*ait) << "\"] = \"-"
                << pit->GetFlag() << "\";" << EOL << std::endl;
           }
         }
@@ -1371,7 +1489,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         for (ait = pit->GetLongFlagAliases().begin();
              ait != pit->GetLongFlagAliases().end(); ++ait)
           {
-          sout << "    longFlagAliasMap[\"" << (*ait) << "\"] = \""
+          sout << "    longFlagAliasMap[\"--" << (*ait) << "\"] = \"--"
                << pit->GetLongFlag() << "\";" << EOL << std::endl;
           }
         }
@@ -1391,117 +1509,175 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         for (ait = pit->GetDeprecatedLongFlagAliases().begin();
              ait != pit->GetDeprecatedLongFlagAliases().end(); ++ait)
           {
-          sout << "    deprecatedLongFlagAliasMap[\"" << (*ait) << "\"] = \""
+          sout << "    deprecatedLongFlagAliasMap[\"--" << (*ait) << "\"] = \"--"
                << pit->GetLongFlag() << "\";" << EOL << std::endl;
           }
         }
       }
     }
-  sout << "    /* Remap flag aliases to the true flag */" << EOL << std::endl;
-  sout << "    std::vector<std::string> targs;" << EOL << std::endl;
+  sout << EOL << std::endl;
+
+  sout << "    /* Go through argc and consolidate the JSON with the parameters from the command line */" << EOL << std::endl;
+  sout << "    /* In case of conflict, take the command line. */" << EOL << std::endl;
   sout << "    std::map<std::string,std::string>::iterator ait;" << EOL << std::endl;
   sout << "    std::map<std::string,std::string>::iterator dait;" << EOL << std::endl;
-  sout << "    size_t ac;" << EOL << std::endl;
-  sout << "    for (ac=0; ac < static_cast<size_t>(argc); ++ac) " << EOL << std::endl;
-  sout << "       { " << EOL << std::endl;
-  sout << "       if (strlen(argv[ac]) == 2 && argv[ac][0]=='-')" << EOL << std::endl;
+  sout << "    std::vector<std::string>::iterator dvOptionnalArgsIt = deserializedVectorFlaggedArgs.begin();" << EOL << std::endl;
+  sout << "    size_t noFlagCounter = 0;" << EOL << std::endl;
+  sout << "    size_t ac = 1;" << EOL << std::endl;
+  sout << EOL << std::endl;
+  sout << "    while (ac < static_cast<size_t>(argc))" << EOL << std::endl;
+  sout << "      {" << EOL << std::endl;
+  sout << "      /* short flag case && long flag case */" << EOL << std::endl;
+  // Simple short flags and long flags
+  sout << "       if ((strlen(argv[ac]) == 2 && argv[ac][0]=='-')" << EOL << std::endl;
+  sout << "           || (strlen(argv[ac]) > 2 && argv[ac][0]=='-' && argv[ac][1]=='-'))" << EOL << std::endl;
   sout << "         {" << EOL << std::endl;
-  sout << "         /* short flag case */" << EOL << std::endl;
-  sout << "         std::string tflag(argv[ac], 1, strlen(argv[ac])-1);" << EOL << std::endl;
-  sout << "         ait = flagAliasMap.find(tflag);" << EOL << std::endl;
-  sout << "         dait = deprecatedFlagAliasMap.find(tflag);" << EOL << std::endl;
-  sout << "         if (ait != flagAliasMap.end() || dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
+  sout << "         std::string flag = argv[ac];" << EOL << std::endl;
+  //   Flag re-mapping
+  sout << "         /* Remap the flag if necessary */" << EOL << std::endl;
+  sout << "         if (strlen(argv[ac]) == 2)" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
+  //     short flag re-mapping
+  sout << "           /* Short flag remapping */" << EOL << std::endl;
+  sout << "           ait = flagAliasMap.find(flag);" << EOL << std::endl;
+  sout << "           dait = deprecatedFlagAliasMap.find(flag);" << EOL << std::endl;
   sout << "           if (ait != flagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
-  sout << "             targs.push_back(\"-\" + (*ait).second);" << EOL << std::endl;
+  sout << "             flag = (*ait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           else if (dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             std::cout << \"Flag \\\"\" << argv[ac] << \"\\\" is deprecated. Please use flag \\\"-\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
+  sout << "             std::cout << \"Flag \\\"\" << flag << \"\\\" is deprecated. Please use flag \\\"\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
-  sout << "             targs.push_back(\"-\" + (*dait).second);" << EOL << std::endl;
+  sout << "             flag = (*dait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         else" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
-  sout << "           targs.push_back(argv[ac]);" << EOL << std::endl;
-  sout << "           }" << EOL << std::endl;
-  sout << "         }" << EOL << std::endl;
-  sout << "       else if (strlen(argv[ac]) > 2 && argv[ac][0]=='-' && argv[ac][1]=='-')" << EOL << std::endl;
-  sout << "         {" << EOL << std::endl;
-  sout << "         /* long flag case */" << EOL << std::endl;
-  sout << "         std::string tflag(argv[ac], 2, strlen(argv[ac])-2);" << EOL << std::endl;
-  sout << "         ait = longFlagAliasMap.find(tflag);" << EOL << std::endl;
-  sout << "         dait = deprecatedLongFlagAliasMap.find(tflag);" << EOL << std::endl;
-  sout << "         if (ait != longFlagAliasMap.end() || dait != deprecatedLongFlagAliasMap.end())" << EOL << std::endl;
-  sout << "           {" << EOL << std::endl;
+  sout << "           /* Long flag remapping */" << EOL << std::endl;
+  sout << "           ait = longFlagAliasMap.find(flag);" << EOL << std::endl;
+  sout << "           dait = deprecatedLongFlagAliasMap.find(flag);" << EOL << std::endl;
   sout << "           if (ait != longFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
-  sout << "             targs.push_back(\"--\" + (*ait).second);" << EOL << std::endl;
+  sout << "             flag = (*ait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           else if (dait != deprecatedLongFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             std::cout << \"Long flag \\\"\" << argv[ac] << \"\\\" is deprecated. Please use long flag \\\"--\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
+  sout << "             std::cout << \"Long flag \\\"\" << flag << \"\\\" is deprecated. Please use long flag \\\"\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
-  sout << "             targs.push_back(\"--\" + (*dait).second);" << EOL << std::endl;
+  sout << "             flag = (*dait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
-  sout << "         else" << EOL << std::endl;
+  //   Compiling: 4 cases
+  sout << "         bool isBoolean = std::find(nonbooleanFlags.begin(), nonbooleanFlags.end(), flag) == nonbooleanFlags.end();" << EOL << std::endl;
+  sout << "         dvOptionnalArgsIt = std::find(deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end(), flag);" << EOL << std::endl;
+  sout << "         /*Ignore if boolean and already present*/" << EOL << std::endl;
+  //     Boolean && already present -> Do nothing
+  sout << "         if (isBoolean && dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
-  sout << "           targs.push_back(argv[ac]);" << EOL << std::endl;
+  sout << "           ++ac;" << EOL << std::endl;
+  sout << "           }" << EOL << std::endl;
+  sout << "         /*If not boolean and already present, update the flag value*/" << EOL << std::endl;
+  //     NOT Boolean && already present -> Replace the flag value
+  sout << "         else if (!isBoolean && dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "           {" << EOL << std::endl;
+  sout << "           ++ac;" << EOL << std::endl;
+  sout << "           std::string value = \"\";" << EOL << std::endl;
+  sout << "           if (ac < static_cast<size_t>(argc))" << EOL << std::endl;
+  sout << "             {" << EOL << std::endl;
+  sout << "             value = argv[ac];" << EOL << std::endl;
+  sout << "             ++ac;" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
+  sout << "           *(++dvOptionnalArgsIt) = value;" << EOL << std::endl;
+  sout << "           }" << EOL << std::endl;
+  sout << "         /*If boolean and not present, just add it*/" << EOL << std::endl;
+  //     Boolean && NOT present -> Add the flag
+  sout << "         else if (isBoolean && dvOptionnalArgsIt == deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "           {" << EOL << std::endl;
+  sout << "           deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "           ++ac;" << EOL << std::endl;
+  sout << "           }" << EOL << std::endl;
+  sout << "         /*If not boolean and not present, just add it and add value*/" << EOL << std::endl;
+  //     NOT Boolean && NOT present -> Add the flag, add the value
+  sout << "         else if (!isBoolean && dvOptionnalArgsIt == deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "           {" << EOL << std::endl;
+  sout << "           deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "           ++ac;" << EOL << std::endl;
+  sout << "           std::string value = \"\";" << EOL << std::endl;
+  sout << "           if (ac < static_cast<size_t>(argc))" << EOL << std::endl;
+  sout << "             {" << EOL << std::endl;
+  sout << "             value = argv[ac]; "<< EOL << std::endl;
+  sout << "             ++ac;" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
+  sout << "           deserializedVectorFlaggedArgs.push_back(value); "<< EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         }" << EOL << std::endl;
+  sout << "       /* short flag case where multiple flags are given at once */" << EOL << std::endl;
   sout << "       else if (strlen(argv[ac]) > 2 && argv[ac][0]=='-' && argv[ac][1]!='-')" << EOL << std::endl;
   sout << "         {" << EOL << std::endl;
-  sout << "         /* short flag case where multiple flags are given at once ala */" << EOL << std::endl;
-  sout << "         /* \"ls -ltr\" */" << EOL << std::endl;
-  sout << "         std::string tflag(argv[ac], 1, strlen(argv[ac])-1);" << EOL << std::endl;
-  sout << "         std::string rflag(\"-\");" << EOL << std::endl;
-  sout << "         for (std::string::size_type fi=0; fi < tflag.size(); ++fi)" << EOL << std::endl;
+  // Composed short flags
+  sout << "         std::string rflag(argv[ac], 1, std::string::npos);" << EOL << std::endl;
+  sout << "         for (std::string::size_type fi=0; fi < rflag.size(); ++fi)" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
-  sout << "           std::string tf(tflag, fi, 1);" << EOL << std::endl;
-  sout << "           ait = flagAliasMap.find(tf);" << EOL << std::endl;
-  sout << "           dait = deprecatedFlagAliasMap.find(tf);" << EOL << std::endl;
-  sout << "           if (ait != flagAliasMap.end() || dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
+  sout << "           std::string tf(rflag, fi, 1);" << EOL << std::endl;
+  sout << "           std::string newFlag =\"-\";" << EOL << std::endl;
+  sout << "           newFlag += tf;" << EOL << std::endl;
+  //   Remapping
+  sout << "           ait = flagAliasMap.find(newFlag);" << EOL << std::endl;
+  sout << "           dait = deprecatedFlagAliasMap.find(newFlag);" << EOL << std::endl;
+  sout << "           if (ait != flagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             if (ait != flagAliasMap.end())" << EOL << std::endl;
-  sout << "               {" << EOL << std::endl;
-  sout << "               /* remap the flag */" << EOL << std::endl;
-  sout << "               rflag += (*ait).second;" << EOL << std::endl;
-  sout << "               }" << EOL << std::endl;
-  sout << "             else if (dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
-  sout << "               {" << EOL << std::endl;
-  sout << "               std::cout << \"Flag \\\"-\" << tf << \"\\\" is deprecated. Please use flag \\\"-\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
-  sout << "               /* remap the flag */" << EOL << std::endl;
-  sout << "               rflag += (*dait).second;" << EOL << std::endl;
-  sout << "               }" << EOL << std::endl;
+  sout << "             /* remap the flag */" << EOL << std::endl;
+  sout << "             newFlag = (*ait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
-  sout << "           else" << EOL << std::endl;
+  sout << "           else if (dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             rflag += tf;" << EOL << std::endl;
+  sout << "             std::cout << \"Flag \\\"\" << newFlag << \"\\\" is deprecated. Please use flag \\\"\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
+  sout << "             /* remap the flag */" << EOL << std::endl;
+  sout << "             newFlag = (*dait).second;" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
+  //   Compiling - i.e. add the boolean flag if not already there.
+  sout << "           dvOptionnalArgsIt = std::find(deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end(), newFlag);" << EOL << std::endl;
+  sout << "           /*These flags are always boolean, just add it if it's not there already */" << EOL << std::endl;
+  sout << "           if (dvOptionnalArgsIt == deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "             {" << EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.push_back(newFlag);" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
-  sout << "         targs.push_back(rflag);" << EOL << std::endl;
+  sout << "         ++ac;" << EOL << std::endl;
   sout << "         }" << EOL << std::endl;
   sout << "       else" << EOL << std::endl;
   sout << "         {" << EOL << std::endl;
-  sout << "         /* skip the argument without remapping (this is the case for any */" << EOL << std::endl;
-  sout << "         /* arguments for flags */" << EOL << std::endl;
-  sout << "         targs.push_back(argv[ac]);" << EOL << std::endl;
+  // No flags args - Replace if needed, otherwise append to the list.
+  sout << "         /* Replace if needed, otherwise append.*/" << EOL << std::endl;
+  sout << "         if (noFlagCounter < deserializedVectorPositionalArgs.size())" << EOL << std::endl;
+  sout << "           {" << EOL << std::endl;
+  sout << "           deserializedVectorPositionalArgs[noFlagCounter] = argv[ac];" << EOL << std::endl;
+  sout << "           }" << EOL << std::endl;
+  sout << "         else" << EOL << std::endl;
+  sout << "           {" << EOL << std::endl;
+  sout << "           deserializedVectorPositionalArgs.push_back(argv[ac]);" << EOL << std::endl;
+  sout << "           }" << EOL << std::endl;
+  sout << "         ++ac;" << EOL << std::endl;
+  sout << "         ++noFlagCounter;" << EOL << std::endl;
   sout << "         }" << EOL << std::endl;
   sout << "       }" << EOL << std::endl;
   sout << EOL << std::endl;
 
+  sout << "    /* Put the now compiled arguments in the argvVector */" << EOL << std::endl;
+  sout << "    std::vector<std::string> argvVector;" << EOL << std::endl;
+  sout << "    argvVector.push_back(argv[0]);" << EOL << std::endl;
+  sout << "    argvVector.insert(argvVector.end(), deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end());" << EOL << std::endl;
+  sout << "    argvVector.insert(argvVector.end(), deserializedVectorPositionalArgs.begin(), deserializedVectorPositionalArgs.end());" << EOL << std::endl;
 
-   sout << "   /* Remap args to a structure that CmdLine::parse() can understand*/" << EOL << std::endl;
-   sout << "   std::vector<char*> vargs;" << EOL << std::endl;
-   sout << "   for (ac = 0; ac < targs.size(); ++ac)" << EOL << std::endl;
-   sout << "     { " << EOL << std::endl;
-   sout << "     vargs.push_back(const_cast<char *>(targs[ac].c_str()));" << EOL << std::endl;
-   sout << "     }" << EOL << std::endl;
+  sout << "   /* Remap args to a structure that CmdLine::parse() can understand*/" << EOL << std::endl;
+  sout << "   std::vector<char*> vargs;" << EOL << std::endl;
+  sout << "   for (ac = 0; ac < argvVector.size(); ++ac)" << EOL << std::endl;
+  sout << "     { " << EOL << std::endl;
+  sout << "     vargs.push_back(const_cast<char *>(argvVector[ac].c_str()));" << EOL << std::endl;
+  sout << "     }" << EOL << std::endl;
 
   // Generate the code to parse the command line
   sout << "    commandLine.parse ( static_cast<int>(vargs.size()), (char**) &(vargs[0]) );" << EOL << std::endl;
@@ -1678,13 +1854,11 @@ void GeneratePost(std::ostream &sout)
   sout << "#define PARSE_ARGS "
        << "GENERATE_LOGO;"
        << "GENERATE_XML;"
-#ifdef GenerateCLP_USE_SERIALIZER
-       // << "GENERATE_XML;" TODO
-#endif // GenerateCLP_USE_SERIALIZER
-       << "GENERATE_TCLAP;"
+       << "GENERATE_DECLARE;"
 #ifdef GenerateCLP_USE_JSONCPP
        << "GENERATE_DESERIALIZATION;"
 #endif // GenerateCLP_USE_JSONCPP
+       << "GENERATE_TCLAP;"
        << "GENERATE_ECHOARGS;"
        << "GENERATE_ProcessInformationAddressDecoding;"
 #ifdef GenerateCLP_USE_JSONCPP
