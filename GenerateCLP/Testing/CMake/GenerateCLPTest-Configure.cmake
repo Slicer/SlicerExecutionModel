@@ -30,11 +30,6 @@ set(command ${CMAKE_COMMAND}
   -DGenerateCLP_DIR:PATH=${GenerateCLP_BINARY_DIR}
   -DJsonCpp_CMAKE_MODULE_PATH:PATH=${JsonCpp_CMAKE_MODULE_PATH}
   -G ${generateclp_cmake_generator} ${TEST_SOURCE_DIR})
-if(GenerateCLP_USE_JSONCPP)
-  list(APPEND command
-    -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
-    )
-endif()
 execute_process(
   COMMAND ${command}
   WORKING_DIRECTORY ${TEST_BINARY_DIR}
