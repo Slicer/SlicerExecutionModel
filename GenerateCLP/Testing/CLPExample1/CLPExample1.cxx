@@ -132,6 +132,14 @@ int main (int argc, char *argv[])
   // DownsamplingFactor
   success &= HasExpectedValue<int>(DownsamplingFactor, 2, 5);
 
+  // MultipleValues
+  if (DefaultMultipleValues.size() != 0)
+    {
+    std::cerr << "Error, unexpected DefaultMultipleValues size, got: "
+      << DefaultMultipleValues.size() << " expected 0." << std::endl;
+    return EXIT_FAILURE;
+    }
+
   // FixedImage
   success &= HasExpectedValue<std::string>(FixedImage, std::string("Head.mha"), std::string("OtherHead.mha"));
 

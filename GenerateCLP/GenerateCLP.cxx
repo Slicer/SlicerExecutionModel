@@ -562,11 +562,16 @@ void GenerateDeSerialization( std::ostream & sout,
           }
         else
           {
-          w | "        deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
-            | "        Json::Value param = parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"];"
-            | "        std::string value = \"\";"
-            | "        if (param.isArray())"
+          w | "        Json::Value param = parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"];"
+            | "        if (!param.isArray())"
             | "          {"
+            | "          deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
+            | "          deserializedVectorFlaggedArgs.push_back(param.asString());"
+            | "          }"
+            | "        else if(param.size() > 0)"
+            | "          {"
+            | "          deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
+            | "          std::string value = \"\";"
             | "          for (unsigned int i = 0; i < param.size(); ++i)"
             | "            {"
             | "            value += param[i].asString();"
@@ -575,12 +580,8 @@ void GenerateDeSerialization( std::ostream & sout,
             | "              value += \", \";"
             | "              }"
             | "            }"
-            | "          }"
-            | "        else"
-            | "          {"
-            | "          value = param.asString();"
-            | "          }"
-            | "        deserializedVectorFlaggedArgs.push_back(value);";
+            | "          deserializedVectorFlaggedArgs.push_back(value);"
+            | "          }";
           }
         }
       else

@@ -109,6 +109,13 @@
       </constraints>
     </integer>
 
+    <point multiple="true">
+      <name>DefaultMultipleValues</name>
+      <description>Parameter to test the default multiple values parsing.</description>
+      <label>Default Multiple Values</label>
+      <longflag>--defaultMultiple</longflag>
+    </point>
+
   </parameters>
 
   <parameters>
