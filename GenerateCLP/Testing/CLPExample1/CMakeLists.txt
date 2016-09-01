@@ -69,8 +69,8 @@ if(GenerateCLP_USE_SERIALIZER)
     COMMAND $<TARGET_FILE:${PROJECT_NAME}>
     --deserialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test1.json
     --serialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test3.json
-    -s 2112
-    -l 0.001,0.001,0.0005,0.0003
+    --spatialsamples 2112
+    --learningrate 0.001,0.001,0.0005,0.0003
     2
     Head.mha
     ProgrammingHead.mha

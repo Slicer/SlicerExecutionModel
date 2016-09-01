@@ -542,13 +542,13 @@ void GenerateDeSerialization( std::ostream & sout,
       w | "      if (!parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"].isNull())"
         | "        {";
       std::string flag = "";
-      if (!paramIt->GetFlag().empty())
-        {
-        flag = "-" + paramIt->GetFlag();
-        }
-      else if (!paramIt->GetLongFlag().empty())
+      if (!paramIt->GetLongFlag().empty())
         {
         flag = "--" + paramIt->GetLongFlag();
+        }
+      else if (!paramIt->GetFlag().empty())
+        {
+        flag = "-" + paramIt->GetFlag();
         }
 
       if (flag != "")
