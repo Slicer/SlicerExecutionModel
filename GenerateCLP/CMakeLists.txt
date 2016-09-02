@@ -179,12 +179,20 @@ set(GenerateCLP_FORWARD_DIR_INSTALL "..")
 # --------------------------------------------------------------------------
 # Build launcher
 # --------------------------------------------------------------------------
+set(GenerateCLPLauncher_SOURCE
+  ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c
+  )
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/GenerateCLPLauncher.c.in
-  ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c
+  ${GenerateCLPLauncher_SOURCE}
   @ONLY)
+add_custom_command(TARGET GenerateCLP POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E touch ${GenerateCLPLauncher_SOURCE}
+  COMMENT "Force GenerateCLPLauncher to rebuild after GenerateCLP was modified"
+  )
 add_executable(GenerateCLPLauncher
-  ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLPLauncher.c)
+  ${GenerateCLPLauncher_SOURCE}
+  )
 list(APPEND targets_to_export GenerateCLPLauncher)
 add_dependencies(GenerateCLPLauncher GenerateCLP)
 
