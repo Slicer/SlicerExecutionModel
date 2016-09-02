@@ -560,6 +560,39 @@ void GenerateDeSerialization( std::ostream & sout,
             | "          deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
             | "          }";
           }
+        else if (IsVectorOfVectors(*paramIt) || paramIt->GetMultiple() == "true")
+          {
+          w | "        Json::Value param = parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"];"
+            | "        if(param.size() > 0)"
+            | "          {"
+            | "          std::vector<std::string> values;"
+            | "          for (unsigned int i = 0; i < param.size(); ++i)"
+            | "            {";
+          if (IsVectorOfVectors(*paramIt))
+            {
+            w | "            std::string value = \"\";"
+              | "            for (unsigned int j = 0; j < param[i].size(); ++j)"
+              | "              {"
+              | "              value += param[i][j].asString();"
+              | "              if (j < param[i].size() - 1)"
+              | "                {"
+              | "                value += \", \";"
+              | "                }"
+              | "              }"
+              | "            values.push_back(value);";
+            }
+          else
+            {
+            w | "            values.push_back(param[i].asString());";
+            }
+
+          w | "            }"
+            | "          if (!values.empty())"
+            | "            {"
+            | "            deserializedMultipleArgsMap[\"" + flag + "\"] = values;"
+            | "            }"
+            | "          }";
+          }
         else
           {
           w | "        Json::Value param = parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"];"
@@ -570,7 +603,6 @@ void GenerateDeSerialization( std::ostream & sout,
             | "          }"
             | "        else if(param.size() > 0)"
             | "          {"
-            | "          deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
             | "          std::string value = \"\";"
             | "          for (unsigned int i = 0; i < param.size(); ++i)"
             | "            {"
@@ -580,13 +612,28 @@ void GenerateDeSerialization( std::ostream & sout,
             | "              value += \", \";"
             | "              }"
             | "            }"
+            | "          deserializedVectorFlaggedArgs.push_back(\"" + flag + "\");"
             | "          deserializedVectorFlaggedArgs.push_back(value);"
             | "          }";
           }
         }
       else
         {
-        w | "        deserializedVectorPositionalArgs.push_back(parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"].asString());";
+        if (paramIt->GetMultiple() == "true")
+          {
+          w | "        Json::Value param = parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"]"
+            | "        if(param.size() > 0)"
+            | "          {"
+            | "          for (unsigned int i = 0; i < param.size(); ++i)"
+            | "            {"
+            | "            deserializedVectorPositionalArgs.push_back(param[i].asString());"
+            | "            }"
+            | "          }";
+          }
+        else
+          {
+          w | "        deserializedVectorPositionalArgs.push_back(parameters[\"" + groupLabel + "\"][\"" + parameterName + "\"].asString());";
+          }
         }
       w | "        }";
       }
@@ -1045,6 +1092,9 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
   sout << "    /* that are then compiled with the command line. */" << EOL << std::endl;
   sout << "    std::vector< std::string > deserializedVectorFlaggedArgs;" << EOL << std::endl;
   sout << "    std::vector< std::string > deserializedVectorPositionalArgs;" << EOL << std::endl;
+  sout << "    /* This map is used to store the JSON deserialized value of multiple args*/" << EOL << std::endl;
+  sout << "    /* where the key is the argument flag and the value the values of each arg. */" << EOL << std::endl;
+  sout << "    std::map< std::string, std::vector<std::string> > deserializedMultipleArgsMap;" << EOL << std::endl;
   sout << EOL << std::endl;
   sout << "    /* This vector is used to look up if a flag requires an argument after it. */" << EOL << std::endl;
   sout << "    /* This is used to differentiate between: */" << EOL << std::endl;
@@ -1071,6 +1121,29 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
           {
           sout << "    nonbooleanFlags.push_back(\"--" << pit->GetLongFlag() <<"\");" << EOL << std::endl;
           }
+        }
+      }
+    }
+  sout << "    /* This map use is twofold: */" << EOL << std::endl;
+  sout << "    /*  - to find whether a flag is multiple */" << EOL << std::endl;
+  sout << "    /*  - to know if we need to reset the multiple arg value because it was */" << EOL << std::endl;
+  sout << "    /*    in the JSON and it's also in the command line. */" << EOL << std::endl;
+  sout << "    std::map<std::string, bool> multipleFlags;" << EOL << std::endl;
+  for (git = module.GetParameterGroups().begin();
+       git != module.GetParameterGroups().end();
+       ++git)
+    {
+    for (pit = git->GetParameters().begin();
+         pit != git->GetParameters().end();
+         ++pit)
+      {
+      if (pit->GetMultiple() == "true" && !pit->GetFlag().empty())
+        {
+        sout << "    multipleFlags[\"-" << pit->GetFlag() << "\"] = false;" << EOL << std::endl;
+        }
+      if (pit->GetMultiple() == "true" && !pit->GetLongFlag().empty())
+        {
+        sout << "    multipleFlags[\"--" << pit->GetLongFlag() << "\"] = false;" << EOL << std::endl;
         }
       }
     }
@@ -1523,6 +1596,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "    std::map<std::string,std::string>::iterator ait;" << EOL << std::endl;
   sout << "    std::map<std::string,std::string>::iterator dait;" << EOL << std::endl;
   sout << "    std::vector<std::string>::iterator dvOptionnalArgsIt = deserializedVectorFlaggedArgs.begin();" << EOL << std::endl;
+  sout << "    std::map<std::string, std::vector<std::string> >::iterator dvMultipleArgsIt;" << EOL << std::endl;
   sout << "    size_t noFlagCounter = 0;" << EOL << std::endl;
   sout << "    size_t ac = 1;" << EOL << std::endl;
   sout << EOL << std::endl;
@@ -1571,19 +1645,41 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             flag = (*dait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
-  //   Compiling: 4 cases
+  sout << "         bool isMultiple = multipleFlags.find(flag) != multipleFlags.end();" << EOL << std::endl;
   sout << "         bool isBoolean = std::find(nonbooleanFlags.begin(), nonbooleanFlags.end(), flag) == nonbooleanFlags.end();" << EOL << std::endl;
   sout << "         dvOptionnalArgsIt = std::find(deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end(), flag);" << EOL << std::endl;
-  sout << "         /*Ignore if boolean and already present*/" << EOL << std::endl;
-  //     Boolean && already present -> Do nothing
-  sout << "         if (isBoolean && dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "         bool isPresent = dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end();" << EOL << std::endl;
+  //   Compiling: 3 booleans => 8 cases
+  //   But isBoolean && isMultiple is impossible, so a total of => 6 cases
+  sout << "         if (isBoolean)" << EOL << std::endl;
+  //     Boolean cases:
   sout << "           {" << EOL << std::endl;
+  sout << "           /*Ignore if boolean and already present*/" << EOL << std::endl;
+  sout << "           /*Otherwise add it*/" << EOL << std::endl;
+  sout << "           if (!isPresent)" << EOL << std::endl;
+  //       Already present -> Do nothing
+  //       Not present -> Add the flag
+  sout << "             {" << EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
   sout << "           ++ac;" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
-  sout << "         /*If not boolean and already present, update the flag value*/" << EOL << std::endl;
-  //     NOT Boolean && already present -> Replace the flag value
-  sout << "         else if (!isBoolean && dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "         else if (isMultiple)" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
+  //     Multiple cases:
+  sout << "           dvMultipleArgsIt = deserializedMultipleArgsMap.find(flag);" << EOL << std::endl;
+  sout << "           bool isPresent = dvMultipleArgsIt != deserializedMultipleArgsMap.end();" << EOL << std::endl;
+  sout << "           /*Ignore if boolean and already present*/" << EOL << std::endl;
+  sout << "           /*Reset/Add the value if first deserialize or not present*/" << EOL << std::endl;
+  sout << "           if (!isPresent || !multipleFlags[flag])" << EOL << std::endl;
+  //       We need to reset/add the value if:
+  //         - Not present
+  //         - Was deserialized and it's now found in the command line
+  sout << "             {" << EOL << std::endl;
+  sout << "             deserializedMultipleArgsMap[flag] = std::vector<std::string>();" << EOL << std::endl;
+  sout << "             multipleFlags[flag] = true;" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
+  //       In any case, add the value and move on
   sout << "           ++ac;" << EOL << std::endl;
   sout << "           std::string value = \"\";" << EOL << std::endl;
   sout << "           if (ac < static_cast<size_t>(argc))" << EOL << std::endl;
@@ -1591,28 +1687,33 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             value = argv[ac];" << EOL << std::endl;
   sout << "             ++ac;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
-  sout << "           *(++dvOptionnalArgsIt) = value;" << EOL << std::endl;
+  sout << "           deserializedMultipleArgsMap[flag].push_back(value);" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
-  sout << "         /*If boolean and not present, just add it*/" << EOL << std::endl;
-  //     Boolean && NOT present -> Add the flag
-  sout << "         else if (isBoolean && dvOptionnalArgsIt == deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
+  sout << "         else" << EOL << std::endl;
+  //     Other cases:
   sout << "           {" << EOL << std::endl;
-  sout << "           deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
-  sout << "           ++ac;" << EOL << std::endl;
-  sout << "           }" << EOL << std::endl;
-  sout << "         /*If not boolean and not present, just add it and add value*/" << EOL << std::endl;
-  //     NOT Boolean && NOT present -> Add the flag, add the value
-  sout << "         else if (!isBoolean && dvOptionnalArgsIt == deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
-  sout << "           {" << EOL << std::endl;
-  sout << "           deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "           /*Add the flag and if needed*/" << EOL << std::endl;
+  sout << "           if (!isPresent)" << EOL << std::endl;
+  sout << "             {" << EOL << std::endl;
+  //       Not here -> Add flag
+  sout << "             deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
   sout << "           ++ac;" << EOL << std::endl;
   sout << "           std::string value = \"\";" << EOL << std::endl;
   sout << "           if (ac < static_cast<size_t>(argc))" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             value = argv[ac]; "<< EOL << std::endl;
+  sout << "             value = argv[ac];" << EOL << std::endl;
   sout << "             ++ac;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
-  sout << "           deserializedVectorFlaggedArgs.push_back(value); "<< EOL << std::endl;
+  //       In any case add/set the value and move on
+  sout << "           if (!isPresent)" << EOL << std::endl;
+  sout << "             {" << EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.push_back(value); "<< EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
+  sout << "           else" << EOL << std::endl;
+  sout << "             {" << EOL << std::endl;
+  sout << "             *(++dvOptionnalArgsIt) = value;" << EOL << std::endl;
+  sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         }" << EOL << std::endl;
   sout << "       /* short flag case where multiple flags are given at once */" << EOL << std::endl;
@@ -1671,8 +1772,17 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "    std::vector<std::string> argvVector;" << EOL << std::endl;
   sout << "    argvVector.push_back(argv[0]);" << EOL << std::endl;
   sout << "    argvVector.insert(argvVector.end(), deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end());" << EOL << std::endl;
+  sout << "    std::map<std::string, std::vector<std::string> >::iterator mavit;" << EOL << std::endl;
+  sout << "    for (mavit = deserializedMultipleArgsMap.begin(); mavit != deserializedMultipleArgsMap.end(); ++mavit)" << EOL << std::endl;
+  sout << "      {" << EOL << std::endl;
+  sout << "      for (size_t i = 0; i < mavit->second.size(); ++i)" << EOL << std::endl;
+  sout << "        {" << EOL << std::endl;
+  sout << "        argvVector.push_back(mavit->first);" << EOL << std::endl;
+  sout << "        argvVector.push_back(mavit->second.at(i));" << EOL << std::endl;
+  sout << "        }" << EOL << std::endl;
+  sout << "      }" << EOL << std::endl;
   sout << "    argvVector.insert(argvVector.end(), deserializedVectorPositionalArgs.begin(), deserializedVectorPositionalArgs.end());" << EOL << std::endl;
-
+  sout << EOL << std::endl;
   sout << "   /* Remap args to a structure that CmdLine::parse() can understand*/" << EOL << std::endl;
   sout << "   std::vector<char*> vargs;" << EOL << std::endl;
   sout << "   for (ac = 0; ac < argvVector.size(); ++ac)" << EOL << std::endl;
