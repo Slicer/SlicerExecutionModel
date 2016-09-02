@@ -468,6 +468,16 @@ void GeneratePre(std::ostream &sout, ModuleDescription &, int argc, char *argv[]
 }
 
 #ifdef GenerateCLP_USE_SERIALIZER
+void ReplaceCharacter(std::string& line, char character, const std::string replacement)
+{
+  size_t position = line.find( character );
+    while( position != std::string::npos )
+      {
+      line = line.replace( position, 1, replacement );
+      position = line.find( character, position + 2 );
+      }
+}
+
 void GenerateJson( std::ostream & sout,
   itk::SEMModuleDescriptionSerializer::Pointer & serializer )
 {
@@ -482,12 +492,8 @@ void GenerateJson( std::ostream & sout,
     {
     std::string line;
     std::getline( iStream, line );
-    size_t quotePosition = line.find( '"' );
-    while( quotePosition != std::string::npos )
-      {
-      line = line.replace( quotePosition, 1, "\\\"" );
-      quotePosition = line.find( '"', quotePosition + 2 );
-      }
+    ReplaceCharacter(line, '\\', "\\\\");
+    ReplaceCharacter(line, '"', "\\\"");
     sout << "\"" << line << "\\n\"\n";
     }
   sout << ";\n";
