@@ -41,5 +41,19 @@
       <description>Multi Float</description>
       <label>MultiFloat</label>
     </float>
+    <string>
+      <name>SimpleString</name>
+      <longflag>--string</longflag>
+      <description>Simple string to test that the escaping by Generate CLP</description>
+      <label>Simple String</label>
+      <default>This doublequote " and this quoted "word" should be escaped</default>
+    </string>
+    <string>
+      <name>CDataSimpleString</name>
+      <longflag>--cdataString</longflag>
+      <description>Simple string to test that the escaping by Generate CLP while using CDATA</description>
+      <label>CDATA Simple String</label>
+      <default><![CDATA[This doublequote " and this quoted "word" should be escaped]]></default>
+    </string>
   </parameters>
 </executable>

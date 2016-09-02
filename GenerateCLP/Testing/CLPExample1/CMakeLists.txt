@@ -1,41 +1,11 @@
 cmake_minimum_required(VERSION 2.8.6)
-project(CLPExample1)
 
-find_package(GenerateCLP NO_MODULE REQUIRED)
-include(${GenerateCLP_USE_FILE})
+include(${CMAKE_CURRENT_SOURCE_DIR}/../CMake/GenerateCLPTestMacros.cmake)
+GenerateCLP_TEST_PROJECT(
+  NAME CLPExample1
+)
 
-#-----------------------------------------------------------------------------
-if(GenerateCLP_USE_JSONCPP)
-  set(CMAKE_MODULE_PATH ${JsonCpp_CMAKE_MODULE_PATH} ${CMAKE_MODULE_PATH}) # Needed to locate FindJsonCpp.cmake
-  find_package(JsonCpp REQUIRED)
-  include_directories(${JsonCpp_INCLUDE_DIRS})
-endif()
-
-set(_additional_link_libraries)
-if(GenerateCLP_USE_JSONCPP)
-  list(APPEND _additional_link_libraries ${JsonCpp_LIBRARIES})
-endif()
-if(GenerateCLP_USE_SERIALIZER)
-  list(APPEND _additional_link_libraries ${ParameterSerializer_LIBRARIES})
-endif()
-
-#-----------------------------------------------------------------------------
-# Build
-#-----------------------------------------------------------------------------
-
-set(${PROJECT_NAME}_SOURCE ${PROJECT_NAME}.cxx)
-GENERATECLP(${PROJECT_NAME}_SOURCE ${PROJECT_NAME}.xml)
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
-if(_additional_link_libraries)
-  target_link_libraries(${PROJECT_NAME} ${_additional_link_libraries})
-endif()
-#-----------------------------------------------------------------------------
 # Test
-#-----------------------------------------------------------------------------
-include(CTest)
-
-set(TEMP ${PROJECT_BINARY_DIR}/Testing/Temporary)
-file(MAKE_DIRECTORY ${TEMP})
 
 if(GenerateCLP_USE_SERIALIZER)
   # Test normal command line exec + serialization at the end
@@ -69,8 +39,8 @@ if(GenerateCLP_USE_SERIALIZER)
     COMMAND $<TARGET_FILE:${PROJECT_NAME}>
     --deserialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test1.json
     --serialize ./GenerateCLPSerializer-${PROJECT_NAME}-Test3.json
-    -s 2112
-    -l 0.001,0.001,0.0005,0.0003
+    --spatialsamples 2112
+    --learningrate 0.001,0.001,0.0005,0.0003
     2
     Head.mha
     ProgrammingHead.mha

@@ -44,3 +44,8 @@ set(_previous_test "NODEPENDS")
 generateclp_add_test(CLPExample1 Configure)
 generateclp_add_test(CLPExample1 Build)
 generateclp_add_test(CLPExample1 Test)
+
+set(_previous_test "NODEPENDS")
+generateclp_add_test(CLPTestMultiple Configure)
+generateclp_add_test(CLPTestMultiple Build)
+generateclp_add_test(CLPTestMultiple Test)
