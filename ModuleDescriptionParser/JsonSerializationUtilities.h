@@ -20,56 +20,6 @@
 namespace {
 
 //----------------------------------------------------------------------------
-void ReadJsonParameter( const Json::Value & parameter, int & value )
-{ value = parameter.asInt(); }
-
-//----------------------------------------------------------------------------
-void ReadJsonParameter( const Json::Value & parameter, unsigned int & value )
-{ value = parameter.asUInt(); }
-
-//----------------------------------------------------------------------------
-void ReadJsonParameter( const Json::Value & parameter, float & value )
-{ value = parameter.asFloat(); }
-
-//----------------------------------------------------------------------------
-void ReadJsonParameter( const Json::Value & parameter, double & value )
-{ value = parameter.asDouble(); }
-
-//----------------------------------------------------------------------------
-void ReadJsonParameter( const Json::Value & parameter, bool & value )
-{ value = parameter.asBool(); }
-
-//----------------------------------------------------------------------------
-void ReadJsonParameter( const Json::Value & parameter, std::string & value )
-{ value = parameter.asString(); }
-
-//----------------------------------------------------------------------------
-template <typename T>
-void ReadJsonParameter( const Json::Value & parameter, std::vector<T> & value )
-{
-  const Json::ArrayIndex k = parameter.size();
-  value.resize( k );
-  for( Json::ArrayIndex i = 0; i < k; ++i )
-    {
-    ReadJsonParameter( parameter[i], value[i] );
-    }
-}
-
-//----------------------------------------------------------------------------
-template <typename T>
-void ReadJsonParameter(
-  const Json::Value & parameters,
-  const char * group, const char * name,
-  T & value)
-{
-  const Json::Value & parameter = parameters[group][name];
-  if( !parameter.isNull() )
-    {
-    ReadJsonParameter( parameter, value );
-    }
-}
-
-//----------------------------------------------------------------------------
 template <typename T>
 Json::Value JsonSerialize( const T & value )
 { return value; }
