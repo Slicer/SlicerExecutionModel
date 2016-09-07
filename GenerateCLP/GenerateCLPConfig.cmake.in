@@ -10,7 +10,8 @@ set(GenerateCLP_USE_SERIALIZER "@GenerateCLP_USE_SERIALIZER@")
 set(TCLAP_DIR "@TCLAP_DIR@")
 set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
 set(ITK_DIR "@ITK_DIR_CONFIG@")
-set(JsonCpp_DIR "@JsonCpp_DIR@")
+set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
 set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
 
 find_program(GENERATECLP_EXE

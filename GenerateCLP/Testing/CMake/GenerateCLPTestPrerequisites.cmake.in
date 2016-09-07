@@ -8,7 +8,8 @@ set(generateclp_cmake_generator "@CMAKE_GENERATOR@")
 set(GenerateCLP_BINARY_DIR "@GenerateCLP_BINARY_DIR@")
 
 set(GenerateCLP_USE_JSONCPP @GenerateCLP_USE_JSONCPP@)
-set(JsonCpp_DIR "@JsonCpp_DIR@")
+set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
 
 set(JsonCpp_CMAKE_MODULE_PATH "@SlicerExecutionModel_SOURCE_DIR@/CMake")
 
