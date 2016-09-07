@@ -140,7 +140,8 @@ endif()
 set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
 set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
 set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
-set(JsonCpp_DIR "@JsonCpp_DIR@")
+set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
 set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
 
 #
