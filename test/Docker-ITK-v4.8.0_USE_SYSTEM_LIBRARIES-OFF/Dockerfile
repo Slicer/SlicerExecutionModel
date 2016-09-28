@@ -36,3 +36,16 @@ RUN git clone git://itk.org/ITK.git && \
     ../ITK && \
   ninja install && \
   rm -rf ITK ITK-build
+
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG IMAGE
+ARG VCS_REF
+ARG VCS_URL
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name=$IMAGE \
+      org.label-schema.description="An open-source CMake-based project that provides macros and associated tools for the easy building of 3D Slicer command line interface (CLI) modules." \
+      org.label-schema.url="http://www.slicer.org" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url=$VCS_URL \
+      org.label-schema.schema-version="1.0"
