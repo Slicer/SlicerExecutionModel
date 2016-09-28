@@ -3,6 +3,8 @@ SlicerExecutionModel
 
 [![Circle CI](https://circleci.com/gh/Slicer/SlicerExecutionModel.svg?style=svg)](https://circleci.com/gh/Slicer/SlicerExecutionModel)
 
+[![](https://images.microbadger.com/badges/image/slicer/slicerexecutionmodel.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel)
+
 Overview
 --------
 
