@@ -23,4 +23,12 @@ if(NOT ITK_FOUND) #Do not clobber existing found version of ITK
   set(ITK_FOUND FALSE)
 endif()
 
+#
+# JsonCpp
+#
+if(GenerateCLP_USE_JSONCPP)
+  find_package(JsonCpp REQUIRED)
+  include_directories(${JsonCpp_INCLUDE_DIR})
+endif()
+
 include(${GenerateCLP_CMAKE_DIR}/GenerateCLP.cmake)
