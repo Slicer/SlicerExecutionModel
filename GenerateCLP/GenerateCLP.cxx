@@ -1654,7 +1654,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "         bool isMultiple = multipleFlags.find(flag) != multipleFlags.end();" << EOL << std::endl;
   sout << "         bool isBoolean = std::find(nonbooleanFlags.begin(), nonbooleanFlags.end(), flag) == nonbooleanFlags.end();" << EOL << std::endl;
   sout << "         dvOptionnalArgsIt = std::find(deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end(), flag);" << EOL << std::endl;
-  sout << "         bool isPresent = dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end();" << EOL << std::endl;
+  sout << "         bool isPresentVFA = dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end();" << EOL << std::endl;
   //   Compiling: 3 booleans => 8 cases
   //   But isBoolean && isMultiple is impossible, so a total of => 6 cases
   sout << "         if (isBoolean)" << EOL << std::endl;
@@ -1662,7 +1662,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           {" << EOL << std::endl;
   sout << "           /*Ignore if boolean and already present*/" << EOL << std::endl;
   sout << "           /*Otherwise add it*/" << EOL << std::endl;
-  sout << "           if (!isPresent)" << EOL << std::endl;
+  sout << "           if (!isPresentVFA)" << EOL << std::endl;
   //       Already present -> Do nothing
   //       Not present -> Add the flag
   sout << "             {" << EOL << std::endl;
@@ -1674,10 +1674,10 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           {" << EOL << std::endl;
   //     Multiple cases:
   sout << "           dvMultipleArgsIt = deserializedMultipleArgsMap.find(flag);" << EOL << std::endl;
-  sout << "           bool isPresent = dvMultipleArgsIt != deserializedMultipleArgsMap.end();" << EOL << std::endl;
+  sout << "           bool isPresentMA = dvMultipleArgsIt != deserializedMultipleArgsMap.end();" << EOL << std::endl;
   sout << "           /*Ignore if boolean and already present*/" << EOL << std::endl;
   sout << "           /*Reset/Add the value if first deserialize or not present*/" << EOL << std::endl;
-  sout << "           if (!isPresent || !multipleFlags[flag])" << EOL << std::endl;
+  sout << "           if (!isPresentMA || !multipleFlags[flag])" << EOL << std::endl;
   //       We need to reset/add the value if:
   //         - Not present
   //         - Was deserialized and it's now found in the command line
@@ -1699,7 +1699,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   //     Other cases:
   sout << "           {" << EOL << std::endl;
   sout << "           /*Add the flag and if needed*/" << EOL << std::endl;
-  sout << "           if (!isPresent)" << EOL << std::endl;
+  sout << "           if (!isPresentVFA)" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   //       Not here -> Add flag
   sout << "             deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
@@ -1712,7 +1712,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             ++ac;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   //       In any case add/set the value and move on
-  sout << "           if (!isPresent)" << EOL << std::endl;
+  sout << "           if (!isPresentVFA)" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             deserializedVectorFlaggedArgs.push_back(value); "<< EOL << std::endl;
   sout << "             }" << EOL << std::endl;
