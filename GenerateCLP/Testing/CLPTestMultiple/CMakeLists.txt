@@ -1,11 +1,17 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../CMake/GenerateCLPTestMacros.cmake)
+
+#-----------------------------------------------------------------------------
+# Configure & Build
+#-----------------------------------------------------------------------------
 GenerateCLP_TEST_PROJECT(
   NAME CLPTestMultiple
 )
 
+#-----------------------------------------------------------------------------
 # Tests
+#-----------------------------------------------------------------------------
 if(GenerateCLP_USE_SERIALIZER)
   list(APPEND FLAGS_TO_TEST
   --int

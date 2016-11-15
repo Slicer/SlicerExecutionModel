@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../CMake/GenerateCLPTestMacros.cmake)
+
+#-----------------------------------------------------------------------------
+# Configure & Build
+#-----------------------------------------------------------------------------
 GenerateCLP_TEST_PROJECT(
   NAME CLPExample1
 )
 
-# Test
-
+#-----------------------------------------------------------------------------
+# Tests
+#-----------------------------------------------------------------------------
 if(GenerateCLP_USE_SERIALIZER)
   # Test normal command line exec + serialization at the end
   add_test(NAME GenerateCLPSerializer-${PROJECT_NAME}-Test1
