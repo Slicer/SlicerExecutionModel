@@ -1,4 +1,6 @@
 machine:
+  python:
+    version: 2.7.11
   services:
     - docker
   environment:
@@ -6,10 +8,13 @@ machine:
     DOCKER_TAG_2: itk-v4.10.1_use_system_libraries-off
 
 dependencies:
+  cache_directories:
+    - ~/docker
   override:
     - docker info
-    - docker pull slicer/slicerexecutionmodel:$DOCKER_TAG_1
-    - docker pull slicer/slicerexecutionmodel:$DOCKER_TAG_2
+    - pip install scikit-ci-addons==0.11.0
+    - ci_addons docker load-pull-save slicer/slicerexecutionmodel:$DOCKER_TAG_1
+    - ci_addons docker load-pull-save slicer/slicerexecutionmodel:$DOCKER_TAG_2
 
 test:
   override:
