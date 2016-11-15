@@ -3,14 +3,17 @@ machine:
     - docker
   environment:
     DOCKER_TAG_1: itk-v4.8.0_use_system_libraries-off
+    DOCKER_TAG_2: itk-v4.10.1_use_system_libraries-off
 
 dependencies:
   override:
     - docker info
     - docker pull slicer/slicerexecutionmodel:$DOCKER_TAG_1
+    - docker pull slicer/slicerexecutionmodel:$DOCKER_TAG_2
 
 test:
   override:
     - mkdir ~/SlicerExecutionModel-build
     - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:$DOCKER_TAG_1 /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_1
+    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:$DOCKER_TAG_2 /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_2
 
