@@ -17,7 +17,7 @@ execute_process(
   RESULT_VARIABLE rv
   )
 
-print_command_as_string("${command}")
+print_command_as_string("${command}" "${TEST_BINARY_DIR}")
 
 message(${ov})
 

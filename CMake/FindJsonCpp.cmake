@@ -58,4 +58,5 @@ include( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( JsonCpp DEFAULT_MSG JsonCpp_LIBRARIES
   JsonCpp_INCLUDE_DIRS )
 
-mark_as_advanced( JsonCpp_INCLUDE_DIR JsonCpp_LIBRARY )
+# Do not use because of https://gitlab.kitware.com/cmake/cmake/issues/15448
+# mark_as_advanced( JsonCpp_INCLUDE_DIR JsonCpp_LIBRARY )

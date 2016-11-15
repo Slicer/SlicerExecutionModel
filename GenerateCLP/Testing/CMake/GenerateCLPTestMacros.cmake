@@ -1,13 +1,14 @@
 
 # --------------------------------------------------------------------------
 # Helper macro
-function(print_command_as_string command)
+function(print_command_as_string command working_dir)
   if(PRINT_COMMAND)
     set(command_as_string)
     foreach(elem ${command})
-      set(command_as_string "${command_as_string} ${elem}")
+      set(command_as_string "${command_as_string} \"${elem}\"")
     endforeach()
     message(STATUS "COMMAND:${command_as_string}")
+    message(STATUS "WORKING_DIR: ${working_dir}")
   endif()
 endfunction()
 
@@ -23,12 +24,17 @@ macro(GenerateCLP_TEST_PROJECT)
 
   project(${TEST_CLI_NAME})
 
+  #-----------------------------------------------------------------------------
+  if(GenerateCLP_USE_JSONCPP)
+    set(CMAKE_MODULE_PATH ${JsonCpp_CMAKE_MODULE_PATH} ${CMAKE_MODULE_PATH}) # Needed to locate FindJsonCpp.cmake
+  endif()
+
+  #-----------------------------------------------------------------------------
   find_package(GenerateCLP NO_MODULE REQUIRED)
   include(${GenerateCLP_USE_FILE})
 
   #-----------------------------------------------------------------------------
   if(GenerateCLP_USE_JSONCPP)
-    set(CMAKE_MODULE_PATH ${JsonCpp_CMAKE_MODULE_PATH} ${CMAKE_MODULE_PATH}) # Needed to locate FindJsonCpp.cmake
     find_package(JsonCpp REQUIRED)
     include_directories(${JsonCpp_INCLUDE_DIRS})
   endif()
@@ -44,13 +50,13 @@ macro(GenerateCLP_TEST_PROJECT)
   #-----------------------------------------------------------------------------
   # Build
   #-----------------------------------------------------------------------------
-
   set(${PROJECT_NAME}_SOURCE ${PROJECT_NAME}.cxx)
   GENERATECLP(${PROJECT_NAME}_SOURCE ${PROJECT_NAME}.xml)
   add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
   if(_additional_link_libraries)
     target_link_libraries(${PROJECT_NAME} ${_additional_link_libraries})
   endif()
+
   #-----------------------------------------------------------------------------
   # Test
   #-----------------------------------------------------------------------------
