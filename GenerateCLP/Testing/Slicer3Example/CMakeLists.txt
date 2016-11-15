@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 2.8.6)
 project(Slicer3Example)
 
+#-----------------------------------------------------------------------------
+if(GenerateCLP_USE_JSONCPP)
+  set(CMAKE_MODULE_PATH ${JsonCpp_CMAKE_MODULE_PATH} ${CMAKE_MODULE_PATH}) # Needed to locate FindJsonCpp.cmake
+endif()
+
+#-----------------------------------------------------------------------------
 find_package(GenerateCLP NO_MODULE REQUIRED)
 include(${GenerateCLP_USE_FILE})
 
 #-----------------------------------------------------------------------------
 if(GenerateCLP_USE_JSONCPP)
-  set(CMAKE_MODULE_PATH ${JsonCpp_CMAKE_MODULE_PATH} ${CMAKE_MODULE_PATH}) # Needed to locate FindJsonCpp.cmake
   find_package(JsonCpp REQUIRED)
   include_directories(${JsonCpp_INCLUDE_DIRS})
 endif()

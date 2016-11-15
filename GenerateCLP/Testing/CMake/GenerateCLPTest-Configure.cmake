@@ -28,6 +28,7 @@ set(PRINT_COMMAND 0)
 set(command ${CMAKE_COMMAND}
   -DCMAKE_BUILD_TYPE:STRING=${generateclp_build_type}
   -DGenerateCLP_DIR:PATH=${GenerateCLP_BINARY_DIR}
+  -DGenerateCLP_USE_JSONCPP:BOOL=${GenerateCLP_USE_JSONCPP}
   -DJsonCpp_CMAKE_MODULE_PATH:PATH=${JsonCpp_CMAKE_MODULE_PATH}
   -G ${generateclp_cmake_generator} ${TEST_SOURCE_DIR})
 execute_process(
