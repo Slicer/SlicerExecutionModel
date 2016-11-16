@@ -1,16 +1,37 @@
 machine:
+  python:
+    version: 2.7.11
   services:
     - docker
   environment:
     DOCKER_TAG_1: itk-v4.8.0_use_system_libraries-off
+    DOCKER_TAG_2: itk-v4.10.1_use_system_libraries-off
 
 dependencies:
+  cache_directories:
+    - ~/docker
   override:
     - docker info
-    - docker pull slicer/slicerexecutionmodel:$DOCKER_TAG_1
+    - pip install scikit-ci-addons==0.11.0
+    - ci_addons docker load-pull-save slicer/slicerexecutionmodel:$DOCKER_TAG_1
+    - ci_addons docker load-pull-save slicer/slicerexecutionmodel:$DOCKER_TAG_2
 
 test:
   override:
     - mkdir ~/SlicerExecutionModel-build
-    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:$DOCKER_TAG_1 /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_1
+    - |
+      docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel \
+        -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build \
+        slicer/slicerexecutionmodel:$DOCKER_TAG_1 \
+        /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_1
+    - |
+      docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel \
+        -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build \
+        slicer/slicerexecutionmodel:$DOCKER_TAG_2 \
+        /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_2
+    - |
+      docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel \
+        -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build \
+        slicer/slicerexecutionmodel:$DOCKER_TAG_2 \
+        /usr/src/SlicerExecutionModel/test/Docker/test-serializer.sh $DOCKER_TAG_2
 
