@@ -19,6 +19,14 @@ dependencies:
 test:
   override:
     - mkdir ~/SlicerExecutionModel-build
-    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:$DOCKER_TAG_1 /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_1
-    - docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build slicer/slicerexecutionmodel:$DOCKER_TAG_2 /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_2
+    - |
+      docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel \
+        -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build \
+        slicer/slicerexecutionmodel:$DOCKER_TAG_1 \
+        /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_1
+    - |
+      docker run -v ~/SlicerExecutionModel:/usr/src/SlicerExecutionModel \
+        -v ~/SlicerExecutionModel-build:/usr/src/SlicerExecutionModel-build \
+        slicer/slicerexecutionmodel:$DOCKER_TAG_2 \
+        /usr/src/SlicerExecutionModel/test/Docker/test.sh $DOCKER_TAG_2
 
