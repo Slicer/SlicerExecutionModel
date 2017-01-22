@@ -592,9 +592,9 @@ ModuleProcessInformation* ModuleDescription::GetProcessInformation()
 
 //----------------------------------------------------------------------------
 void ModuleDescription::
-SetTargetCallback(void* LibraryLoader, TargetCallbackType targetCallback)
+SetTargetCallback(void* libraryLoader, TargetCallbackType targetCallback)
 {
-  this->LibraryLoader = LibraryLoader;
+  this->LibraryLoader = libraryLoader;
   this->TargetCallback = targetCallback;
 }
 
