@@ -675,7 +675,6 @@ void GenerateSerialization( std::ostream & sout,
          ++paramIt )
       {
       const std::string & parameterName = paramIt->GetName();
-      const std::string & cppType = paramIt->GetCPPType();
       w | "    parameterGroup[\"" + parameterName
            + "\"] = JsonSerialize( " + parameterName + " );";
       }
