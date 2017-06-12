@@ -126,9 +126,9 @@ bool IsVectorOfVectors(const ModuleParameter &parameter)
   return (type == "std::vector<std::vector<float> >");
 }
 
-bool HasDefault(const ModuleParameter &parameter)
+bool HasValue(const ModuleParameter &parameter)
 {
-  return (parameter.GetDefault().size() > 0 && parameter.GetMultiple() != "true");
+  return (parameter.GetValue().size() > 0 && parameter.GetMultiple() != "true");
 }
 
 /* Generate the preamble to the code. This includes the required
@@ -332,7 +332,7 @@ main(int argc, char *argv[])
   parametersSerialize.SetName("parametersSerialize");
   parametersSerialize.SetLongFlag("serialize");
   parametersSerialize.SetDescription("Store the module's parameters to a file.");
-  parametersSerialize.SetDefault("");
+  parametersSerialize.SetValue("");
   parametersSerialize.SetChannel("output");
   serializationGroup.AddParameter(parametersSerialize);
 
@@ -1031,7 +1031,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
   echoSwitch.SetName("echoSwitch");
   echoSwitch.SetLongFlag("echo");
   echoSwitch.SetDescription("Echo the command line arguments");
-  echoSwitch.SetDefault("false");
+  echoSwitch.SetValue("false");
   autoParameters.AddParameter(echoSwitch);
 
   // Add a switch argument to produce xml output
@@ -1041,7 +1041,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
   xmlSwitch.SetName("xmlSwitch");
   xmlSwitch.SetLongFlag("xml");
   xmlSwitch.SetDescription("Produce xml description of command line arguments");
-  xmlSwitch.SetDefault("false");
+  xmlSwitch.SetValue("false");
   autoParameters.AddParameter(xmlSwitch);
 
   // Add an argument to accept an address for storing process
@@ -1052,7 +1052,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
   processInformationAddressArg.SetName("processInformationAddressString");
   processInformationAddressArg.SetLongFlag("processinformationaddress");
   processInformationAddressArg.SetDescription("Address of a structure to store process information (progress, abort, etc.).");
-  processInformationAddressArg.SetDefault("0");
+  processInformationAddressArg.SetValue("0");
   autoParameters.AddParameter(processInformationAddressArg);
 
   // Add an argument to accept a filename for simple return types
@@ -1062,7 +1062,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
   returnParameterArg.SetName("returnParameterFile");
   returnParameterArg.SetLongFlag("returnparameterfile");
   returnParameterArg.SetDescription("Filename in which to write simple return parameters (int, float, int-vector, etc.) as opposed to bulk return parameters (image, geometry, transform, measurement, table).");
-  returnParameterArg.SetDefault("");
+  returnParameterArg.SetValue("");
   autoParameters.AddParameter(returnParameterArg);
 
 
@@ -1077,7 +1077,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
   parametersDeSerialize.SetName("parametersDeSerialize");
   parametersDeSerialize.SetLongFlag("deserialize");
   parametersDeSerialize.SetDescription("Restore the module's parameters that were previously archived.");
-  parametersDeSerialize.SetDefault("");
+  parametersDeSerialize.SetValue("");
   parametersDeSerialize.SetChannel("input");
 
   // Find the serialization group and add to it.
@@ -1185,7 +1185,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
           }
         
         const std::string cppType = pit->GetCPPType();
-        if (!HasDefault(*pit) &&
+        if (!HasValue(*pit) &&
             cppType != "bool")
           {
           // Initialized to avoid compiler warnings.
@@ -1206,18 +1206,18 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
           }
         else
           {
-          std::string defaultString = pit->GetDefault();
+          std::string ValueString = pit->GetValue();
           if ((*pit).GetCPPType() == "bool")
             {
-            defaultString = "false";
+            ValueString = "false";
             }
-          replaceSubWithSub(defaultString, "\"", "\\\"");
+          replaceSubWithSub(ValueString, "\"", "\\\"");
           sout << " = ";
           if (NeedsQuotes(*pit))
             {
             sout << "\"";
             }
-          sout << defaultString;
+          sout << ValueString;
           if (NeedsQuotes(*pit))
             {
             sout << "\"";
@@ -1241,7 +1241,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
              << pit->GetCPPType()
              << " ";
         sout << pit->GetName();
-        if (!HasDefault(*pit))
+        if (!HasValue(*pit))
           {    
           sout << ";"
                << EOL << std::endl;
@@ -1253,13 +1253,13 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
             {
             sout << "\"";
             }
-          std::string defaultString = pit->GetDefault();
+          std::string ValueString = pit->GetValue();
           if ((*pit).GetCPPType() == "bool")
             {
-            defaultString = "false";
+            ValueString = "false";
             }
-          replaceSubWithSub(defaultString, "\"", "\\\"");
-          sout << defaultString;
+          replaceSubWithSub(ValueString, "\"", "\\\"");
+          sout << ValueString;
           if (NeedsQuotes(*pit))
             {
             sout << "\"";
@@ -1352,24 +1352,24 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
       sout << "msg << "
            << "\""
            << pit->GetDescription();
-      if (pit->GetDefault().empty())
+      if (pit->GetValue().empty())
         {
         sout << "\";";
         }
       else
         {
-        sout << " (default: \" "
+        sout << " (value: \" "
              << "<< ";
-        if (HasDefault(*pit))
+        if (HasValue(*pit))
           {
-          sout << pit->GetName();
+          sout << pit->GetValue();
           }
         else
           {
           sout << "\"None\"";
           }
 
-        if (NeedsTemp(*pit) && HasDefault(*pit))
+        if (NeedsTemp(*pit) && HasValue(*pit))
           {
           sout << "Temp";
           }

@@ -43,7 +43,7 @@ ModuleParameter::ModuleParameter()
     this->Hidden = "false";
     this->ArgType = "";
     this->StringToType = "";
-    this->Default = "";
+    this->Value = "";
     this->Flag = "";
     this->LongFlag = "";
     this->Constraints = "";
@@ -75,7 +75,7 @@ ModuleParameter::ModuleParameter(const ModuleParameter& parameter)
   this->Hidden = parameter.Hidden;
   this->ArgType = parameter.ArgType;
   this->StringToType = parameter.StringToType;
-  this->Default = parameter.Default;
+  this->Value = parameter.Value;
   this->Flag = parameter.Flag;
   this->FlagAliasesAsString = parameter.FlagAliasesAsString;
   this->FlagAliases = parameter.FlagAliases;
@@ -115,7 +115,7 @@ void ModuleParameter::operator=(const ModuleParameter& parameter)
   this->Hidden = parameter.Hidden;
   this->ArgType = parameter.ArgType;
   this->StringToType = parameter.StringToType;
-  this->Default = parameter.Default;
+  this->Value = parameter.Value;
   this->Flag = parameter.Flag;
   this->FlagAliasesAsString = parameter.FlagAliasesAsString;
   this->FlagAliases = parameter.FlagAliases;
@@ -208,7 +208,7 @@ std::ostream & operator<<(std::ostream &os, const ModuleParameter &parameter)
   os << "      " << "CPPType: " << parameter.GetCPPType() << std::endl;
   os << "      " << "ArgType: " << parameter.GetArgType() << std::endl;
   os << "      " << "StringToType: " << parameter.GetStringToType() << std::endl;
-  os << "      " << "Default: " << parameter.GetDefault() << std::endl;
+  os << "      " << "Value: " << parameter.GetValue() << std::endl;
   os << "      " << "Elements: ";
   std::vector<std::string>::const_iterator eit;  
   for (eit = parameter.GetElements().begin();

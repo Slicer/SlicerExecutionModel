@@ -36,8 +36,8 @@ SEMModuleParameterSerializer
   this->m_Parameters["CoordinateSystem"] = m_CoordinateSystem;
   m_CPPType = new StringValue;
   this->m_Parameters["CPPType"] = m_CPPType;
-  m_Default = new StringValue;
-  this->m_Parameters["Default"] = m_Default;
+  m_Value = new StringValue;
+  this->m_Parameters["Value"] = m_Value;
   m_Description = new StringValue;
   this->m_Parameters["Description"] = m_Description;
   m_Flag = new StringValue;
@@ -73,7 +73,7 @@ SEMModuleParameterSerializer
   delete m_Channel;
   delete m_CPPType;
   delete m_CoordinateSystem;
-  delete m_Default;
+  delete m_Value;
   delete m_Description;
   delete m_Flag;
   delete m_Index;
@@ -110,8 +110,8 @@ SEMModuleParameterSerializer
     this->m_Parameters["CoordinateSystem"] = m_CoordinateSystem;
     m_CPPType->SetValue( parameter.GetCPPType() );
     this->m_Parameters["CPPType"] = m_CPPType;
-    m_Default->SetValue( parameter.GetDefault() );
-    this->m_Parameters["Default"] = m_Default;
+    m_Value->SetValue( parameter.GetValue() );
+    this->m_Parameters["Value"] = m_Value;
     m_Description->SetValue( parameter.GetDescription() );
     this->m_Parameters["Description"] = m_Description;
     m_Flag->SetValue( parameter.GetFlag() );
@@ -159,7 +159,7 @@ SEMModuleParameterSerializer
     parameter.SetChannel( this->m_Channel->GetValue() );
     parameter.SetCPPType( this->m_CPPType->GetValue() );
     parameter.SetCoordinateSystem( this->m_CoordinateSystem->GetValue() );
-    parameter.SetDefault( this->m_Default->GetValue() );
+    parameter.SetValue( this->m_Value->GetValue() );
     parameter.SetDescription( this->m_Description->GetValue() );
     parameter.SetFlag( this->m_Flag->GetValue() );
     parameter.SetIndex( this->m_Index->GetValue() );

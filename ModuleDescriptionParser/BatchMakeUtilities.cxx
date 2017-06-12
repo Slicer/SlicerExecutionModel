@@ -184,7 +184,7 @@ std::string GenerateBatchMakeWrapper(const ModuleDescription& module)
           wrapper << "</Name>" << std::endl;
           
           wrapper << indent4 << "<Value>";
-          wrapper << (*pit).GetDefault();
+          wrapper << (*pit).GetValue();
           wrapper << "</Value>" << std::endl;
 
           // The parent is the previous parameter (the parameter for
@@ -272,7 +272,7 @@ std::string GenerateBatchMakeWrapper(const ModuleDescription& module)
     wrapper << "</Name>" << std::endl;
     
     wrapper << indent4 << "<Value>";
-    wrapper << (*iit).second.GetDefault();
+    wrapper << (*iit).second.GetValue();
     wrapper << "</Value>" << std::endl;
     
     // index parameters have no parents

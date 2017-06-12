@@ -101,23 +101,23 @@ public:
   bool HasReturnParameters() const;
 
   /// Search the list of parameters and return a copy of the parameters
-  /// that have the same \a defaultValue.
-  /// \sa HasParameter(), HasReturnParameters(), GetParameterDefaultValue()
-  std::vector<ModuleParameter> FindParametersWithDefaultValue(
-    const std::string& defaultvalue)const;
+  /// that have the same \a Value.
+  /// \sa HasParameter(), HasReturnParameters(), GetParameterValue()
+  std::vector<ModuleParameter> FindParametersWithValue(
+    const std::string& value)const;
 
-  /// Set the default value of the parameter \a name.
+  /// Set the value of the parameter \a name.
   /// Return true if the parameter is found and different than \a value,
   /// false otherwise.
-  /// \sa GetParameterDefaultValue(),
-  /// \sa FindParametersWithDefaultValue(), HasParameter()
-  bool SetParameterDefaultValue(const std::string& name,
-                                const std::string& value);
+  /// \sa GetParameterValue(),
+  /// \sa FindParametersWithValue(), HasParameter()
+  bool SetParameterValue(const std::string& name,
+                         const std::string& value);
 
-  /// Return the parameter default value and an empty string if the parameter
+  /// Return the parameter value and an empty string if the parameter
   /// can not be found.
-  /// \sa SetParameterDefaultValue()
-  std::string GetParameterDefaultValue(const std::string& name) const;
+  /// \sa SetParameterValue()
+  std::string GetParameterValue(const std::string& name) const;
 
   const ModuleProcessInformation* GetProcessInformation() const;
   ModuleProcessInformation* GetProcessInformation();

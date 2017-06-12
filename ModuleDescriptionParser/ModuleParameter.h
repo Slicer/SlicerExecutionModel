@@ -25,7 +25,7 @@
  *
  * ModuleParameter describes a single parameters to a
  * module. Information on the parameter type, name, flag, label,
- * description, channel, index, default, and constraints can be
+ * description, channel, index, Value, and constraints can be
  * stored.
  *
  */
@@ -257,14 +257,14 @@ public:
     return this->Index;
   }
   
-  virtual void SetDefault(const std::string &def)
+  virtual void SetValue(const std::string &def)
   {
-    this->Default = def;
+    this->Value = def;
   }
 
-  virtual const std::string& GetDefault() const
+  virtual const std::string& GetValue() const
   {
-    return this->Default;
+    return this->Value;
   }
   
   virtual void SetFlag(const std::string &flag)
@@ -369,7 +369,7 @@ private:
   std::string Hidden;
   std::string ArgType;
   std::string StringToType;
-  std::string Default;
+  std::string Value;
   std::string Flag;
   std::string LongFlag;
   std::string Constraints;
