@@ -100,11 +100,21 @@ public:
   /// \sa HasParameter()
   bool HasReturnParameters() const;
 
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE FindParametersWithValue INSTEAD
+  std::vector<ModuleParameter> FindParametersWithDefaultValue(
+    const std::string& value)const;
+
   /// Search the list of parameters and return a copy of the parameters
   /// that have the same \a Value.
   /// \sa HasParameter(), HasReturnParameters(), GetParameterValue()
   std::vector<ModuleParameter> FindParametersWithValue(
     const std::string& value)const;
+
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE SetParameterValue INSTEAD
+  bool SetParameterDefaultValue(const std::string& name,
+                         const std::string& value);
 
   /// Set the value of the parameter \a name.
   /// Return true if the parameter is found and different than \a value,
@@ -113,6 +123,10 @@ public:
   /// \sa FindParametersWithValue(), HasParameter()
   bool SetParameterValue(const std::string& name,
                          const std::string& value);
+
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE GetParameterValue INSTEAD
+  std::string GetParameterDefaultValue(const std::string& name) const;
 
   /// Return the parameter value and an empty string if the parameter
   /// can not be found.

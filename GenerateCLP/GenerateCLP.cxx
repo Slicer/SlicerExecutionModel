@@ -1362,7 +1362,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
              << "<< ";
         if (HasValue(*pit))
           {
-          sout << pit->GetValue();
+          sout << pit->GetName();
           }
         else
           {

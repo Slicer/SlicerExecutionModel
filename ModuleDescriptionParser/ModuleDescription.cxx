@@ -183,6 +183,14 @@ bool ModuleDescription::HasReturnParameters() const
 
 //----------------------------------------------------------------------------
 std::vector<ModuleParameter> ModuleDescription
+::FindParametersWithDefaultValue(const std::string& value) const
+{
+  return this->FindParametersWithValue(value);
+}
+
+
+//----------------------------------------------------------------------------
+std::vector<ModuleParameter> ModuleDescription
 ::FindParametersWithValue(const std::string& value) const
 {
   std::vector<ModuleParameter> parameters;
@@ -212,6 +220,12 @@ std::vector<ModuleParameter> ModuleDescription
     }
 
   return parameters;
+}
+
+//----------------------------------------------------------------------------
+bool ModuleDescription::SetParameterDefaultValue(const std::string& name, const std::string& value)
+{
+  return this->SetParameterValue( name, value);
 }
 
 //----------------------------------------------------------------------------
@@ -246,6 +260,11 @@ bool ModuleDescription::SetParameterValue(const std::string& name, const std::st
   return false;
 }
 
+//----------------------------------------------------------------------------
+std::string ModuleDescription::GetParameterDefaultValue(const std::string& name) const
+{
+  return this->GetParameterValue(name);
+}
 
 //----------------------------------------------------------------------------
 std::string ModuleDescription::GetParameterValue(const std::string& name) const

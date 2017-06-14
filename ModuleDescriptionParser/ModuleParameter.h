@@ -257,9 +257,23 @@ public:
     return this->Index;
   }
   
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE SetValue INSTEAD
+  virtual void SetDefault(const std::string &def)
+  {
+    this->SetValue(def);
+  }
+
   virtual void SetValue(const std::string &def)
   {
     this->Value = def;
+  }
+
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE GetValue INSTEAD
+  virtual const std::string& GetDefault() const
+  {
+    return this->GetValue();
   }
 
   virtual const std::string& GetValue() const
