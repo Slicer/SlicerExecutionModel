@@ -2002,7 +2002,7 @@ endElement(void *userData, const char *element)
     {
     std::string temp = ps->LastData[ps->Depth];
     trimLeadingAndTrailing(temp);
-    parameter->SetDefault(temp);
+    parameter->SetValue(temp);
     }
   else if (parameter && (name == "channel"))
     {

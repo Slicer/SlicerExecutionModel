@@ -100,24 +100,38 @@ public:
   /// \sa HasParameter()
   bool HasReturnParameters() const;
 
-  /// Search the list of parameters and return a copy of the parameters
-  /// that have the same \a defaultValue.
-  /// \sa HasParameter(), HasReturnParameters(), GetParameterDefaultValue()
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE FindParametersWithValue INSTEAD
   std::vector<ModuleParameter> FindParametersWithDefaultValue(
-    const std::string& defaultvalue)const;
+    const std::string& value)const;
 
-  /// Set the default value of the parameter \a name.
+  /// Search the list of parameters and return a copy of the parameters
+  /// that have the same \a Value.
+  /// \sa HasParameter(), HasReturnParameters(), GetParameterValue()
+  std::vector<ModuleParameter> FindParametersWithValue(
+    const std::string& value)const;
+
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE SetParameterValue INSTEAD
+  bool SetParameterDefaultValue(const std::string& name,
+                         const std::string& value);
+
+  /// Set the value of the parameter \a name.
   /// Return true if the parameter is found and different than \a value,
   /// false otherwise.
-  /// \sa GetParameterDefaultValue(),
-  /// \sa FindParametersWithDefaultValue(), HasParameter()
-  bool SetParameterDefaultValue(const std::string& name,
-                                const std::string& value);
+  /// \sa GetParameterValue(),
+  /// \sa FindParametersWithValue(), HasParameter()
+  bool SetParameterValue(const std::string& name,
+                         const std::string& value);
 
-  /// Return the parameter default value and an empty string if the parameter
-  /// can not be found.
-  /// \sa SetParameterDefaultValue()
+  /// THIS FUNCTION SHOULD NOT BE USED
+  /// SEE GetParameterValue INSTEAD
   std::string GetParameterDefaultValue(const std::string& name) const;
+
+  /// Return the parameter value and an empty string if the parameter
+  /// can not be found.
+  /// \sa SetParameterValue()
+  std::string GetParameterValue(const std::string& name) const;
 
   const ModuleProcessInformation* GetProcessInformation() const;
   ModuleProcessInformation* GetProcessInformation();

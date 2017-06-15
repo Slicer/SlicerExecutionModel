@@ -109,7 +109,7 @@ protected:
   StringValue *      m_Channel;
   StringValue *      m_CoordinateSystem;
   StringValue *      m_CPPType;
-  StringValue *      m_Default;
+  StringValue *      m_Value;
   StringValue *      m_Description;
   StringValue *      m_Flag;
   StringValue *      m_Index;

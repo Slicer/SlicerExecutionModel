@@ -183,7 +183,15 @@ bool ModuleDescription::HasReturnParameters() const
 
 //----------------------------------------------------------------------------
 std::vector<ModuleParameter> ModuleDescription
-::FindParametersWithDefaultValue(const std::string& defaultValue) const
+::FindParametersWithDefaultValue(const std::string& value) const
+{
+  return this->FindParametersWithValue(value);
+}
+
+
+//----------------------------------------------------------------------------
+std::vector<ModuleParameter> ModuleDescription
+::FindParametersWithValue(const std::string& value) const
 {
   std::vector<ModuleParameter> parameters;
   // iterate over each parameter group
@@ -204,7 +212,7 @@ std::vector<ModuleParameter> ModuleDescription
 
     for (pit = pbeginit; pit != pendit; ++pit)
       {
-      if ((*pit).GetDefault() == defaultValue)
+      if ((*pit).GetValue() == value)
         {
         parameters.push_back(*pit);
         }
@@ -216,6 +224,12 @@ std::vector<ModuleParameter> ModuleDescription
 
 //----------------------------------------------------------------------------
 bool ModuleDescription::SetParameterDefaultValue(const std::string& name, const std::string& value)
+{
+  return this->SetParameterValue( name, value);
+}
+
+//----------------------------------------------------------------------------
+bool ModuleDescription::SetParameterValue(const std::string& name, const std::string& value)
 {
   // iterate over each parameter group
   std::vector<ModuleParameterGroup>::iterator pgbeginit
@@ -237,7 +251,7 @@ bool ModuleDescription::SetParameterDefaultValue(const std::string& name, const 
       {
       if ((*pit).GetName() == name)
         {
-        (*pit).SetDefault(value);
+        (*pit).SetValue(value);
         return true;
         }
       }    
@@ -246,9 +260,14 @@ bool ModuleDescription::SetParameterDefaultValue(const std::string& name, const 
   return false;
 }
 
-
 //----------------------------------------------------------------------------
 std::string ModuleDescription::GetParameterDefaultValue(const std::string& name) const
+{
+  return this->GetParameterValue(name);
+}
+
+//----------------------------------------------------------------------------
+std::string ModuleDescription::GetParameterValue(const std::string& name) const
 {
   // iterate over each parameter group
   std::vector<ModuleParameterGroup>::const_iterator pgbeginit
@@ -270,7 +289,7 @@ std::string ModuleDescription::GetParameterDefaultValue(const std::string& name)
       {
       if ((*pit).GetName() == name)
         {
-        return (*pit).GetDefault();
+        return (*pit).GetValue();
         }
       }    
     }
@@ -326,9 +345,9 @@ bool ModuleDescription ::ReadParameterFile(const std::string& filename)
 
     if (this->HasParameter(key))
       {
-      if (value != this->GetParameterDefaultValue(key))
+      if (value != this->GetParameterValue(key))
         {
-        this->SetParameterDefaultValue(key, value);
+        this->SetParameterValue(key, value);
         modified = true;
 
         // multiple="true" may have to be handled differently
@@ -384,7 +403,7 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
                   && (*pit).GetTag() != "region")))
         {
         rtp << (*pit).GetName() << " = " 
-            << (*pit).GetDefault() << std::endl;
+            << (*pit).GetValue() << std::endl;
 
         // multiple="true" may have to be handled differently
         }

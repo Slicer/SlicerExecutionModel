@@ -8,7 +8,7 @@
 #include <string>
 
 //---------------------------------------------------------------------------
-int TestDefaults();
+int TestValues();
 int TestReadParameterFileWithMissingValue();
 int TestParameterFileWithPointFile();
 int TestTargetCallback();
@@ -30,7 +30,7 @@ int ModuleDescriptionTest(int argc, char * argv[])
 
   INPUT_DIR = std::string(argv[1]);
 
-  CHECK_EXIT_SUCCESS(TestDefaults());
+  CHECK_EXIT_SUCCESS(TestValues());
   CHECK_EXIT_SUCCESS(TestReadParameterFileWithMissingValue());
   CHECK_EXIT_SUCCESS(TestParameterFileWithPointFile());
   CHECK_EXIT_SUCCESS(TestTargetCallback());
@@ -39,7 +39,7 @@ int ModuleDescriptionTest(int argc, char * argv[])
 }
 
 //---------------------------------------------------------------------------
-int TestDefaults()
+int TestValues()
 {
   ModuleLogo logo;
   CHECK_INT(logo.GetWidth(),        0);
@@ -121,7 +121,7 @@ int TestReadParameterFileWithMissingValue()
     return EXIT_FAILURE;
     }
 
-  if (desc.GetParameterDefaultValue("OutputLabel") != "")
+  if (desc.GetParameterValue("OutputLabel") != "")
     {
     std::cerr << "Line " << __LINE__
               << " - Problem reading parameters - Value is expected to be empty."
@@ -129,7 +129,7 @@ int TestReadParameterFileWithMissingValue()
     return EXIT_FAILURE;
     }
 
-  if (desc.GetParameterDefaultValue("SUVMean") != "2")
+  if (desc.GetParameterValue("SUVMean") != "2")
     {
     std::cerr << "Line " << __LINE__
               << " - Problem reading parameters - Value is expected to be '2'."
@@ -151,7 +151,7 @@ int TestParameterFileWithPointFile()
   {
     ModuleParameter parameter;
     parameter.SetName("Input Fiducial File");
-    parameter.SetDefault("input.fcsv");
+    parameter.SetValue("input.fcsv");
     parameter.SetTag("pointfile");
     parameter.SetMultiple("false");
     parameter.SetFileExtensionsAsString(".fcsv");
@@ -163,7 +163,7 @@ int TestParameterFileWithPointFile()
   {
     ModuleParameter parameter;
     parameter.SetName("Output Fiducial File");
-    parameter.SetDefault("output.fcsv");
+    parameter.SetValue("output.fcsv");
     parameter.SetTag("pointfile");
     parameter.SetMultiple("false");
     parameter.SetFileExtensionsAsString(".fcsv");
