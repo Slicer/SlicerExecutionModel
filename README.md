@@ -11,6 +11,8 @@ Overview
 SlicerExecutionModel is a CMake-based project providing macros and associated tools
 allowing to easily build Slicer CLI (Command line module).
 
+SlicerExecutionModel is documented here: https://www.slicer.org/wiki/Documentation/Nightly/Developers/SlicerExecutionModel.
+
 Contributing
 ------------
 
