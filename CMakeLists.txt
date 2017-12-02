@@ -162,6 +162,15 @@ SETIFEMPTY(GenerateCLP_DIR ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLP CACHE PATH "L
 add_subdirectory(GenerateCLP)
 
 # --------------------------------------------------------------------------
+# SEMConfigure header
+# --------------------------------------------------------------------------
+set(configure_header_file SEMConfigure.h)
+configure_file(
+  CMake/${configure_header_file}.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${configure_header_file}
+  )
+
+# --------------------------------------------------------------------------
 # Set INCLUDE_DIRS variable
 # --------------------------------------------------------------------------
 set(_additional_include_dirs )
@@ -175,6 +184,7 @@ set(${PROJECT_NAME}_INCLUDE_DIRS
   ${ModuleDescriptionParser_INCLUDE_DIRS}
   ${GenerateCLP_INCLUDE_DIRS}
   ${TCLAP_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
   ${_additional_include_dirs}
   CACHE INTERNAL "${PROJECT_NAME} include dirs" FORCE
   )

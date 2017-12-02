@@ -1,0 +1,8 @@
+#ifndef SEMConfigure_h
+#define SEMConfigure_h
+
+#cmakedefine SlicerExecutionModel_USE_JSONCPP
+#cmakedefine SlicerExecutionModel_USE_SERIALIZER
+#cmakedefine SlicerExecutionModel_USE_ITKFactoryRegistration
+
+#endif

@@ -51,6 +51,9 @@ if(SlicerExecutionModel_USE_SERIALIZER AND NOT SlicerExecutionModel_USE_JSONCPP)
   Make sure SlicerExecutionModel_USE_JSONCPP is ON.")
 endif()
 
+# SlicerExecutionModel_USE_ITKFactoryRegistration
+set(SlicerExecutionModel_USE_ITKFactoryRegistration @SlicerExecutionModel_USE_ITKFactoryRegistration@)
+
 # Set SlicerExecutionModel variables
 set(SlicerExecutionModel_INCLUDE_DIRS
   "@SlicerExecutionModel_INCLUDE_DIRS_CONFIG@"
