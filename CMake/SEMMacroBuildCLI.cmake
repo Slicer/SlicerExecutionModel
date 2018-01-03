@@ -5,6 +5,7 @@ macro(SEMMacroBuildCLI)
   set(options
     EXECUTABLE_ONLY
     NO_INSTALL VERBOSE
+    DISABLE_DEFAULT_CXX_FILE
     )
   set(oneValueArgs
     NAME LOGO_HEADER
@@ -95,7 +96,10 @@ macro(SEMMacroBuildCLI)
   find_package(SlicerExecutionModel REQUIRED GenerateCLP)
   include(${GenerateCLP_USE_FILE})
 
-  set(${CLP}_SOURCE ${CLP}.cxx ${LOCAL_SEM_ADDITIONAL_SRCS})
+  set(${CLP}_SOURCE ${LOCAL_SEM_ADDITIONAL_SRCS})
+  if(NOT LOCAL_SEM_DISABLE_DEFAULT_CXX_FILE)
+    list(APPEND ${CLP}_SOURCE ${CLP}.cxx)
+  endif()
   generateclp(${CLP}_SOURCE ${cli_xml_file} ${LOCAL_SEM_LOGO_HEADER})
 
   if(DEFINED LOCAL_SEM_LINK_DIRECTORIES)
