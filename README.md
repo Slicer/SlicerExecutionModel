@@ -57,7 +57,7 @@ head of the branch. If you add new commits onto the branch, those will also auto
 be run through the CI process. The status of the CI process (passing, failing, or in progress) will
 be displayed directly in the PR page in GitHub.
 
-The CircleCI build will run according to the [circle.yml file](circle.yml),
+The CircleCI build will run according to the [.circleci/config.yml](.circleci/config.yml) file,
 which is useful as an example for how to set up your own environment for testing.
 
 Your test results will be posted on [SlicerExecutionModel's dashboard](http://slicer.cdash.org/index.php?project=SlicerExecutionModel).
@@ -71,7 +71,7 @@ With each PR, SlicerExecutionModel is built and tested against multiple version 
 environment is made available in docker images:
 
 * Each environment is described in a ``Dockerfile`` found in a ``Docker-ITK-vX.Y.Z`` subdirectory of [test](./test).
-* Testing using a given environment is enabled updating the [circle.yml](circle.yml) file.
+* Testing using a given environment is enabled updating the [.circleci/config.yml](.circleci/config.yml) file.
 * Before enabling an environment, associated docker image has to be (1) built locally running the `build.sh` script
   and (2) manually pushed to [dockerhub](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags/).
 
