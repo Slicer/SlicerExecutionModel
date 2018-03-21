@@ -3,8 +3,6 @@ SlicerExecutionModel
 
 [![Circle CI](https://circleci.com/gh/Slicer/SlicerExecutionModel.svg?style=svg)](https://circleci.com/gh/Slicer/SlicerExecutionModel)
 
-[![](https://images.microbadger.com/badges/image/slicer/slicerexecutionmodel.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel)
-
 Overview
 --------
 
@@ -26,6 +24,7 @@ do better.
 
 We encourage a range of contributions, from patches that include passing tests and
 documentation, all the way down to half-baked ideas that launch discussions.
+
 
 ### How to submit a PR
 
@@ -50,6 +49,7 @@ When submitting a PR, make sure to add a ``Cc: @slicer/slicerexecutionmodel`` co
 developers of your awesome contributions. Based on the
 comments posted by the reviewers, you may have to revisit your patches.
 
+
 ### Automatic testing of pull requests
 
 When you submit a PR to the SlicerExecutionModel repo, CircleCI will run the build and test suite on the
@@ -63,6 +63,23 @@ which is useful as an example for how to set up your own environment for testing
 Your test results will be posted on [SlicerExecutionModel's dashboard](http://slicer.cdash.org/index.php?project=SlicerExecutionModel).
 These results will list any failed tests. You can reach your
 build by clicking the build status link on your GitHub PR.
+
+
+### Testing environments
+
+With each PR, SlicerExecutionModel is built and tested against multiple version of ITK. Each
+environment is made available in docker images:
+
+* Each environment is described in a ``Dockerfile`` found in a ``Docker-ITK-vX.Y.Z`` subdirectory of [test](./test).
+* Testing using a given environment is enabled updating the [circle.yml](circle.yml) file.
+* Before enabling an environment, associated docker image has to be (1) built locally running the `build.sh` script
+  and (2) manually pushed to [dockerhub](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags/).
+
+Available environments are:
+
+* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off)
+* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off "Get your own version badge on microbadger.com")
+
 
 ### How to integrate a PR
 
