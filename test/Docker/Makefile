@@ -35,7 +35,7 @@ $(VERBOSE).SILENT: display_images
 # build implicit rule
 #
 $(DIRECTORIES): %: ../%/Dockerfile
-	$(eval DIR := $(basename $@))
+	$(eval DIR := $@)
 	$(eval TAG := $(shell echo $(DIR) | rev | cut -d'/' -f 1 | rev | cut -d'-' -f 2- | tr '[:upper:]' '[:lower:]'))
 	$(eval IMAGEID := $(shell $(DOCKER) images -q $(ORG)/$(REPO):$(TAG)))
 	$(DOCKER) build -t $(ORG)/$(REPO):$(TAG) \
