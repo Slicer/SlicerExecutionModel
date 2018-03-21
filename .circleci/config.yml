@@ -1,0 +1,46 @@
+build-settings: &build-settings
+  working_directory: /usr/src/SlicerExecutionModel
+
+version: 2
+jobs:
+  itk-v4.8.0_use_system_libraries-off:
+    <<: *build-settings
+    docker:
+      - image: slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off
+    steps:
+      - checkout
+      - run:
+          name: Configure, build and test
+          command: |
+            ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+
+  itk-v4.10.1_use_system_libraries-off:
+    <<: *build-settings
+    docker:
+      - image: slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off
+    steps:
+      - checkout
+      - run:
+          name: Configure, build and test
+          command: |
+            ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+
+
+  itk-v4.10.1_use_system_libraries-off_serializer:
+    <<: *build-settings
+    docker:
+      - image: slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off
+    steps:
+      - checkout
+      - run:
+          name: Configure, build and test
+          command: |
+            ./test/Docker/test-serializer.sh itk-v4.10.1_use_system_libraries-off
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - itk-v4.8.0_use_system_libraries-off
+      - itk-v4.10.1_use_system_libraries-off
+      - itk-v4.10.1_use_system_libraries-off_serializer

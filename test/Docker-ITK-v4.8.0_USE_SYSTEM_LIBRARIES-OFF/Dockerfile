@@ -1,28 +1,27 @@
-FROM debian:8
+FROM dockbuild/centos5
 MAINTAINER Insight Software Consortium <community@itk.org>
 
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  cmake \
-  git \
-  python \
-  ninja-build \
-  wget \
-  vim
-
-RUN mkdir -p /usr/src/SlicerExecutionModel-build
 WORKDIR /usr/src
 
 ENV ITK_GIT_TAG v4.8.0
-RUN git clone git://itk.org/ITK.git && \
-  cd ITK && \
-  git checkout ${ITK_GIT_TAG} && \
-  cd ../ && \
-  mkdir ITK-build && \
-  cd ITK-build && \
+
+RUN \
+  #
+  # Settings
+  #
+  working_dir=$(pwd) && \
+  #
+  # Checkout
+  #
+  git clone git://github.com/InsightSoftwareConsortium/ITK --single-branch -b ${ITK_GIT_TAG} ITK && \
+  #
+  # Configure
+  #
+  cd $working_dir && \
+  mkdir ITK-build && cd $_ && \
   cmake \
     -G Ninja \
-    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
     -DBUILD_EXAMPLES:BOOL=OFF \
     -DBUILD_TESTING:BOOL=OFF \
     -DBUILD_SHARED_LIBS:BOOL=ON \
@@ -34,8 +33,14 @@ RUN git clone git://itk.org/ITK.git && \
     -DModule_ITKIOXML:BOOL=ON \
     -DModule_ITKExpat:BOOL=ON \
     ../ITK && \
+  #
+  # Build and install
+  #
   ninja install && \
-  rm -rf ITK ITK-build
+  #
+  # Cleanup
+  #
+  rm -rf $working_dir/ITK $working_dir/ITK-build
 
 # Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE

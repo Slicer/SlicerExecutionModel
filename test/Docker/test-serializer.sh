@@ -1,13 +1,12 @@
 #!/bin/bash
 
+set -ex
+
 # This is a script to build the project and run the test suite in the base
 # Docker container.
 
-die() {
-  echo "Error: $@" 1>&2
-  exit 1;
-}
-
+# jsoncpp
+cd /usr/src
 git clone git://github.com/Slicer/jsoncpp.git
 mkdir jsoncpp-build && cd $_
 cmake -G Ninja \
@@ -19,24 +18,23 @@ cmake -G Ninja \
   -DJSONCPP_WITH_CMAKE_PACKAGE:BOOL=ON \
   -DBUILD_SHARED_LIBS:BOOL=ON \
   -DBUILD_STATIC_LIBS:BOOL=OFF \
-  ../jsoncpp || die "JsonCpp: CMake configuration failed"
-ninja install  || die "JsonCpp: Build failed"
+  ../jsoncpp
+ninja install
 
+# ParameterSerializer
 cd /usr/src
-
-git clone git://github.com/jcfr/ParameterSerializer.git -b conditonally-add-subdirectory
+git clone git://github.com/Slicer/ParameterSerializer.git
 mkdir ParameterSerializer-build && cd $_
 cmake \
   -G Ninja \
   -DBUILD_TESTING:BOOL=OFF \
   -DCMAKE_BUILD_TYPE:STRING=Release \
-  /usr/src/ParameterSerializer || die "ParameterSerializer: CMake configuration failed"
-ninja  || die "ParameterSerializer: Build failed"
+  /usr/src/ParameterSerializer
+ninja
 
-cd /usr/src/SlicerExecutionModel-build || die "Could not cd into the build directory"
-
+# SlicerExecutionModel
+mkdir -p /usr/src/SlicerExecutionModel-build && cd $_
 BUILDNAME=sem_use_serializer-on_$1
-
 cmake \
   -G Ninja \
   -DCMAKE_BUILD_TYPE:STRING=Release \
@@ -44,5 +42,5 @@ cmake \
   -DParameterSerializer_DIR:PATH=/usr/src/ParameterSerializer-build \
   -DSlicerExecutionModel_USE_SERIALIZER:BOOL=ON \
   -DSlicerExecutionModel_USE_JSONCPP:BOOL=ON \
-    /usr/src/SlicerExecutionModel || die "SlicerExecutionModel: CMake configuration failed"
-ctest -VV -D Experimental || die "SlicerExecutionModel: ctest failed"
+    /usr/src/SlicerExecutionModel
+ctest -VV -D Experimental
