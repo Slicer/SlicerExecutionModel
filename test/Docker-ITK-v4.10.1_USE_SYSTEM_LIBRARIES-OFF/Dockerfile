@@ -1,14 +1,5 @@
-FROM debian:8
+FROM dockbuild/centos5
 MAINTAINER Insight Software Consortium <community@itk.org>
-
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  cmake \
-  git \
-  python \
-  ninja-build \
-  wget \
-  vim
 
 RUN mkdir -p /usr/src/SlicerExecutionModel-build
 WORKDIR /usr/src
