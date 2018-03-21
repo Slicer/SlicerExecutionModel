@@ -10,9 +10,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Configure, build and test
-          command: |
-            ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+          command: ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
 
   itk-v4.10.1_use_system_libraries-off:
     <<: *build-settings
@@ -21,9 +19,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Configure, build and test
-          command: |
-            ./test/Docker/test.sh itk-v4.10.1_use_system_libraries-off
+          command: ./test/Docker/test.sh itk-v4.10.1_use_system_libraries-off
 
 
   itk-v4.10.1_use_system_libraries-off_serializer:
@@ -33,9 +29,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Configure, build and test
-          command: |
-            ./test/Docker/test-serializer.sh itk-v4.10.1_use_system_libraries-off
+          command: ./test/Docker/test-serializer.sh itk-v4.10.1_use_system_libraries-off
 
 workflows:
   version: 2
