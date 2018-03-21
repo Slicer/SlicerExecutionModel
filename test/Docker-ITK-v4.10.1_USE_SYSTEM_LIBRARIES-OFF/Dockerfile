@@ -1,16 +1,22 @@
 FROM dockbuild/centos5
 MAINTAINER Insight Software Consortium <community@itk.org>
 
-RUN mkdir -p /usr/src/SlicerExecutionModel-build
 WORKDIR /usr/src
 
 ENV ITK_GIT_TAG v4.10.1
-RUN git clone git://itk.org/ITK.git && \
-  cd ITK && \
+
+RUN \
+  #
+  # Checkout
+  #
+  working_dir=$(pwd) && \
+  git clone git://itk.org/ITK.git && cd $_ && \
   git checkout ${ITK_GIT_TAG} && \
-  cd ../ && \
-  mkdir ITK-build && \
-  cd ITK-build && \
+  #
+  # Configure
+  #
+  cd $working_dir && \
+  mkdir ITK-build && cd $_ && \
   cmake \
     -G Ninja \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
@@ -25,8 +31,14 @@ RUN git clone git://itk.org/ITK.git && \
     -DModule_ITKIOXML:BOOL=ON \
     -DModule_ITKExpat:BOOL=ON \
     ../ITK && \
+  #
+  # Build and install
+  #
   ninja install && \
-  rm -rf ITK ITK-build
+  #
+  # Cleanup
+  #
+  rm -rf $working_dir/ITK $working_dir/ITK-build
 
 # Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE
