@@ -23,7 +23,7 @@ ninja install
 
 # ParameterSerializer
 cd /usr/src
-git clone git://github.com/jcfr/ParameterSerializer.git -b conditonally-add-subdirectory
+git clone git://github.com/Slicer/ParameterSerializer.git
 mkdir ParameterSerializer-build && cd $_
 cmake \
   -G Ninja \
