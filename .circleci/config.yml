@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Configure, build and test
           command: |
-            ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+            ./test/Docker/test.sh itk-v4.10.1_use_system_libraries-off
 
 
   itk-v4.10.1_use_system_libraries-off_serializer:
