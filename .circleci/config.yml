@@ -1,5 +1,5 @@
 build-settings: &build-settings
-  working_directory: /usr/src
+  working_directory: /usr/src/SlicerExecutionModel
 
 version: 2
 jobs:
@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Configure, build and test
           command: |
-            ./SlicerExecutionModel/test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+            ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
 
   itk-v4.10.1_use_system_libraries-off:
     <<: *build-settings
@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Configure, build and test
           command: |
-            ./SlicerExecutionModel/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+            ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
 
 
   itk-v4.10.1_use_system_libraries-off_serializer:
@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Configure, build and test
           command: |
-            ./SlicerExecutionModel/Docker/test-serializer.sh itk-v4.10.1_use_system_libraries-off
+            ./test/Docker/test-serializer.sh itk-v4.10.1_use_system_libraries-off
 
 workflows:
   version: 2
