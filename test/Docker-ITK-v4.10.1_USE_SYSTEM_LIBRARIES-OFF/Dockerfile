@@ -7,11 +7,13 @@ ENV ITK_GIT_TAG v4.10.1
 
 RUN \
   #
-  # Checkout
+  # Settings
   #
   working_dir=$(pwd) && \
-  git clone git://itk.org/ITK.git && cd $_ && \
-  git checkout ${ITK_GIT_TAG} && \
+  #
+  # Checkout
+  #
+  git clone git://github.com/InsightSoftwareConsortium/ITK --single-branch -b ${ITK_GIT_TAG} ITK && \
   #
   # Configure
   #
@@ -19,7 +21,7 @@ RUN \
   mkdir ITK-build && cd $_ && \
   cmake \
     -G Ninja \
-    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
     -DBUILD_EXAMPLES:BOOL=OFF \
     -DBUILD_TESTING:BOOL=OFF \
     -DBUILD_SHARED_LIBS:BOOL=ON \
