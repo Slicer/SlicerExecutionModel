@@ -1,8 +1,7 @@
-project(ModuleDescriptionParser)
-
 #-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 3.5)
 #-----------------------------------------------------------------------------
+project(ModuleDescriptionParser CXX)
 
 #-----------------------------------------------------------------------------
 # Set a default build type if none was specified
