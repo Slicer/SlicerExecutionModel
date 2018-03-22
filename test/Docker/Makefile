@@ -59,5 +59,15 @@ $(addsuffix .run,$(DIRECTORIES)):
 	$(eval TAG := $(shell echo $(DIR) | rev | cut -d'/' -f 1 | rev | cut -d'-' -f 2- | tr '[:upper:]' '[:lower:]'))
 	$(DOCKER) run -v $$(pwd)/../..:/usr/src/SlicerExecutionModel -ti $(RM) $(ORG)/$(REPO):$(TAG) bash
 
+#
+# push implicit rule
+#
+.SECONDEXPANSION:
+$(addsuffix .push,$(DIRECTORIES)): $$(basename $$@)
+	$(eval DIR := $(basename $@))
+	$(eval TAG := $(shell echo $(DIR) | rev | cut -d'/' -f 1 | rev | cut -d'-' -f 2- | tr '[:upper:]' '[:lower:]'))
+	$(DOCKER) push $(ORG)/$(REPO):$(TAG)
 
-.PHONY: images display_images $(DIRECTORIES) $(addsuffix .run,$(DIRECTORIES))
+push: $(addsuffix .push,$(DIRECTORIES))
+
+.PHONY: images display_images $(DIRECTORIES) $(addsuffix .run,$(DIRECTORIES)) $(addsuffix .push,$(DIRECTORIES))
