@@ -6,73 +6,48 @@ jobs:
   itk-v4.8.0_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off
+      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
-          command: ./test/Docker/test.sh itk-v4.8.0_use_system_libraries-off
+          command: ./test/Docker/test.sh ${CIRCLE_JOB}
 
   # ITK v4.10.1
   itk-v4.10.1_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off
+      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
-          command: ./test/Docker/test.sh itk-v4.10.1_use_system_libraries-off
-
-
-  itk-v4.10.1_use_system_libraries-off_serializer:
-    <<: *build-settings
-    docker:
-      - image: slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off
-    steps:
-      - checkout
+          command: ./test/Docker/test.sh ${CIRCLE_JOB}
       - run:
-          command: ./test/Docker/test-serializer.sh itk-v4.10.1_use_system_libraries-off
+          command: ./test/Docker/test-serializer.sh ${CIRCLE_JOB}
 
   # ITK v4.13.0
   itk-v4.13.0_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off
+      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
-          command: ./test/Docker/test.sh itk-v4.13.0_use_system_libraries-off
-
-
-  itk-v4.13.0_use_system_libraries-off_serializer:
-    <<: *build-settings
-    docker:
-      - image: slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off
-    steps:
-      - checkout
+          command: ./test/Docker/test.sh ${CIRCLE_JOB}
       - run:
-          name: Configure, build and test
-          command: ./test/Docker/test-serializer.sh itk-v4.13.0_use_system_libraries-off
+          command: ./test/Docker/test-serializer.sh ${CIRCLE_JOB}
+
 
   # ITK master
   itk-master_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:itk-master_use_system_libraries-off
+      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
-          command: ./test/Docker/test.sh itk-master_use_system_libraries-off
-
-
-  itk-master_use_system_libraries-off_serializer:
-    <<: *build-settings
-    docker:
-      - image: slicer/slicerexecutionmodel:itk-master_use_system_libraries-off
-    steps:
-      - checkout
+          command: ./test/Docker/test.sh ${CIRCLE_JOB}
       - run:
-          name: Configure, build and test
-          command: ./test/Docker/test-serializer.sh itk-master_use_system_libraries-off
+          command: ./test/Docker/test-serializer.sh ${CIRCLE_JOB}
 
 workflows:
   version: 2
@@ -80,8 +55,5 @@ workflows:
     jobs:
       - itk-v4.8.0_use_system_libraries-off
       - itk-v4.10.1_use_system_libraries-off
-      - itk-v4.10.1_use_system_libraries-off_serializer
       - itk-v4.13.0_use_system_libraries-off
-      - itk-v4.13.0_use_system_libraries-off_serializer
       - itk-master_use_system_libraries-off
-      - itk-master_use_system_libraries-off_serializer
