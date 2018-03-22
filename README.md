@@ -6,10 +6,16 @@ SlicerExecutionModel
 Overview
 --------
 
-SlicerExecutionModel is a CMake-based project providing macros and associated tools
-allowing to easily build Slicer CLI (Command line module).
+The SlicerExecutionModel is a CMake-based project providing macros and associated tools
+allowing to easily build Slicer CLI (Command line module). It is designed to improve the
+acceptance and productivity of Slicer application developers.
+The Execution Model provides a simple mechanism for incorporating command line programs as Slicer modules.
+These command line modules are self-describing, emitting an XML description of its command line arguments.
+Slicer uses this XML description to construct a GUI for the module.
 
-SlicerExecutionModel is documented here: https://www.slicer.org/wiki/Documentation/Nightly/Developers/SlicerExecutionModel.
+SlicerExecutionModel is documented here:
+
+https://www.slicer.org/wiki/Documentation/Nightly/Developers/SlicerExecutionModel.
 
 Contributing
 ------------
@@ -72,8 +78,7 @@ environment is made available in docker images:
 
 * Each environment is described in a ``Dockerfile`` found in a ``Docker-ITK-vX.Y.Z`` subdirectory of [test](./test).
 * Testing using a given environment is enabled updating the [.circleci/config.yml](.circleci/config.yml) file.
-* Before enabling an environment, associated docker image has to be (1) built locally running the `build.sh` script
-  and (2) manually pushed to [dockerhub](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags/).
+* Before enabling an environment, associated docker image has to be (1) built locally and (2) pushed to [dockerhub](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags/).
 
 Available environments are:
 
@@ -82,6 +87,25 @@ Available environments are:
 * [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off)
 * [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off)
 
+
+### Adding or updating a testing environment
+
+To add a testing environment:
+* create a new directory in [test](test) following the existing convention (``test/Docker-ITK-vX.Y.Z[_qualifier]``)
+* add a ``Dockerfile``
+* update list of ``DIRECTORIES`` in [test/Docker/Makefile](test/Docker/Makefile)
+* add a new job to [.circleci/config.yml](.circleci/config.yml)
+* update list of environments in ``README.md``
+
+To update a testing environment:
+* update ``test/Docker-ITK-vX.Y.Z[_qualifier]/Dockerfile``
+
+Then, after adding or updating an environment, build and publish images:
+
+    cd test/Docker
+    make push
+
+And finally, create a PR with your changes.
 
 ### How to integrate a PR
 
