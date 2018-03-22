@@ -9,7 +9,11 @@ DOCKER = docker
 ORG = slicer
 REPO = slicerexecutionmodel
 
-DIRECTORIES = Docker-ITK-v4.10.1_USE_SYSTEM_LIBRARIES-OFF  Docker-ITK-v4.8.0_USE_SYSTEM_LIBRARIES-OFF
+DIRECTORIES = \
+  Docker-ITK-master_USE_SYSTEM_LIBRARIES-OFF \
+  Docker-ITK-v4.13.0_USE_SYSTEM_LIBRARIES-OFF \
+  Docker-ITK-v4.10.1_USE_SYSTEM_LIBRARIES-OFF \
+  Docker-ITK-v4.8.0_USE_SYSTEM_LIBRARIES-OFF
 
 # On CircleCI, do not attempt to delete container
 # See https://circleci.com/docs/docker-btrfs-error/
@@ -35,7 +39,7 @@ $(VERBOSE).SILENT: display_images
 # build implicit rule
 #
 $(DIRECTORIES): %: ../%/Dockerfile
-	$(eval DIR := $(basename $@))
+	$(eval DIR := $@)
 	$(eval TAG := $(shell echo $(DIR) | rev | cut -d'/' -f 1 | rev | cut -d'-' -f 2- | tr '[:upper:]' '[:lower:]'))
 	$(eval IMAGEID := $(shell $(DOCKER) images -q $(ORG)/$(REPO):$(TAG)))
 	$(DOCKER) build -t $(ORG)/$(REPO):$(TAG) \
@@ -55,5 +59,15 @@ $(addsuffix .run,$(DIRECTORIES)):
 	$(eval TAG := $(shell echo $(DIR) | rev | cut -d'/' -f 1 | rev | cut -d'-' -f 2- | tr '[:upper:]' '[:lower:]'))
 	$(DOCKER) run -v $$(pwd)/../..:/usr/src/SlicerExecutionModel -ti $(RM) $(ORG)/$(REPO):$(TAG) bash
 
+#
+# push implicit rule
+#
+.SECONDEXPANSION:
+$(addsuffix .push,$(DIRECTORIES)): $$(basename $$@)
+	$(eval DIR := $(basename $@))
+	$(eval TAG := $(shell echo $(DIR) | rev | cut -d'/' -f 1 | rev | cut -d'-' -f 2- | tr '[:upper:]' '[:lower:]'))
+	$(DOCKER) push $(ORG)/$(REPO):$(TAG)
 
-.PHONY: images display_images $(DIRECTORIES) $(addsuffix .run,$(DIRECTORIES))
+push: $(addsuffix .push,$(DIRECTORIES))
+
+.PHONY: images display_images $(DIRECTORIES) $(addsuffix .run,$(DIRECTORIES)) $(addsuffix .push,$(DIRECTORIES))

@@ -78,7 +78,9 @@ environment is made available in docker images:
 Available environments are:
 
 * [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off)
-* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off "Get your own version badge on microbadger.com")
+* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off)
+* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off)
+* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off)
 
 
 ### How to integrate a PR
