@@ -5,7 +5,7 @@
 # Name of the docker executable
 DOCKER = docker
 
-# DockerHub organization and repository to pull the images from
+# DockerHub organization and repository to pull/push the images from/to
 ORG = slicer
 REPO = slicerexecutionmodel
 
@@ -48,7 +48,8 @@ $(DIRECTORIES): %: ../%/Dockerfile
 	  --build-arg VCS_URL=`git config --get remote.origin.url` \
 		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 		../$@
-	if [ -n "$(IMAGEID)" ]; then $(DOCKER) rmi "$(IMAGEID)"; fi
+	CURRENT_IMAGEID=$$($(DOCKER) images -q $(ORG)/$(REPO)) && \
+	if [ -n "$(IMAGEID)" ] && [ "$(IMAGEID)" != "$$CURRENT_IMAGEID" ]; then $(DOCKER) rmi "$(IMAGEID)"; fi
 
 #
 # run implicit rule
