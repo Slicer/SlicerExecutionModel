@@ -40,8 +40,8 @@ extern "C" {
 
     ModuleProcessInformation()
       {
-        ProgressCallbackFunction = NULL;
-        ProgressCallbackClientData = NULL;
+        ProgressCallbackFunction = nullptr;
+        ProgressCallbackClientData = nullptr;
         Initialize();
       }
 
