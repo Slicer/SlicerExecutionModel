@@ -84,7 +84,7 @@ public:
                      T value,
                      const std::string& typeDesc,
                      bool ignoreable = false,
-                     Visitor* v = NULL);
+                     Visitor* v = nullptr);
 
   /**
    * UnlabeledValueArg constructor.
@@ -115,7 +115,7 @@ public:
                      const std::string& typeDesc,
                      CmdLineInterface& parser,
                      bool ignoreable = false,
-                     Visitor* v = NULL );
+                     Visitor* v = nullptr );
 
   /**
    * UnlabeledValueArg constructor.
@@ -142,7 +142,7 @@ public:
                      T value,
                      Constraint<T>* constraint,
                      bool ignoreable = false,
-                     Visitor* v = NULL );
+                     Visitor* v = nullptr );
 
 
   /**
@@ -172,7 +172,7 @@ public:
                      Constraint<T>* constraint,
                      CmdLineInterface& parser,
                      bool ignoreable = false,
-                     Visitor* v = NULL);
+                     Visitor* v = nullptr);
 
   /**
    * Handles the processing of the argument.

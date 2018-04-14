@@ -63,7 +63,7 @@ public:
             const std::string& name,
             const std::string& desc,
             bool def = false,
-            Visitor* v = NULL);
+            Visitor* v = nullptr);
 
 
   /**
@@ -84,7 +84,7 @@ public:
             const std::string& desc,
             CmdLineInterface& parser,
             bool def = false,
-            Visitor* v = NULL);
+            Visitor* v = nullptr);
 
 
   /**
@@ -95,7 +95,7 @@ public:
    * \param args - Mutable list of strings. Passed
    * in from main().
    */
-  virtual bool processArg(int* i, std::vector<std::string>& args);
+  bool processArg(int* i, std::vector<std::string>& args) override;
 
   /**
    * Checks a string to see if any of the chars in the string
@@ -111,7 +111,7 @@ public:
   /**
    * Returns string, 0 if false, 1 if true.
    */
-  virtual std::string getValueAsString()const;
+  std::string getValueAsString()const override;
 
 };
 

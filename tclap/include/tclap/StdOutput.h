@@ -55,14 +55,14 @@ public:
   * produce alternative behavior.
   * \param c - The CmdLine object the output is generated for.
   */
-  virtual void usage(CmdLineInterface& c);
+  void usage(CmdLineInterface& c) override;
 
   /**
   * Prints the version to stdout. Can be overridden
   * to produce alternative behavior.
   * \param c - The CmdLine object the output is generated for.
    */
-  virtual void version(CmdLineInterface& c);
+  void version(CmdLineInterface& c) override;
 
   /**
    * Prints (to stderr) an error message, short usage
@@ -70,8 +70,8 @@ public:
    * \param c - The CmdLine object the output is generated for.
    * \param e - The ArgException that caused the failure.
    */
-  virtual void failure(CmdLineInterface& c,
-                       ArgException& e );
+  void failure(CmdLineInterface& c,
+                       ArgException& e ) override;
 
 protected:
 

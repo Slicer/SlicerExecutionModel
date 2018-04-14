@@ -150,7 +150,7 @@ protected:
        const std::string& desc,
        bool req,
        bool valreq,
-       Visitor* v = NULL );
+       Visitor* v = nullptr );
 
 public:
   /**
@@ -525,7 +525,7 @@ inline std::string Arg::toString() const
 
 inline void Arg::_checkWithVisitor() const
 {
-  if ( _visitor != NULL )
+  if ( _visitor != nullptr )
     _visitor->visit();
 }
 

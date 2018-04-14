@@ -79,7 +79,7 @@ public:
                  const std::string& name,
                  const std::string& desc,
                  int init = 0,
-                 Visitor* v = NULL);
+                 Visitor* v = nullptr);
 
 
   /**
@@ -101,7 +101,7 @@ public:
                  const std::string& desc,
                  CmdLineInterface& parser,
                  int init = 0,
-                 Visitor* v = NULL);
+                 Visitor* v = nullptr);
 
 
   /**
@@ -112,7 +112,7 @@ public:
    * \param args - Mutable list of strings. Passed
    * in from main().
    */
-  virtual bool processArg(int* i, std::vector<std::string>& args);
+  bool processArg(int* i, std::vector<std::string>& args) override;
 
   /**
    * Returns int, the number of times the switch has been set.
@@ -122,17 +122,17 @@ public:
   /**
    * Returns the number of times the switch has been set.
    */
-  virtual std::string getValueAsString()const;
+  std::string getValueAsString()const override;
 
   /**
    * Returns the shortID for this Arg.
    */
-  std::string shortID(const std::string& val) const;
+  std::string shortID(const std::string& val) const override;
 
   /**
    * Returns the longID for this Arg.
    */
-  std::string longID(const std::string& val) const;
+  std::string longID(const std::string& val) const override;
 };
 
 //////////////////////////////////////////////////////////////////////

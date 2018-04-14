@@ -173,19 +173,19 @@ public:
   /**
    * Deletes any resources allocated by a CmdLine object.
    */
-  virtual ~CmdLine();
+  ~CmdLine() override;
 
   /**
    * Adds an argument to the list of arguments to be parsed.
    * \param a - Argument to be added.
    */
-  void add( Arg& a );
+  void add( Arg& a ) override;
 
   /**
    * An alternative add.  Functionally identical.
    * \param a - Argument to be added.
    */
-  void add( Arg* a );
+  void add( Arg* a ) override;
 
   /**
    * Add two Args that will be xor'd.  If this method is used, add does
@@ -193,66 +193,66 @@ public:
    * \param a - Argument to be added and xor'd.
    * \param b - Argument to be added and xor'd.
    */
-  void xorAdd( Arg& a, Arg& b );
+  void xorAdd( Arg& a, Arg& b ) override;
 
   /**
    * Add a list of Args that will be xor'd.  If this method is used,
    * add does not need to be called.
    * \param xors - List of Args to be added and xor'd.
    */
-  void xorAdd( std::vector<Arg*>& xors );
+  void xorAdd( std::vector<Arg*>& xors ) override;
 
   /**
    * Parses the command line.
    * \param argc - Number of arguments.
    * \param argv - Array of arguments.
    */
-  void parse(int argc, char** argv);
+  void parse(int argc, char** argv) override;
 
   /**
    *
    */
-  CmdLineOutput* getOutput();
+  CmdLineOutput* getOutput() override;
 
   /**
    *
    */
-  void setOutput(CmdLineOutput* co);
+  void setOutput(CmdLineOutput* co) override;
 
   /**
    *
    */
-  std::string& getVersion();
+  std::string& getVersion() override;
 
   /**
    *
    */
-  std::string& getProgramName();
+  std::string& getProgramName() override;
 
   /**
    *
    */
-  std::list<Arg*>& getArgList();
+  std::list<Arg*>& getArgList() override;
 
   /**
    *
    */
-  XorHandler& getXorHandler();
+  XorHandler& getXorHandler() override;
 
   /**
    *
    */
-  char getDelimiter();
+  char getDelimiter() override;
 
   /**
    *
    */
-  std::string& getMessage();
+  std::string& getMessage() override;
 
   /**
    *
    */
-  bool hasHelpAndVersion();
+  bool hasHelpAndVersion() override;
 };
 
 

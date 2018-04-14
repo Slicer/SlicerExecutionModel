@@ -77,7 +77,7 @@ public:
                      bool req,
                      const std::string& typeDesc,
                      bool ignoreable = false,
-                     Visitor* v = NULL );
+                     Visitor* v = nullptr );
   /**
    * Constructor.
    * \param name - The name of the Arg. Note that this is used for
@@ -102,7 +102,7 @@ public:
                      const std::string& typeDesc,
                      CmdLineInterface& parser,
                      bool ignoreable = false,
-                     Visitor* v = NULL );
+                     Visitor* v = nullptr );
 
   /**
    * Constructor.
@@ -124,7 +124,7 @@ public:
                      bool req,
                      Constraint<T>* constraint,
                      bool ignoreable = false,
-                     Visitor* v = NULL );
+                     Visitor* v = nullptr );
 
   /**
    * Constructor.
@@ -148,7 +148,7 @@ public:
                      Constraint<T>* constraint,
                      CmdLineInterface& parser,
                      bool ignoreable = false,
-                     Visitor* v = NULL );
+                     Visitor* v = nullptr );
 
   /**
    * Handles the processing of the argument.

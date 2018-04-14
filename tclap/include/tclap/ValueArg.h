@@ -265,7 +265,7 @@ public:
             T value,
             const std::string& typeDesc,
             CmdLineInterface& parser,
-            Visitor* v = NULL );
+            Visitor* v = nullptr );
 
   /**
    * Labeled ValueArg constructor.
@@ -296,7 +296,7 @@ public:
             T value,
             Constraint<T>* constraint,
             CmdLineInterface& parser,
-            Visitor* v = NULL );
+            Visitor* v = nullptr );
 
   /**
    * Labeled ValueArg constructor.
@@ -325,7 +325,7 @@ public:
             bool req,
             T value,
             Constraint<T>* constraint,
-            Visitor* v = NULL );
+            Visitor* v = nullptr );
 
   /**
    * Handles the processing of the argument.
@@ -336,7 +336,7 @@ public:
    * \param args - Mutable list of strings. Passed
    * in from main().
    */
-  virtual bool processArg(int* i, std::vector<std::string>& args);
+  bool processArg(int* i, std::vector<std::string>& args) override;
 
   /**
    * Returns the value of the argument.
@@ -346,19 +346,19 @@ public:
   /**
    * Returns the value of the argument as a string
    */
-  virtual std::string getValueAsString()const;
+  std::string getValueAsString()const override;
 
   /**
    * Specialization of shortID.
    * \param val - value to be used.
    */
-  virtual std::string shortID(const std::string& val = "val") const;
+  std::string shortID(const std::string& val = "val") const override;
 
   /**
    * Specialization of longID.
    * \param val - value to be used.
    */
-  virtual std::string longID(const std::string& val = "val") const;
+  std::string longID(const std::string& val = "val") const override;
 
 };
 
@@ -392,7 +392,7 @@ ValueArg<T>::ValueArg(const std::string& flag,
   : Arg(flag, name, desc, req, true, v),
     _value( val ),
     _typeDesc( typeDesc ),
-    _constraint( NULL )
+    _constraint( nullptr )
 {
   parser.add( this );
 }
@@ -530,7 +530,7 @@ void ValueArg<T>::_extractValue( const std::string& val )
              "More than one valid value parsed from string '" +
              val + "'", toString() ) );
 
-  if ( _constraint != NULL )
+  if ( _constraint != nullptr )
     if ( ! _constraint->check( _value ) )
       throw( CmdLineParseException( "Value '" + val +
                                     "' does not meet constraint: " +

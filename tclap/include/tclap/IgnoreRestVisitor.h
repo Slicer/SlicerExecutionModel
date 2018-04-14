@@ -44,7 +44,7 @@ public:
   /**
    * Sets Arg::_ignoreRest.
    */
-  void visit() { Arg::beginIgnoring();  }
+  void visit() override { Arg::beginIgnoring();  }
 };
 
 }
