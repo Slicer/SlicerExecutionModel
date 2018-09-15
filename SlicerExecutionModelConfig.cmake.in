@@ -1,8 +1,10 @@
 #
 # Typical usage could be something like:
-#   find_package(SlicerExecutionModel REQUIRED GenerateCLP)
+#
+#   find_package(SlicerExecutionModel REQUIRED)
 #   include(${SlicerExecutionModel_USE_FILE})
-#   generateclp(...)
+#
+#   SEMMacroBuildCLI(...)
 ##
 # When using the components argument, SlicerExecutionModel_USE_* variables are 
 # automatically set for the SlicerExecutionModel_USE_FILE to pick up.  
@@ -172,6 +174,11 @@ endif()
 
 if(SlicerExecutionModel_USE_SERIALIZER)
   find_package(ParameterSerializer REQUIRED)
+endif()
+
+set(_extra_config_file "@SlicerExecutionModel_EXTRA_CONFIG_FILE@")
+if(_extra_config_file)
+  include(${_extra_config_file})
 endif()
 
 set(SlicerExecutionModel_LIBRARY_DIRS
