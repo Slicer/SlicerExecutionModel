@@ -203,6 +203,20 @@ macro(SEMMacroBuildCLI)
     ARCHIVE_OUTPUT_DIRECTORY "${LOCAL_SEM_ARCHIVE_OUTPUT_DIRECTORY}"
     )
 
+  # Enable Interprocedural / global link-time optimization, if supported
+  if(CMAKE_VERSION VERSION_GREATER 3.13.0 OR CMAKE_VERSION VERSION_EQUAL 3.13.0)
+    # Optional IPO. Do not use IPO if it's not supported by compiler.
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT result OUTPUT output)
+    if(result)
+      set_target_properties(${cli_targets} PROPERTIES
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+        )
+    else()
+      message(WARNING "IPO is not supported: ${output}")
+    endif()
+  endif()
+
   # Copy the XML file along side the executable
   get_filename_component(cli_xml_filename ${cli_xml_file} NAME)
   add_custom_command(TARGET ${CLP} POST_BUILD
