@@ -182,6 +182,13 @@ endif()
 
 target_link_libraries(${lib_name} ${libs})
 ## target_link_libraries(${lib_name}-static ${link_libs})
+set(USE_COMPILER_HIDDEN_VISIBILITY ON)
+if (USE_COMPILER_HIDDEN_VISIBILITY) 
+  # Prefer to use target properties supported by newer cmake 
+  set_target_properties(${lib_name} PROPERTIES CXX_VISIBILITY_PRESET hidden) 
+  set_target_properties(${lib_name} PROPERTIES C_VISIBILITY_PRESET hidden) 
+  set_target_properties(${lib_name} PROPERTIES VISIBILITY_INLINES_HIDDEN 1) 
+endif()
 
 option(USE_COMPILER_HIDDEN_VISIBILITY "Use HIDDEN visibility support if available." ON)
 mark_as_advanced(USE_COMPILER_HIDDEN_VISIBILITY)
@@ -195,7 +202,7 @@ endif()
 # Apply user-defined properties to the library target.
 #
 if(ModuleDescriptionParser_LIBRARY_PROPERTIES)
-  set_target_properties(${lib_name} PROPERTIES ${ModuleDescriptionParser_LIBRARY_PROPERTIES})
+  set_target_properties(${lib_name} PROPERTIES ${ModuleDescriptionParser_LIBRARY_PROPERTIES} )
 endif()
 
 # --------------------------------------------------------------------------
