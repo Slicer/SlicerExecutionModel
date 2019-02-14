@@ -1,17 +1,31 @@
 #-----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.10.2)
-foreach(p
-  ## Only policies introduced after the cmake_minimum_required
-  ## version need to explicitly be set to NEW.
-#Policies Introduced by CMake 3.11
-CMP0072  # FindOpenGL prefers GLVND by default when available.
-  )
-  if(POLICY ${p})
-    cmake_policy(SET ${p} NEW)
-  endif()
-endforeach()
+cmake_policy(VERSION 3.10.2...3.13.2)
 
-project(SlicerExecutionModel CXX)
+#-----------------------------------------------------------------------------
+# Enable C++11
+#-----------------------------------------------------------------------------
+#####
+##  Set the default target language standard properties
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
+endif()
+if(NOT CMAKE_CXX_STANDARD_REQUIRED)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+if(NOT CMAKE_CXX_EXTENSIONS)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+set(VALID_CXX_STANDARDS "11" "14" "17")
+if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
+   MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}.")
+endif()
+
+set(SlicerExecutionModel_DESCRIPTION "An open-source CMake-based project that provides macros and associated tools for the easy building of 3D Slicer command line interface (CLI) modules.")
+set(SlicerExecutionModel_HOMEPAGE_URL "https://github.com/Slicer/SlicerExecutionModel")
+project(SlicerExecutionModel
+        VERSION 2.0.0        #Starting at version 2.0.0, C++11 is required
+        LANGUAGES C CXX)
 
 #-----------------------------------------------------------------------------
 
