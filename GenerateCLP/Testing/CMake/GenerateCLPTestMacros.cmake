@@ -22,7 +22,26 @@ macro(GenerateCLP_TEST_PROJECT)
   set(multiValueArgs)
   cmake_parse_arguments(TEST_CLI "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-  project(${TEST_CLI_NAME})
+  #-----------------------------------------------------------------------------
+  # Enable C++11
+  #-----------------------------------------------------------------------------
+  #####
+  ##  Set the default target language standard properties
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
+  endif()
+  if(NOT CMAKE_CXX_STANDARD_REQUIRED)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  endif()
+  if(NOT CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+  endif()
+  set(VALID_CXX_STANDARDS "11" "14" "17")
+  if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
+     MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}.")
+  endif()
+
+  project(${TEST_CLI_NAME} VERSION 0.0.1 LANGUAGES C CXX)
 
   #-----------------------------------------------------------------------------
   if(GenerateCLP_USE_JSONCPP)
