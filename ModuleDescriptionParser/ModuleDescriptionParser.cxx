@@ -929,7 +929,7 @@ startElement(void *userData, const char *element, const char **attrs)
       }
     parameter = new ModuleParameter;
     int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
-    if (attrCount == 2 && 
+    if (attrCount == 2 &&
         (strcmp(attrs[0], "multiple") == 0) &&
         (strcmp(attrs[1], "true") == 0))
       {
@@ -1544,6 +1544,27 @@ startElement(void *userData, const char *element, const char **attrs)
         }
       }
     }
+  else if (parameter && (name == "reference"))
+    {
+    int attrCount = XML_GetSpecifiedAttributeCount(ps->Parser);
+    if (attrCount > 0)
+      {
+      std::string role("");
+      std::string parameterName("");
+      for (int i=0; i < attrCount/2; ++i)
+        {
+        if (strcmp(attrs[2*i], "role") == 0)
+          {
+          role = std::string(attrs[2*i+1]);
+          }
+        else if (strcmp(attrs[2*i], "parameter") == 0)
+          {
+          parameterName = std::string(attrs[2*i+1]);
+          }
+        }
+      parameter->AddForwardReference(role, parameterName);
+      }
+    }
   ps->CurrentParameter = parameter;
   ps->CurrentGroup = group;
   ps->OpenTags.push(name);
@@ -1790,7 +1811,7 @@ endElement(void *userData, const char *element)
       {
       std::string error("ModuleDescriptionParser Error: <"
                         + name
-                        + std::string("> can only contain one character. \"") 
+                        + std::string("> can only contain one character. \"")
                         + temp
                         + std::string("\" has more than one character."));
       if (ps->ErrorDescription.size() == 0)
@@ -1848,12 +1869,12 @@ endElement(void *userData, const char *element)
         ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
         ps->Error = true;
         }
-        if (!ps->OpenTags.empty())
-          {
-          ps->OpenTags.pop();
-          ps->Depth--;
-          }
-        return;
+      if (!ps->OpenTags.empty())
+        {
+        ps->OpenTags.pop();
+        ps->Depth--;
+        }
+      return;
       }
     if (!parameter->GetIndex().empty())
       {
@@ -1867,11 +1888,11 @@ endElement(void *userData, const char *element)
         ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
         ps->Error = true;
         }
-        if (!ps->OpenTags.empty())
-          {
-          ps->OpenTags.pop();
-          ps->Depth--;
-          }
+      if (!ps->OpenTags.empty())
+        {
+        ps->OpenTags.pop();
+        ps->Depth--;
+        }
       return;
       }
     parameter->SetLongFlag(temp);
@@ -2057,7 +2078,11 @@ endElement(void *userData, const char *element)
     trimLeadingAndTrailing(temp);
     parameter->SetStep(temp);
     }
-  else if(name != "executable")
+  else if (parameter && (name == "reference"))
+    {
+    // No-op: merely make "reference" element accepted. Its contents are handled in startElement
+    }
+  else if (name != "executable")
     {
     std::string error("ModuleDescriptionParser Error: Unrecognized element <" + name + std::string("> was found."));
     if (ps->ErrorDescription.size() == 0)
@@ -2066,7 +2091,7 @@ endElement(void *userData, const char *element)
       ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
       ps->Error = true;
       }
-    } 
+    }
 
   if (!ps->OpenTags.empty())
     {
@@ -2096,7 +2121,7 @@ ModuleDescriptionParser::processHiddenAttribute(const char* value, ModuleParamet
       }
     return false;
     }
-} 
+}
 
 //----------------------------------------------------------------------------
 void
@@ -2125,7 +2150,7 @@ ModuleDescriptionParser::Parse( const std::string& xml, ModuleDescription& descr
 
   ParserState parserState;
   parserState.CurrentDescription = description;
-  
+
   XML_Parser parser = XML_ParserCreate(NULL);
   int done;
 
