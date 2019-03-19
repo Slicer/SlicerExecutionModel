@@ -19,6 +19,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 /** \class ModuleParameter
  *  \brief Class to describe a single parameter to a module.
@@ -76,6 +77,27 @@ public:
   virtual const std::string& GetReference() const
   {
     return this->Reference;
+  }
+
+  virtual void AddForwardReference(const std::string &role, const std::string &ref)
+  {
+    std::map<std::string,std::vector<std::string> >::iterator frit =
+      this->ForwardReferences.find(role);
+    if (frit != this->ForwardReferences.end())
+      {
+      this->ForwardReferences[role].push_back(ref);
+      }
+    else
+      {
+      std::vector<std::string> refVector(1, ref);
+      this->ForwardReferences[role] = refVector;
+      }
+  }
+
+  virtual const void GetForwardReferences(
+    std::map<std::string,std::vector<std::string> > &refs) const
+  {
+    refs = this->ForwardReferences;
   }
 
   virtual void SetHidden(const std::string &hidden)
@@ -380,6 +402,7 @@ private:
   std::string CPPType;
   std::string Type;
   std::string Reference;
+  std::map<std::string,std::vector<std::string> > ForwardReferences;
   std::string Hidden;
   std::string ArgType;
   std::string StringToType;

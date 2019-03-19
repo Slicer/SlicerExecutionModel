@@ -33,33 +33,33 @@ splitString (const std::string &text,
 //----------------------------------------------------------------------------
 ModuleParameter::ModuleParameter()
 {
-    this->Tag = "";
-    this->Name = "";
-    this->Description = "";
-    this->Label = "";
-    this->CPPType = "";
-    this->Type = "";
-    this->Reference = "";
-    this->Hidden = "false";
-    this->ArgType = "";
-    this->StringToType = "";
-    this->Value = "";
-    this->Flag = "";
-    this->LongFlag = "";
-    this->Constraints = "";
-    this->Minimum = "";
-    this->Maximum = "";
-    this->Step = "";
-    this->Channel = "";
-    this->Index = "";
-    this->Multiple = "false";
-    this->Aggregate = "false";
-    this->FileExtensionsAsString = "";        
-    this->CoordinateSystem = "";
-    this->FlagAliasesAsString = "";
-    this->DeprecatedFlagAliasesAsString = "";
-    this->LongFlagAliasesAsString = "";
-    this->DeprecatedLongFlagAliasesAsString = "";
+  this->Tag = "";
+  this->Name = "";
+  this->Description = "";
+  this->Label = "";
+  this->CPPType = "";
+  this->Type = "";
+  this->Reference = "";
+  this->Hidden = "false";
+  this->ArgType = "";
+  this->StringToType = "";
+  this->Value = "";
+  this->Flag = "";
+  this->LongFlag = "";
+  this->Constraints = "";
+  this->Minimum = "";
+  this->Maximum = "";
+  this->Step = "";
+  this->Channel = "";
+  this->Index = "";
+  this->Multiple = "false";
+  this->Aggregate = "false";
+  this->FileExtensionsAsString = "";        
+  this->CoordinateSystem = "";
+  this->FlagAliasesAsString = "";
+  this->DeprecatedFlagAliasesAsString = "";
+  this->LongFlagAliasesAsString = "";
+  this->DeprecatedLongFlagAliasesAsString = "";
 }
 
 //----------------------------------------------------------------------------
@@ -72,6 +72,7 @@ ModuleParameter::ModuleParameter(const ModuleParameter& parameter)
   this->CPPType = parameter.CPPType;
   this->Type = parameter.Type;
   this->Reference = parameter.Reference;
+  this->ForwardReferences = parameter.ForwardReferences;
   this->Hidden = parameter.Hidden;
   this->ArgType = parameter.ArgType;
   this->StringToType = parameter.StringToType;
@@ -112,6 +113,7 @@ void ModuleParameter::operator=(const ModuleParameter& parameter)
   this->CPPType = parameter.CPPType;
   this->Type = parameter.Type;
   this->Reference = parameter.Reference;
+  this->ForwardReferences = parameter.ForwardReferences;
   this->Hidden = parameter.Hidden;
   this->ArgType = parameter.ArgType;
   this->StringToType = parameter.StringToType;
@@ -204,6 +206,28 @@ std::ostream & operator<<(std::ostream &os, const ModuleParameter &parameter)
   os << "      " << "Label: " << parameter.GetLabel() << std::endl;
   os << "      " << "Type: " << parameter.GetType() << std::endl;
   os << "      " << "Reference: " << parameter.GetReference() << std::endl;
+  std::map<std::string,std::vector<std::string> > forwardReferences;
+  parameter.GetForwardReferences(forwardReferences);
+  std::map<std::string,std::vector<std::string> >::const_iterator frit;
+  for (frit = forwardReferences.begin(); frit != forwardReferences.end(); ++frit)
+    {
+    if (frit != forwardReferences.begin())
+      {
+      os << "; ";
+      }
+    os << frit->first << ": ";
+
+    std::vector<std::string>::const_iterator frvit;
+    for (frvit = frit->second.begin(); frvit != frit->second.end(); ++frvit)
+      {
+      if (frvit != frit->second.begin())
+        {
+        os << ", ";
+        }
+      os << (*frvit);
+      }
+    }
+  os << std::endl;
   os << "      " << "Hidden: " << parameter.GetHidden() << std::endl;
   os << "      " << "CPPType: " << parameter.GetCPPType() << std::endl;
   os << "      " << "ArgType: " << parameter.GetArgType() << std::endl;
