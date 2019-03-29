@@ -94,7 +94,7 @@ public:
       }
   }
 
-  virtual const void GetForwardReferences(
+  virtual void GetForwardReferences(
     std::map<std::string,std::vector<std::string> > &refs) const
   {
     refs = this->ForwardReferences;
