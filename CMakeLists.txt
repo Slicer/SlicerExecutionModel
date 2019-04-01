@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.10.2...3.14.2)
-cmake_policy(VERSION 3.10.2...3.14.2)
+cmake_minimum_required(VERSION 3.13.4...3.14.2)
+cmake_policy(VERSION 3.13.4...3.14.2)
 
 #-----------------------------------------------------------------------------
 # Enable C++11
@@ -21,10 +21,10 @@ if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
    message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}.")
 endif()
 
-set(SlicerExecutionModel_DESCRIPTION "An open-source CMake-based project that provides macros and associated tools for the easy building of 3D Slicer command line interface (CLI) modules.")
-set(SlicerExecutionModel_HOMEPAGE_URL "https://github.com/Slicer/SlicerExecutionModel")
 project(SlicerExecutionModel
-        VERSION 2.0.0        #Starting at version 2.0.0, C++11 is required
+        VERSION 2.0.0  #Starting at version 2.0.0, C++11 is required
+        DESCRIPTION    "An open-source CMake-based project that provides macros and associated tools for the easy building of 3D Slicer command line interface (CLI) modules."
+        HOMEPAGE_URL   "https://github.com/Slicer/SlicerExecutionModel"
         LANGUAGES C CXX)
 
 #-----------------------------------------------------------------------------
