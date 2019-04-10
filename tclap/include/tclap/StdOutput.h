@@ -164,30 +164,36 @@ inline void StdOutput::_shortUsage( CmdLineInterface& _cmd,
   XorHandler xorHandler = _cmd.getXorHandler();
   std::vector< std::vector<Arg*> > xorList = xorHandler.getXorList();
 
-  std::string s = progName + " ";
+  std::string s = progName;
 
+  spacePrint( std::cout, s, 75, 2, 6 );
+  s.clear();
+  const int secondLineOffset = 4;
   // first the xor
   for ( int i = 0; static_cast<unsigned int>(i) < xorList.size(); i++ )
     {
     s += " {";
     for ( ArgVectorIterator it = xorList[i].begin();
           it != xorList[i].end(); it++ )
+      {
       s += (*it)->shortID() + "|";
+      }
 
     s[s.length()-1] = '}';
+    spacePrint( std::cout, s, 75, secondLineOffset, 3*secondLineOffset );
+    s.clear();
     }
 
   // then the rest
   for (ArgListIterator it = argList.begin(); it != argList.end(); it++)
+    {
     if ( !xorHandler.contains( (*it) ) )
+      {
       s += " " + (*it)->shortID();
-
-  // if the program name is too long, then adjust the second line offset
-  int secondLineOffset = static_cast<int>(progName.length()) + 2;
-  if ( secondLineOffset > 75/2 )
-    secondLineOffset = static_cast<int>(75/2);
-
-  spacePrint( std::cout, s, 75, 3, secondLineOffset );
+      }
+    spacePrint( std::cout, s, 75, secondLineOffset, 3*secondLineOffset );
+    s.clear();
+    }
 }
 
 inline void StdOutput::_longUsage( CmdLineInterface& _cmd,
