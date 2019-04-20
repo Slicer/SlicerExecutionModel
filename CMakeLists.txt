@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.10.2)
-cmake_policy(VERSION 3.10.2...3.13.2)
+cmake_minimum_required(VERSION 3.10.2...3.14.2)
+cmake_policy(VERSION 3.10.2...3.14.2)
 
 #-----------------------------------------------------------------------------
 # Enable C++11
@@ -18,7 +18,7 @@ if(NOT CMAKE_CXX_EXTENSIONS)
 endif()
 set(VALID_CXX_STANDARDS "11" "14" "17")
 if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
-   MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}.")
+   message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}.")
 endif()
 
 set(SlicerExecutionModel_DESCRIPTION "An open-source CMake-based project that provides macros and associated tools for the easy building of 3D Slicer command line interface (CLI) modules.")
