@@ -26,7 +26,7 @@ macro(SEMMacroBuildCLI)
     LINK_DIRECTORIES
     INCLUDE_DIRECTORIES
     )
-  CMAKE_PARSE_ARGUMENTS(LOCAL_SEM
+  cmake_parse_arguments(LOCAL_SEM
     "${options}"
     "${oneValueArgs}"
     "${multiValueArgs}"
