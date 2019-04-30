@@ -91,4 +91,4 @@ macro(GENERATECLP SOURCES XML_FILE)
   set(${SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/${TMP_FILENAME}CLP.h ${${SOURCES}})
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-endmacro(GENERATECLP)
+endmacro()

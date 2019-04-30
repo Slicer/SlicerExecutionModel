@@ -39,7 +39,7 @@ if( JsonCpp_DIR )
     ${JsonCpp_DIR}/lib/RelWithDebInfo
     ${JsonCpp_DIR}/lib/Debug )
   set( _jsoncpp_options NO_DEFAULT_PATH )
-endif( JsonCpp_DIR )
+endif()
 
 find_path( JsonCpp_INCLUDE_DIR NAMES json/json.h
   HINTS ${_jsoncpp_include_dir}
