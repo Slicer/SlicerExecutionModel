@@ -158,9 +158,9 @@ macro(SETIFEMPTY)
   set(VALUE ${ARGV1})
   if(NOT ${KEY})
     set(${ARGV})
-  endif(NOT ${KEY})
+  endif()
 endmacro()
-endif(NOT SETIFEMPTY)
+endif()
 ###
 
 SETIFEMPTY(TCLAP_DIR ${CMAKE_CURRENT_BINARY_DIR}/tclap CACHE PATH "Location of TCLAPConfig.cmake" FORCE)
