@@ -151,12 +151,14 @@ endif()
 # --------------------------------------------------------------------------
 set(lib_name ModuleDescriptionParser)
 include(GenerateExportHeader)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDescriptionParserPragmas.h.in ModuleDescriptionParser_PRAGMAS)
 add_library(${lib_name} ${ModuleDescriptionParser_SRCS})
 generate_export_header(${lib_name}
   BASE_NAME ${lib_name}
   EXPORT_MACRO_NAME ${lib_name}_EXPORT
   EXPORT_FILE_NAME ${lib_name}Export.h
   STATIC_DEFINE ${lib_name}_STATIC
+  CUSTOM_CONTENT_FROM_VARIABLE ModuleDescriptionParser_PRAGMAS
   )
 
 ## Always build an explicitly static library for linking against GenerateCLP so that
