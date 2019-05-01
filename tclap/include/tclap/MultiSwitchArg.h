@@ -52,7 +52,7 @@ namespace TCLAP {
 */
 class MultiSwitchArg : public SwitchArg
 {
-protected:
+	protected:
 
   /**
    * The value of the switch.
@@ -60,7 +60,7 @@ protected:
   int _value;
 
 
-public:
+	public:
 
   /**
    * MultiSwitchArg constructor.
@@ -143,8 +143,8 @@ inline MultiSwitchArg::MultiSwitchArg(const std::string& flag,
                                       const std::string& desc,
                                       int init,
                                       Visitor* v )
-  : SwitchArg(flag, name, desc, false, v),
-    _value( init )
+: SwitchArg(flag, name, desc, false, v),
+_value( init )
 { }
 
 inline MultiSwitchArg::MultiSwitchArg(const std::string& flag,
@@ -153,8 +153,8 @@ inline MultiSwitchArg::MultiSwitchArg(const std::string& flag,
                                       CmdLineInterface& parser,
                                       int init,
                                       Visitor* v )
-  : SwitchArg(flag, name, desc, false, v),
-    _value( init )
+: SwitchArg(flag, name, desc, false, v),
+_value( init )
 {
   parser.add( this );
 }
@@ -211,14 +211,14 @@ inline bool MultiSwitchArg::processArg(int *i, std::vector<std::string>& args)
     return false;
 }
 
-std::string MultiSwitchArg::shortID(const std::string&) const
+std::string MultiSwitchArg::shortID(const std::string& /*val*/) const
 {
   std::string id = Arg::shortID() + " ... ";
 
   return id;
 }
 
-std::string MultiSwitchArg::longID(const std::string&) const
+std::string MultiSwitchArg::longID(const std::string& /*val*/) const
 {
   std::string id = Arg::longID() + "  (accepted multiple times)";
 

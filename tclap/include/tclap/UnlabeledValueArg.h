@@ -45,7 +45,6 @@ class UnlabeledValueArg : public ValueArg<T>
 
   // If compiler has two stage name lookup (as gcc >= 3.4 does)
   // this is requried to prevent undef. symbols
-#ifndef __BORLANDC__
   using ValueArg<T>::_ignoreable;
   using ValueArg<T>::_hasBlanks;
   using ValueArg<T>::_extractValue;
@@ -54,8 +53,8 @@ class UnlabeledValueArg : public ValueArg<T>
   using ValueArg<T>::_description;
   using ValueArg<T>::_alreadySet;
   using ValueArg<T>::toString;
-#endif
-public:
+
+	public:
 
   /**
    * UnlabeledValueArg constructor.
@@ -218,7 +217,7 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
                                         const std::string& typeDesc,
                                         bool ignoreable,
                                         Visitor* v)
-  : ValueArg<T>("", name, desc, req, val, typeDesc, v)
+: ValueArg<T>("", name, desc, req, val, typeDesc, v)
 {
   _ignoreable = ignoreable;
 
@@ -235,7 +234,7 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
                                         CmdLineInterface& parser,
                                         bool ignoreable,
                                         Visitor* v)
-  : ValueArg<T>("", name, desc, req, val, typeDesc, v)
+: ValueArg<T>("", name, desc, req, val, typeDesc, v)
 {
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(req, toString());
@@ -253,7 +252,7 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
                                         Constraint<T>* constraint,
                                         bool ignoreable,
                                         Visitor* v)
-  : ValueArg<T>("", name, desc, req, val, constraint, v)
+: ValueArg<T>("", name, desc, req, val, constraint, v)
 {
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(req, toString());
@@ -268,7 +267,7 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string& name,
                                         CmdLineInterface& parser,
                                         bool ignoreable,
                                         Visitor* v)
-  : ValueArg<T>("", name, desc, req, val, constraint,  v)
+: ValueArg<T>("", name, desc, req, val, constraint,  v)
 {
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(req, toString());
@@ -309,7 +308,7 @@ bool UnlabeledValueArg<T>::processArg(int *i, std::vector<std::string>& args)
  * Overriding shortID for specific output.
  */
 template<class T>
-std::string UnlabeledValueArg<T>::shortID(const std::string&) const
+std::string UnlabeledValueArg<T>::shortID(const std::string& /*val*/) const
 {
   std::string id = "<" + _typeDesc + ">";
 
@@ -320,7 +319,7 @@ std::string UnlabeledValueArg<T>::shortID(const std::string&) const
  * Overriding longID for specific output.
  */
 template<class T>
-std::string UnlabeledValueArg<T>::longID(const std::string&) const
+std::string UnlabeledValueArg<T>::longID(const std::string& /*val*/) const
 {
   // Ideally we would like to be able to use RTTI to return the name
   // of the type required for this argument.  However, g++ at least,

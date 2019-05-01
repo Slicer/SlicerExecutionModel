@@ -42,7 +42,7 @@ namespace TCLAP {
  */
 class Arg
 {
-private:
+	private: 
 
   /**
    * Indicates whether the rest of the arguments should be ignored.
@@ -55,7 +55,7 @@ private:
    */
   static char& delimiterRef() { static char delim = ' '; return delim; }
 
-protected:
+	protected:
 
   /**
    * The single char flag used to identify the argument.
@@ -152,7 +152,7 @@ protected:
        bool valreq,
        Visitor* v = NULL );
 
-public:
+	public:
   /**
    * Destructor.
    */

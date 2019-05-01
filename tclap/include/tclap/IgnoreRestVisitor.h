@@ -34,7 +34,7 @@ namespace TCLAP {
  */
 class IgnoreRestVisitor: public Visitor
 {
-public:
+	public:
 
   /**
    * Constructor.

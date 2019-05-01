@@ -65,7 +65,7 @@ class ValueExtractor
 {
   friend class MultiArg<T>;
 
-private:
+	private:
 
   /**
    * Reference to the vector of values where the result of the
@@ -130,7 +130,7 @@ class ValueExtractor<std::string>
 {
   friend class MultiArg<std::string>;
 
-private:
+   	private:
 
   /**
    * Reference to the vector of strings where the result of the
@@ -166,7 +166,7 @@ private:
 template<class T>
 class MultiArg : public Arg
 {
-protected:
+	protected:
 
   /**
    * The list of values parsed from the CmdLine.
@@ -193,7 +193,7 @@ protected:
 
   bool _allowMore;
 
-public:
+	public:
 
   /**
    * Constructor.
@@ -338,7 +338,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
                       bool req,
                       const std::string& typeDesc,
                       Visitor* v)
-  : Arg( flag, name, desc, req, true, v ),
+: Arg( flag, name, desc, req, true, v ),
     _typeDesc( typeDesc ),
     _constraint( NULL ),
     _allowMore(false)
@@ -354,7 +354,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
                       const std::string& typeDesc,
                       CmdLineInterface& parser,
                       Visitor* v)
-  : Arg( flag, name, desc, req, true, v ),
+: Arg( flag, name, desc, req, true, v ),
     _typeDesc( typeDesc ),
     _constraint( NULL ),
     _allowMore(false)
@@ -373,7 +373,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
                       bool req,
                       Constraint<T>* constraint,
                       Visitor* v)
-  : Arg( flag, name, desc, req, true, v ),
+: Arg( flag, name, desc, req, true, v ),
     _typeDesc( constraint->shortID() ),
     _constraint( constraint ),
     _allowMore(false)
@@ -389,7 +389,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
                       Constraint<T>* constraint,
                       CmdLineInterface& parser,
                       Visitor* v)
-  : Arg( flag, name, desc, req, true, v ),
+: Arg( flag, name, desc, req, true, v ),
     _typeDesc( constraint->shortID() ),
     _constraint( constraint ),
     _allowMore(false)
@@ -480,7 +480,7 @@ bool MultiArg<T>::processArg(int *i, std::vector<std::string>& args)
  *
  */
 template<class T>
-std::string MultiArg<T>::shortID(const std::string&) const
+std::string MultiArg<T>::shortID(const std::string& /*val*/) const
 {
   std::string id = Arg::shortID(_typeDesc) + " ... ";
 
@@ -491,7 +491,7 @@ std::string MultiArg<T>::shortID(const std::string&) const
  *
  */
 template<class T>
-std::string MultiArg<T>::longID(const std::string&) const
+std::string MultiArg<T>::longID(const std::string&i /*val*/) const
 {
   std::string id = Arg::longID(_typeDesc) + "  (accepted multiple times)";
 

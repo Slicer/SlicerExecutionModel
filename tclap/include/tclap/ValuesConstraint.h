@@ -53,7 +53,7 @@ template<class T>
 class ValuesConstraint : public Constraint<T>
 {
 
-public:
+	public:
 
   /**
    * Constructor.
@@ -83,7 +83,7 @@ public:
    */
   virtual bool check(const T& value) const;
 
-protected:
+	protected:
 
   /**
    * The list of valid values.
@@ -99,7 +99,7 @@ protected:
 
 template<class T>
 ValuesConstraint<T>::ValuesConstraint(std::vector<T>& allowed)
-  : _allowed(allowed)
+: _allowed(allowed)
 {
   for ( unsigned int i = 0; i < _allowed.size(); i++ )
     {

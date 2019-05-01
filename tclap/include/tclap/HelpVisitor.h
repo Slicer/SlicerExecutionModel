@@ -34,7 +34,7 @@ namespace TCLAP {
  */
 class HelpVisitor: public Visitor
 {
-protected:
+	protected:
 
   /**
    * The CmdLine the output will be generated for.
@@ -46,7 +46,7 @@ protected:
    */
   CmdLineOutput** _out;
 
-public:
+	public:
 
   /**
    * Constructor.

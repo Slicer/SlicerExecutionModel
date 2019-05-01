@@ -35,7 +35,7 @@ namespace TCLAP {
  */
 class VersionVisitor: public Visitor
 {
-protected:
+	protected:
 
   /**
    * The CmdLine of interest.
@@ -47,7 +47,7 @@ protected:
    */
   CmdLineOutput** _out;
 
-public:
+	public:
 
   /**
    * Constructor.

@@ -30,7 +30,7 @@ namespace TCLAP {
  */
 class Visitor
 {
-public:
+	public:
 
   /**
    * Constructor. Does nothing.

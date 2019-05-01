@@ -38,14 +38,14 @@ namespace TCLAP {
  */
 class SwitchArg : public Arg
 {
-protected:
+	protected:
 
   /**
    * The value of the switch.
    */
   bool _value;
 
-public:
+	public:
 
   /**
    * SwitchArg constructor.
@@ -123,7 +123,7 @@ inline SwitchArg::SwitchArg(const std::string& flag,
                             const std::string& desc,
                             bool _default,
                             Visitor* v )
-  : Arg(flag, name, desc, false, false, v),
+: Arg(flag, name, desc, false, false, v),
     _value( _default )
 { }
 
@@ -133,7 +133,7 @@ inline SwitchArg::SwitchArg(const std::string& flag,
                             CmdLineInterface& parser,
                             bool _default,
                             Visitor* v )
-  : Arg(flag, name, desc, false, false, v),
+: Arg(flag, name, desc, false, false, v),
     _value( _default )
 {
   parser.add( this );

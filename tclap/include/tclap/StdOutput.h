@@ -48,7 +48,7 @@ namespace TCLAP {
 class StdOutput : public CmdLineOutput
 {
 
-public:
+	public:
 
   /**
   * Prints the usage to stdout.  Can be overridden to
@@ -73,7 +73,7 @@ public:
   virtual void failure(CmdLineInterface& c,
                        ArgException& e );
 
-protected:
+	protected:
 
   /**
        * Writes a brief usage message with short args.
@@ -157,7 +157,7 @@ inline void StdOutput::failure( CmdLineInterface& _cmd,
 }
 
 inline void StdOutput::_shortUsage( CmdLineInterface& _cmd,
-                                    std::ostream& ) const
+				    std::ostream& /*os*/ ) const
 {
   std::list<Arg*> argList = _cmd.getArgList();
   std::string progName = _cmd.getProgramName();

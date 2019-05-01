@@ -38,7 +38,7 @@ template<class T>
 class Constraint
 {
 
-public:
+	public:
   /**
    * Returns a description of the Constraint.
    */

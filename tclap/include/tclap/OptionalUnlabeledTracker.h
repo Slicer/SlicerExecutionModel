@@ -31,7 +31,7 @@ namespace TCLAP {
 class OptionalUnlabeledTracker
 {
 
-public:
+	public:
 
   static void check( bool req, const std::string& argName );
 
@@ -39,7 +39,7 @@ public:
 
   static bool& alreadyOptional() { return alreadyOptionalRef(); }
 
-private:
+	private:
 
   static bool& alreadyOptionalRef() { static bool ct = false; return ct; }
 };

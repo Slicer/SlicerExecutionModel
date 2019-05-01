@@ -42,7 +42,7 @@ namespace TCLAP {
 class DocBookOutput : public CmdLineOutput
 {
 
-public:
+	public:
 
   /**
    * Prints the usage to stdout.  Can be overridden to
@@ -67,7 +67,7 @@ public:
   virtual void failure(CmdLineInterface& c,
                        ArgException& e );
 
-protected:
+	protected:
 
   /**
    * Substitutes the char r for string x in string s.

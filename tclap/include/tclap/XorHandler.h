@@ -37,14 +37,14 @@ namespace TCLAP {
  */
 class XorHandler
 {
-protected:
+	protected:
 
   /**
    * The list of of lists of Arg's to be or'd together.
    */
   std::vector< std::vector<Arg*> > _orList;
 
-public:
+	public:
 
   /**
    * Constructor.  Does nothing.

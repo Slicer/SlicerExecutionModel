@@ -67,7 +67,7 @@ template<class T> class ValueExtractor
  */
   friend class ValueArg<T>;
 
-private:
+	private:
 
   /**
    * Reference to the value where the result of the extraction will
@@ -169,7 +169,7 @@ private:
 template<class T>
 class ValueArg : public Arg
 {
-protected:
+    protected:
 
   /**
    * The value parsed from the command line.
@@ -200,7 +200,7 @@ protected:
    */
   void _extractValue( const std::string& val );
 
-public:
+	public:
 
   /**
    * Labeled ValueArg constructor.
@@ -374,7 +374,7 @@ ValueArg<T>::ValueArg(const std::string& flag,
                       T val,
                       const std::string& typeDesc,
                       Visitor* v)
-  : Arg(flag, name, desc, req, true, v),
+: Arg(flag, name, desc, req, true, v),
     _value( val ),
     _typeDesc( typeDesc ),
     _constraint( NULL )
@@ -389,7 +389,7 @@ ValueArg<T>::ValueArg(const std::string& flag,
                       const std::string& typeDesc,
                       CmdLineInterface& parser,
                       Visitor* v)
-  : Arg(flag, name, desc, req, true, v),
+: Arg(flag, name, desc, req, true, v),
     _value( val ),
     _typeDesc( typeDesc ),
     _constraint( NULL )
@@ -405,7 +405,7 @@ ValueArg<T>::ValueArg(const std::string& flag,
                       T val,
                       Constraint<T>* constraint,
                       Visitor* v)
-  : Arg(flag, name, desc, req, true, v),
+: Arg(flag, name, desc, req, true, v),
     _value( val ),
     _typeDesc( constraint->shortID() ),
     _constraint( constraint )
@@ -420,7 +420,7 @@ ValueArg<T>::ValueArg(const std::string& flag,
                       Constraint<T>* constraint,
                       CmdLineInterface& parser,
                       Visitor* v)
-  : Arg(flag, name, desc, req, true, v),
+: Arg(flag, name, desc, req, true, v),
     _value( val ),
     _typeDesc( constraint->shortID() ),
     _constraint( constraint )
@@ -500,7 +500,7 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string>& args)
  * Implementation of shortID.
  */
 template<class T>
-std::string ValueArg<T>::shortID(const std::string&) const
+std::string ValueArg<T>::shortID(const std::string& /*val*/) const
 {
   return Arg::shortID( _typeDesc );
 }
@@ -509,7 +509,7 @@ std::string ValueArg<T>::shortID(const std::string&) const
  * Implementation of longID.
  */
 template<class T>
-std::string ValueArg<T>::longID(const std::string&) const
+std::string ValueArg<T>::longID(const std::string& /*val*/) const
 {
   return Arg::longID( _typeDesc );
 }
