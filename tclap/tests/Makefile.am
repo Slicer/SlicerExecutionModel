@@ -59,7 +59,36 @@ TESTS = test1.sh \
 		test57.sh \
 		test58.sh \
 		test59.sh \
-		test60.sh
+		test60.sh \
+		test61.sh \
+		test62.sh \
+		test63.sh \
+		test64.sh \
+		test65.sh \
+		test66.sh \
+		test67.sh \
+		test68.sh \
+		test69.sh \
+		test70.sh \
+		test71.sh \
+		test72.sh \
+		test73.sh \
+		test74.sh \
+		test75.sh \
+		test76.sh \
+		test77.sh \
+		test78.sh \
+		test79.sh \
+		test80.sh \
+		test81.sh \
+		test82.sh \
+		test83.sh \
+		test84.sh \
+		test85.sh \
+		test86.sh \
+		test87.sh \
+		test88.sh \
+		test89.sh
 
 EXTRA_DIST = $(TESTS) \
 			 test1.out \
@@ -121,6 +150,35 @@ EXTRA_DIST = $(TESTS) \
 			 test57.out \
 			 test58.out \
 			 test59.out \
-			 test60.out
+			 test60.out \
+			 test61.out \
+			 test62.out \
+			 test63.out \
+			 test64.out \
+			 test65.out \
+			 test66.out \
+			 test67.out \
+			 test68.out \
+			 test69.out \
+			 test70.out \
+			 test71.out \
+			 test72.out \
+			 test73.out \
+			 test74.out \
+			 test75.out \
+			 test76.out \
+			 test77.out \
+			 test78.out \
+			 test79.out \
+			 test80.out \
+			 test81.out \
+			 test82.out \
+			 test83.out \
+			 test84.out \
+			 test85.out \
+			 test86.out \
+			 test87.out \
+			 test88.out \
+			 test89.out
 
 CLEANFILES = tmp.out

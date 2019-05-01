@@ -7,5 +7,5 @@
 
 for ( $i = 1; $i <= $ARGV[0]; $i++ )
 {
-  system "test$i.sh; mv tmp.out test$i.out";
+	system "test$i.sh; mv tmp.out test$i.out";
 }
