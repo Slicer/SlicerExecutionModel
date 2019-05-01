@@ -4,13 +4,13 @@ let "suc = 0"
 let "fail = 0"
 
 for tnam in `ls test*.sh`
-  do 
+  do
   echo "Running test $tnam"
-  if ./$tnam; then 
-      echo "OK" 
+  if ./$tnam; then
+      echo "OK"
       let "suc = $(($suc + 1))"
   else
-    echo "FAIL" 
+    echo "FAIL"
       let "fail = $(($fail + 1))"
   fi
 done
@@ -26,4 +26,4 @@ echo "FAILED: $fail"
 if [ $fail -ne 0 ]; then
     exit 1
 fi
-    
+

@@ -6,9 +6,9 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-  // Wrap everything in a try block.  Do this every time, 
-  // because exceptions will be thrown for problems. 
-  try {  
+  // Wrap everything in a try block.  Do this every time,
+  // because exceptions will be thrown for problems.
+  try {
 
   // Define the command line object.
   CmdLine cmd("Command description message", ' ', "0.9");
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
   // Parse the args.
   cmd.parse( argc, argv );
 
-  // Get the value parsed by each arg. 
+  // Get the value parsed by each arg.
   int num = intArg.getValue();
   string name = nameArg.getValue();
 

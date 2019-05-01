@@ -1,23 +1,23 @@
 
-/****************************************************************************** 
- * 
+/******************************************************************************
+ *
  *  file:  UnlabeledMultiArg.h
- * 
+ *
  *  Copyright (c) 2003, Michael E. Smoot.
  *  All rights reverved.
- * 
+ *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
- *  
- *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
- *  DEALINGS IN THE SOFTWARE.  
- *  
- *****************************************************************************/ 
+ *
+ *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ *  DEALINGS IN THE SOFTWARE.
+ *
+ *****************************************************************************/
 
 
 #ifndef TCLAP_MULTIPLE_UNLABELED_ARGUMENT_H
@@ -33,7 +33,7 @@ namespace TCLAP {
 
 /**
  * Just like a MultiArg, except that the arguments are unlabeled.  Basically,
- * this Arg will slurp up everything that hasn't been matched to another 
+ * this Arg will slurp up everything that hasn't been matched to another
  * Arg.
  */
 template<class T>
@@ -54,9 +54,9 @@ class UnlabeledMultiArg : public MultiArg<T>
 #endif
 
 public:
-    
+
   /**
-   * Constructor.  
+   * Constructor.
    * \param name - The name of the Arg. Note that this is used for
    * identification, not as a long flag.
    * \param desc - A description of what the argument is for or
@@ -79,7 +79,7 @@ public:
                      bool ignoreable = false,
                      Visitor* v = NULL );
   /**
-   * Constructor.  
+   * Constructor.
    * \param name - The name of the Arg. Note that this is used for
    * identification, not as a long flag.
    * \param desc - A description of what the argument is for or
@@ -103,9 +103,9 @@ public:
                      CmdLineInterface& parser,
                      bool ignoreable = false,
                      Visitor* v = NULL );
-             
+
   /**
-   * Constructor.  
+   * Constructor.
    * \param name - The name of the Arg. Note that this is used for
    * identification, not as a long flag.
    * \param desc - A description of what the argument is for or
@@ -127,7 +127,7 @@ public:
                      Visitor* v = NULL );
 
   /**
-   * Constructor.  
+   * Constructor.
    * \param name - The name of the Arg. Note that this is used for
    * identification, not as a long flag.
    * \param desc - A description of what the argument is for or
@@ -142,14 +142,14 @@ public:
    * \param v - An optional visitor.  You probably should not
    * use this unless you have a very good reason.
    */
-  UnlabeledMultiArg( const std::string& name, 
-                     const std::string& desc, 
+  UnlabeledMultiArg( const std::string& name,
+                     const std::string& desc,
                      bool req,
                      Constraint<T>* constraint,
                      CmdLineInterface& parser,
                      bool ignoreable = false,
                      Visitor* v = NULL );
-             
+
   /**
    * Handles the processing of the argument.
    * This re-implements the Arg version of this method to set the
@@ -158,7 +158,7 @@ public:
    * \param i - Pointer the the current argument in the list.
    * \param args - Mutable list of strings. Passed from main().
    */
-  virtual bool processArg(int* i, std::vector<std::string>& args); 
+  virtual bool processArg(int* i, std::vector<std::string>& args);
 
   /**
    * Returns the a short id string.  Used in the usage.
@@ -186,28 +186,28 @@ public:
 };
 
 template<class T>
-UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name, 
-                                        const std::string& desc, 
+UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name,
+                                        const std::string& desc,
                                         bool req,
                                         const std::string& typeDesc,
                                         bool ignoreable,
                                         Visitor* v)
   : MultiArg<T>("", name, desc,  req, typeDesc, v)
-{ 
+{
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(true, toString());
 }
 
 template<class T>
-UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name, 
-                                        const std::string& desc, 
+UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name,
+                                        const std::string& desc,
                                         bool req,
                                         const std::string& typeDesc,
                                         CmdLineInterface& parser,
                                         bool ignoreable,
                                         Visitor* v)
   : MultiArg<T>("", name, desc,  req, typeDesc, v)
-{ 
+{
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(true, toString());
   parser.add( this );
@@ -215,28 +215,28 @@ UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name,
 
 
 template<class T>
-UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name, 
-                                        const std::string& desc, 
+UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name,
+                                        const std::string& desc,
                                         bool req,
                                         Constraint<T>* constraint,
                                         bool ignoreable,
                                         Visitor* v)
   : MultiArg<T>("", name, desc,  req, constraint, v)
-{ 
+{
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(true, toString());
 }
 
 template<class T>
-UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name, 
-                                        const std::string& desc, 
+UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name,
+                                        const std::string& desc,
                                         bool req,
                                         Constraint<T>* constraint,
                                         CmdLineInterface& parser,
                                         bool ignoreable,
                                         Visitor* v)
   : MultiArg<T>("", name, desc,  req, constraint, v)
-{ 
+{
   _ignoreable = ignoreable;
   OptionalUnlabeledTracker::check(true, toString());
   parser.add( this );
@@ -244,7 +244,7 @@ UnlabeledMultiArg<T>::UnlabeledMultiArg(const std::string& name,
 
 
 template<class T>
-bool UnlabeledMultiArg<T>::processArg(int *i, std::vector<std::string>& args) 
+bool UnlabeledMultiArg<T>::processArg(int *i, std::vector<std::string>& args)
 {
 
   if ( _hasBlanks( args[*i] ) )
@@ -263,14 +263,14 @@ bool UnlabeledMultiArg<T>::processArg(int *i, std::vector<std::string>& args)
   // WEL: except for those that start with a "-"
 
 
-  // always take the first value, regardless of the start string 
+  // always take the first value, regardless of the start string
   _extractValue( args[(*i)] );
 
   /*
-  // continue taking args until we hit the end or a start string 
+  // continue taking args until we hit the end or a start string
   while ( (unsigned int)(*i)+1 < args.size() &&
       args[(*i)+1].find_first_of( Arg::flagStartString() ) != 0 &&
-            args[(*i)+1].find_first_of( Arg::nameStartString() ) != 0 ) 
+            args[(*i)+1].find_first_of( Arg::nameStartString() ) != 0 )
     _extractValue( args[++(*i)] );
   */
 

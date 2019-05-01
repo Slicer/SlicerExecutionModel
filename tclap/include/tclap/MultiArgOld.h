@@ -1,22 +1,22 @@
-/****************************************************************************** 
- * 
+/******************************************************************************
+ *
  *  file:  MultiArg.h
- * 
+ *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno.
  *  All rights reverved.
- * 
+ *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
- *  
- *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
- *  DEALINGS IN THE SOFTWARE.  
- *  
+ *
+ *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ *  DEALINGS IN THE SOFTWARE.
+ *
  *****************************************************************************/
 
 
@@ -52,7 +52,7 @@ namespace MULTI_ARG_HELPER {
 enum Error_e { EXTRACT_FAILURE = 1000, EXTRACT_TOO_MANY };
 
 /**
- * This class is used to extract a value from an argument. 
+ * This class is used to extract a value from an argument.
  * It is used because we need a special implementation to
  * deal with std::string and making a specialiced function
  * puts it in the T segment, thus generating link errors.
@@ -61,30 +61,30 @@ enum Error_e { EXTRACT_FAILURE = 1000, EXTRACT_TOO_MANY };
  * work any other way.
  */
 template<class T>
-class ValueExtractor 
+class ValueExtractor
 {
   friend class MultiArg<T>;
-  
+
   private:
 
     /**
-     * Reference to the vector of values where the result of the 
+     * Reference to the vector of values where the result of the
      * extraction will be put.
      */
        std::vector<T> &_values;
-  
+
     /**
      * Constructor.
      * \param values - Where the values extracted will be put.
      */
     ValueExtractor(std::vector<T> &values) : _values(values) {}
-  
+
     /**
      * Method that will attempt to parse the input stream for values
      * of type T.
      * \param val - Where the values parsed will be put.
      */
-    int extractValue( const std::string& val ) 
+    int extractValue( const std::string& val )
     {
       T temp;
 
@@ -97,47 +97,47 @@ class ValueExtractor
 #endif
 
       int valuesRead = 0;
-    
-      while ( is.good() ) 
+
+      while ( is.good() )
       {
         if ( is.peek() != EOF )
-          is >> temp; 
+          is >> temp;
         else
           break;
-      
+
         valuesRead++;
-      }    
-    
+      }
+
       if ( is.fail() )
         return EXTRACT_FAILURE;
-    
+
       if ( valuesRead > 1 )
         return EXTRACT_TOO_MANY;
-    
+
       _values.push_back(temp);
-    
+
       return 0;
-    } 
+    }
 };
 
 /**
  * Specialization for string.  This is necessary because istringstream
- * operator>> is not able to ignore spaces...  meaning -x "X Y" will only 
+ * operator>> is not able to ignore spaces...  meaning -x "X Y" will only
  * read 'X'... and thus the specialization.
  */
 template<>
-class ValueExtractor<std::string> 
+class ValueExtractor<std::string>
 {
   friend class MultiArg<std::string>;
 
      private:
 
     /**
-     * Reference to the vector of strings where the result of the 
+     * Reference to the vector of strings where the result of the
      * extraction will be put.
      */
         std::vector<std::string> &_values;
-  
+
     /**
      * Constructor.
      * \param values - Where the strings extracted will be put.
@@ -149,7 +149,7 @@ class ValueExtractor<std::string>
      * of type std::string.
      * \param val - Where the values parsed will be put.
      */
-        int extractValue( const std::string& val ) 
+        int extractValue( const std::string& val )
     {
             _values.push_back( val );
             return 0;
@@ -179,7 +179,7 @@ class MultiArg : public Arg
     std::string _typeDesc;
 
     /**
-     * A list of constraint on this Arg. 
+     * A list of constraint on this Arg.
      */
     Constraint<T>* _constraint;
 
@@ -237,7 +237,7 @@ class MultiArg : public Arg
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    MultiArg( const std::string& flag, 
+    MultiArg( const std::string& flag,
                   const std::string& name,
                   const std::string& desc,
                   bool req,
@@ -266,7 +266,7 @@ class MultiArg : public Arg
                   bool req,
                   Constraint<T>* constraint,
                   Visitor* v = NULL );
-      
+
     /**
      * Constructor.
      * \param flag - The one character flag that identifies this
@@ -283,14 +283,14 @@ class MultiArg : public Arg
      * \param v - An optional visitor.  You probably should not
      * use this unless you have a very good reason.
      */
-    MultiArg( const std::string& flag, 
+    MultiArg( const std::string& flag,
                   const std::string& name,
                   const std::string& desc,
                   bool req,
                   Constraint<T>* constraint,
                   CmdLineInterface& parser,
                   Visitor* v = NULL );
-      
+
     /**
      * Handles the processing of the argument.
      * This re-implements the Arg version of this method to set the
@@ -299,7 +299,7 @@ class MultiArg : public Arg
      * \param i - Pointer the the current argument in the list.
      * \param args - Mutable list of strings. Passed from main().
      */
-    virtual bool processArg(int* i, std::vector<std::string>& args); 
+    virtual bool processArg(int* i, std::vector<std::string>& args);
 
     /**
      * Returns a vector of type T containing the values parsed from
@@ -308,13 +308,13 @@ class MultiArg : public Arg
     const std::vector<T>& getValue();
 
     /**
-     * Returns the a short id string.  Used in the usage. 
+     * Returns the a short id string.  Used in the usage.
      * \param val - value to be used.
      */
     virtual std::string shortID(const std::string& val="val") const;
 
     /**
-     * Returns the a long id string.  Used in the usage. 
+     * Returns the a long id string.  Used in the usage.
      * \param val - value to be used.
      */
     virtual std::string longID(const std::string& val="val") const;
@@ -327,12 +327,12 @@ class MultiArg : public Arg
 
   virtual bool allowMore();
   virtual void printXMLDescription() {
-    std::cout << 
+    std::cout <<
 
 };
 
 template<class T>
-MultiArg<T>::MultiArg(const std::string& flag, 
+MultiArg<T>::MultiArg(const std::string& flag,
                       const std::string& name,
                       const std::string& desc,
                       bool req,
@@ -342,12 +342,12 @@ MultiArg<T>::MultiArg(const std::string& flag,
   _typeDesc( typeDesc ),
   _constraint( NULL ),
   _allowMore(false)
-{ 
+{
   _acceptsMultipleValues = true;
 }
 
 template<class T>
-MultiArg<T>::MultiArg(const std::string& flag, 
+MultiArg<T>::MultiArg(const std::string& flag,
                       const std::string& name,
                       const std::string& desc,
                       bool req,
@@ -358,7 +358,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
   _typeDesc( typeDesc ),
   _constraint( NULL ),
   _allowMore(false)
-{ 
+{
   parser.add( this );
   _acceptsMultipleValues = true;
 }
@@ -367,7 +367,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
  *
  */
 template<class T>
-MultiArg<T>::MultiArg(const std::string& flag, 
+MultiArg<T>::MultiArg(const std::string& flag,
                       const std::string& name,
                       const std::string& desc,
                       bool req,
@@ -377,12 +377,12 @@ MultiArg<T>::MultiArg(const std::string& flag,
   _typeDesc( constraint->shortID() ),
   _constraint( constraint ),
   _allowMore(false)
-{ 
+{
   _acceptsMultipleValues = true;
 }
 
 template<class T>
-MultiArg<T>::MultiArg(const std::string& flag, 
+MultiArg<T>::MultiArg(const std::string& flag,
                       const std::string& name,
                       const std::string& desc,
                       bool req,
@@ -393,7 +393,7 @@ MultiArg<T>::MultiArg(const std::string& flag,
   _typeDesc( constraint->shortID() ),
   _constraint( constraint ),
   _allowMore(false)
-{ 
+{
   parser.add( this );
   _acceptsMultipleValues = true;
 }
@@ -402,7 +402,7 @@ template<class T>
 const std::vector<T>& MultiArg<T>::getValue() { return _values; }
 
 template<class T>
-bool MultiArg<T>::processArg(int *i, std::vector<std::string>& args) 
+bool MultiArg<T>::processArg(int *i, std::vector<std::string>& args)
 {
    if ( _ignoreable && Arg::ignoreRest() )
     return false;
@@ -418,7 +418,7 @@ bool MultiArg<T>::processArg(int *i, std::vector<std::string>& args)
      if ( argMatches( flag ) )
      {
        if ( Arg::delimiter() != ' ' && value == "" )
-      throw( ArgParseException( 
+      throw( ArgParseException(
                  "Couldn't find delimiter for this argument!",
              toString() ) );
 
@@ -431,15 +431,15 @@ bool MultiArg<T>::processArg(int *i, std::vector<std::string>& args)
       else
         throw( ArgParseException("Missing a value for this argument!",
                                          toString() ) );
-    } 
+    }
     else
       _extractValue( value );
 
     /*
-    // continuing taking the args until we hit one with a start string 
+    // continuing taking the args until we hit one with a start string
     while ( (unsigned int)(*i)+1 < args.size() &&
         args[(*i)+1].find_first_of( Arg::flagStartString() ) != 0 &&
-            args[(*i)+1].find_first_of( Arg::nameStartString() ) != 0 ) 
+            args[(*i)+1].find_first_of( Arg::nameStartString() ) != 0 )
         _extractValue( args[++(*i)] );
     */
 
@@ -494,10 +494,10 @@ bool MultiArg<T>::isRequired() const
 }
 
 template<class T>
-void MultiArg<T>::_extractValue( const std::string& val ) 
+void MultiArg<T>::_extractValue( const std::string& val )
 {
   MULTI_ARG_HELPER::ValueExtractor<T> ve(_values);
-      
+
   int err = ve.extractValue(val);
 
   if ( err == MULTI_ARG_HELPER::EXTRACT_FAILURE )
@@ -506,16 +506,16 @@ void MultiArg<T>::_extractValue( const std::string& val )
 
   if(err == MULTI_ARG_HELPER::EXTRACT_TOO_MANY)
       throw( ArgParseException("More than one valid value "
-                                 "parsed from string '" + val + "'", 
-                 toString() ) );        
+                                 "parsed from string '" + val + "'",
+                 toString() ) );
   if ( _constraint != NULL )
     if ( ! _constraint->check( _values.back() ) )
       throw( CmdLineParseException( "Value '" + val +
                                           "' does not meet constraint: " +
-                                          _constraint->description(), 
+                                          _constraint->description(),
                       toString() ) );
 }
-    
+
 template<class T>
 bool MultiArg<T>::allowMore()
 {

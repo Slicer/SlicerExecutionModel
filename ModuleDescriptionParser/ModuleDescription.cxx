@@ -61,7 +61,7 @@ ModuleDescription::ModuleDescription(const ModuleDescription &md)
   this->Logo = md.Logo;
   this->LibraryLoader = md.LibraryLoader;
   this->TargetCallback = md.TargetCallback;
-  
+
   this->ProcessInformation.Initialize();
 }
 
@@ -106,7 +106,7 @@ std::ostream & operator<<(std::ostream &os, const ModuleDescription &module)
 
   os << "ProcessInformation: " << std::endl
      << *(module.GetProcessInformation());
-  
+
   os << "ParameterGroups: " << std::endl;
   std::vector<ModuleParameterGroup>::const_iterator it = module.GetParameterGroups().begin();
   while (it != module.GetParameterGroups().end())
@@ -127,7 +127,7 @@ bool ModuleDescription::HasParameter(const std::string& name) const
   std::vector<ModuleParameterGroup>::const_iterator pgendit
     = this->ParameterGroups.end();
   std::vector<ModuleParameterGroup>::const_iterator pgit;
-  
+
   for (pgit = pgbeginit; pgit != pgendit; ++pgit)
     {
     // iterate over each parameter in this group
@@ -143,7 +143,7 @@ bool ModuleDescription::HasParameter(const std::string& name) const
         {
         return true;
         }
-      }    
+      }
     }
 
   return false;
@@ -158,7 +158,7 @@ bool ModuleDescription::HasReturnParameters() const
   std::vector<ModuleParameterGroup>::const_iterator pgendit
     = this->ParameterGroups.end();
   std::vector<ModuleParameterGroup>::const_iterator pgit;
-  
+
   for (pgit = pgbeginit; pgit != pgendit; ++pgit)
     {
     // iterate over each parameter in this group
@@ -174,7 +174,7 @@ bool ModuleDescription::HasReturnParameters() const
         {
         return true;
         }
-      }    
+      }
     }
 
   return false;
@@ -237,7 +237,7 @@ bool ModuleDescription::SetParameterValue(const std::string& name, const std::st
   std::vector<ModuleParameterGroup>::iterator pgendit
     = this->ParameterGroups.end();
   std::vector<ModuleParameterGroup>::iterator pgit;
-  
+
   for (pgit = pgbeginit; pgit != pgendit; ++pgit)
     {
     // iterate over each parameter in this group
@@ -254,7 +254,7 @@ bool ModuleDescription::SetParameterValue(const std::string& name, const std::st
         (*pit).SetValue(value);
         return true;
         }
-      }    
+      }
     }
 
   return false;
@@ -275,7 +275,7 @@ std::string ModuleDescription::GetParameterValue(const std::string& name) const
   std::vector<ModuleParameterGroup>::const_iterator pgendit
     = this->ParameterGroups.end();
   std::vector<ModuleParameterGroup>::const_iterator pgit;
-  
+
   for (pgit = pgbeginit; pgit != pgendit; ++pgit)
     {
     // iterate over each parameter in this group
@@ -291,7 +291,7 @@ std::string ModuleDescription::GetParameterValue(const std::string& name) const
         {
         return (*pit).GetValue();
         }
-      }    
+      }
     }
 
   return "";
@@ -340,7 +340,7 @@ bool ModuleDescription ::ReadParameterFile(const std::string& filename)
 
     trimLeadingAndTrailing(key);
     trimLeadingAndTrailing(value);
-    
+
     // std::cout << "key=" << key << ", value=" << value << "!" << std::endl;
 
     if (this->HasParameter(key))
@@ -378,7 +378,7 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
   std::vector<ModuleParameterGroup>::const_iterator pgendit
     = this->ParameterGroups.end();
   std::vector<ModuleParameterGroup>::const_iterator pgit;
-  
+
   for (pgit = pgbeginit; pgit != pgendit; ++pgit)
     {
     // iterate over each parameter in this group
@@ -392,7 +392,7 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
       {
       // write out all parameters or just the ones that are not bulk parameters
       if (withHandlesToBulkParameters
-          || (!withHandlesToBulkParameters 
+          || (!withHandlesToBulkParameters
               && ((*pit).GetTag() != "image"
                   && (*pit).GetTag() != "geometry"
                   && (*pit).GetTag() != "transform"
@@ -402,7 +402,7 @@ WriteParameterFile(const std::string& filename, bool withHandlesToBulkParameters
                   && (*pit).GetTag() != "pointfile"
                   && (*pit).GetTag() != "region")))
         {
-        rtp << (*pit).GetName() << " = " 
+        rtp << (*pit).GetName() << " = "
             << (*pit).GetValue() << std::endl;
 
         // multiple="true" may have to be handled differently

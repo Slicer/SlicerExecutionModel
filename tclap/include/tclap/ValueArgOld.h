@@ -1,23 +1,23 @@
-/****************************************************************************** 
- * 
+/******************************************************************************
+ *
  *  file:  ValueArg.h
- * 
+ *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno.
  *  All rights reverved.
- * 
+ *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
- *  
- *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
- *  DEALINGS IN THE SOFTWARE.  
- *  
- *****************************************************************************/ 
+ *
+ *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ *  DEALINGS IN THE SOFTWARE.
+ *
+ *****************************************************************************/
 
 
 #ifndef TCLAP_VALUE_ARGUMENT_H
@@ -52,7 +52,7 @@ namespace VALUE_ARG_HELPER {
 enum Error_e { EXTRACT_FAILURE = 1000, EXTRACT_TOO_MANY };
 
 /**
- * This class is used to extract a value from an argument. 
+ * This class is used to extract a value from an argument.
  * It is used because we need a special implementation to
  * deal with std::string and making a specialiced function
  * puts it in the T segment, thus generating link errors.
@@ -60,7 +60,7 @@ enum Error_e { EXTRACT_FAILURE = 1000, EXTRACT_TOO_MANY };
  * This is not pretty but I don't know how to make it
  * work any other way.
  */
-template<class T> class ValueExtractor 
+template<class T> class ValueExtractor
 {
   /**
    *
@@ -70,7 +70,7 @@ template<class T> class ValueExtractor
   private:
 
     /**
-     * Reference to the value where the result of the extraction will 
+     * Reference to the value where the result of the extraction will
      * be put.
      */
         T &_value;
@@ -86,7 +86,7 @@ template<class T> class ValueExtractor
      * of type T.
      * \param val - Where the value parsed will be put.
      */
-        int extractValue( const std::string& val ) 
+        int extractValue( const std::string& val )
     {
 
 #if defined(HAVE_SSTREAM)
@@ -98,17 +98,17 @@ template<class T> class ValueExtractor
 #endif
 
             int valuesRead = 0;
-            while ( is.good() ) 
+            while ( is.good() )
       {
                 if ( is.peek() != EOF )
                     is >> _value;
                 else
                     break;
-  
+
                 valuesRead++;
             }
-      
-            if ( is.fail() ) 
+
+            if ( is.fail() )
                 return EXTRACT_FAILURE;
 
             if ( valuesRead > 1 )
@@ -120,10 +120,10 @@ template<class T> class ValueExtractor
 
 /**
  * Specialization for string.  This is necessary because istringstream
- * operator>> is not able to ignore spaces...  meaning -x "X Y" will only 
+ * operator>> is not able to ignore spaces...  meaning -x "X Y" will only
  * read 'X'... and thus the specialization.
  */
-template<> class ValueExtractor<std::string> 
+template<> class ValueExtractor<std::string>
 {
   /**
    *
@@ -131,9 +131,9 @@ template<> class ValueExtractor<std::string>
     friend class ValueArg<std::string>;
 
     private:
-  
+
     /**
-     * Reference to the value where the result of the extraction will 
+     * Reference to the value where the result of the extraction will
      * be put.
      */
         std::string &_value;
@@ -149,14 +149,14 @@ template<> class ValueExtractor<std::string>
      * of type std::string.
      * \param val - Where the string parsed will be put.
      */
-        int extractValue( const std::string& val ) 
+        int extractValue( const std::string& val )
     {
             _value = val;
             return 0;
         }
 };
 
-} //namespace VALUE_ARG_HELPER 
+} //namespace VALUE_ARG_HELPER
 
 /**
  * The basic labeled argument that parses a value.
@@ -167,7 +167,7 @@ template<> class ValueExtractor<std::string>
  * Instead use an UnlabeledValueArg.
  */
 template<class T>
-class ValueArg : public Arg 
+class ValueArg : public Arg
 {
     protected:
 
@@ -188,7 +188,7 @@ class ValueArg : public Arg
         std::string _typeDesc;
 
         /**
-         * A Constraint this Arg must conform to. 
+         * A Constraint this Arg must conform to.
          */
         Constraint<T>* _constraint;
 
@@ -196,7 +196,7 @@ class ValueArg : public Arg
          * Extracts the value from the string.
          * Attempts to parse string as type T, if this fails an exception
          * is thrown.
-         * \param val - value to be parsed. 
+         * \param val - value to be parsed.
          */
         void _extractValue( const std::string& val );
 
@@ -204,9 +204,9 @@ class ValueArg : public Arg
 
         /**
          * Labeled ValueArg constructor.
-         * You could conceivably call this constructor with a blank flag, 
+         * You could conceivably call this constructor with a blank flag,
          * but that would make you a bad person.  It would also cause
-         * an exception to be thrown.   If you want an unlabeled argument, 
+         * an exception to be thrown.   If you want an unlabeled argument,
          * use the other constructor.
          * \param flag - The one character flag that identifies this
          * argument on the command line.
@@ -225,20 +225,20 @@ class ValueArg : public Arg
          * \param v - An optional visitor.  You probably should not
          * use this unless you have a very good reason.
          */
-        ValueArg( const std::string& flag, 
-                  const std::string& name, 
-                  const std::string& desc, 
-                  bool req, 
+        ValueArg( const std::string& flag,
+                  const std::string& name,
+                  const std::string& desc,
+                  bool req,
                   T value,
                   const std::string& typeDesc,
                   Visitor* v = NULL);
-         
-         
+
+
         /**
          * Labeled ValueArg constructor.
-         * You could conceivably call this constructor with a blank flag, 
+         * You could conceivably call this constructor with a blank flag,
          * but that would make you a bad person.  It would also cause
-         * an exception to be thrown.   If you want an unlabeled argument, 
+         * an exception to be thrown.   If you want an unlabeled argument,
          * use the other constructor.
          * \param flag - The one character flag that identifies this
          * argument on the command line.
@@ -258,20 +258,20 @@ class ValueArg : public Arg
          * \param v - An optional visitor.  You probably should not
          * use this unless you have a very good reason.
          */
-        ValueArg( const std::string& flag, 
-                  const std::string& name, 
-                  const std::string& desc, 
-                  bool req, 
+        ValueArg( const std::string& flag,
+                  const std::string& name,
+                  const std::string& desc,
+                  bool req,
                   T value,
                   const std::string& typeDesc,
                   CmdLineInterface& parser,
                   Visitor* v = NULL );
- 
+
         /**
          * Labeled ValueArg constructor.
-         * You could conceivably call this constructor with a blank flag, 
+         * You could conceivably call this constructor with a blank flag,
          * but that would make you a bad person.  It would also cause
-         * an exception to be thrown.   If you want an unlabeled argument, 
+         * an exception to be thrown.   If you want an unlabeled argument,
          * use the other constructor.
          * \param flag - The one character flag that identifies this
          * argument on the command line.
@@ -289,20 +289,20 @@ class ValueArg : public Arg
          * \param v - An optional visitor.  You probably should not
          * use this unless you have a very good reason.
          */
-        ValueArg( const std::string& flag, 
-                  const std::string& name, 
-                  const std::string& desc, 
-                  bool req, 
+        ValueArg( const std::string& flag,
+                  const std::string& name,
+                  const std::string& desc,
+                  bool req,
                   T value,
                   Constraint<T>* constraint,
                   CmdLineInterface& parser,
                   Visitor* v = NULL );
-    
+
         /**
          * Labeled ValueArg constructor.
-         * You could conceivably call this constructor with a blank flag, 
+         * You could conceivably call this constructor with a blank flag,
          * but that would make you a bad person.  It would also cause
-         * an exception to be thrown.   If you want an unlabeled argument, 
+         * an exception to be thrown.   If you want an unlabeled argument,
          * use the other constructor.
          * \param flag - The one character flag that identifies this
          * argument on the command line.
@@ -319,10 +319,10 @@ class ValueArg : public Arg
          * \param v - An optional visitor.  You probably should not
          * use this unless you have a very good reason.
          */
-        ValueArg( const std::string& flag, 
-                  const std::string& name, 
-                  const std::string& desc, 
-                  bool req, 
+        ValueArg( const std::string& flag,
+                  const std::string& name,
+                  const std::string& desc,
+                  bool req,
                   T value,
                   Constraint<T>* constraint,
                   Visitor* v = NULL );
@@ -333,10 +333,10 @@ class ValueArg : public Arg
          * _value of the argument appropriately.  It knows the difference
          * between labeled and unlabeled.
          * \param i - Pointer the the current argument in the list.
-         * \param args - Mutable list of strings. Passed 
+         * \param args - Mutable list of strings. Passed
          * in from main().
          */
-        virtual bool processArg(int* i, std::vector<std::string>& args); 
+        virtual bool processArg(int* i, std::vector<std::string>& args);
 
         /**
          * Returns the value of the argument.
@@ -363,10 +363,10 @@ class ValueArg : public Arg
  * Constructor implementation.
  */
 template<class T>
-ValueArg<T>::ValueArg(const std::string& flag, 
-                      const std::string& name, 
-                      const std::string& desc, 
-                      bool req, 
+ValueArg<T>::ValueArg(const std::string& flag,
+                      const std::string& name,
+                      const std::string& desc,
+                      bool req,
                       T val,
                       const std::string& typeDesc,
                       Visitor* v)
@@ -377,10 +377,10 @@ ValueArg<T>::ValueArg(const std::string& flag,
 { }
 
 template<class T>
-ValueArg<T>::ValueArg(const std::string& flag, 
-                      const std::string& name, 
-                      const std::string& desc, 
-                      bool req, 
+ValueArg<T>::ValueArg(const std::string& flag,
+                      const std::string& name,
+                      const std::string& desc,
+                      bool req,
                       T val,
                       const std::string& typeDesc,
                       CmdLineInterface& parser,
@@ -389,15 +389,15 @@ ValueArg<T>::ValueArg(const std::string& flag,
   _value( val ),
   _typeDesc( typeDesc ),
   _constraint( NULL )
-{ 
+{
     parser.add( this );
 }
 
 template<class T>
-ValueArg<T>::ValueArg(const std::string& flag, 
-                      const std::string& name, 
-                      const std::string& desc, 
-                      bool req, 
+ValueArg<T>::ValueArg(const std::string& flag,
+                      const std::string& name,
+                      const std::string& desc,
+                      bool req,
                       T val,
                       Constraint<T>* constraint,
                       Visitor* v)
@@ -408,10 +408,10 @@ ValueArg<T>::ValueArg(const std::string& flag,
 { }
 
 template<class T>
-ValueArg<T>::ValueArg(const std::string& flag, 
-                      const std::string& name, 
-                      const std::string& desc, 
-                      bool req, 
+ValueArg<T>::ValueArg(const std::string& flag,
+                      const std::string& name,
+                      const std::string& desc,
+                      bool req,
                       T val,
                       Constraint<T>* constraint,
                       CmdLineInterface& parser,
@@ -420,7 +420,7 @@ ValueArg<T>::ValueArg(const std::string& flag,
   _value( val ),
   _typeDesc( constraint->shortID() ),
   _constraint( constraint )
-{ 
+{
     parser.add( this );
 }
 
@@ -454,14 +454,14 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string>& args)
       throw( CmdLineParseException("Argument already set!", toString()) );
 
         if ( Arg::delimiter() != ' ' && value == "" )
-      throw( ArgParseException( 
+      throw( ArgParseException(
               "Couldn't find delimiter for this argument!",
                              toString() ) );
 
         if ( value == "" )
         {
             (*i)++;
-            if ( static_cast<unsigned int>(*i) < args.size() ) 
+            if ( static_cast<unsigned int>(*i) < args.size() )
         _extractValue( args[*i] );
             else
         throw( ArgParseException("Missing a value for this argument!",
@@ -469,11 +469,11 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string>& args)
         }
         else
       _extractValue( value );
-        
+
         _alreadySet = true;
         _checkWithVisitor();
         return true;
-    }  
+    }
     else
     return false;
 }
@@ -484,7 +484,7 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string>& args)
 template<class T>
 std::string ValueArg<T>::shortID(const std::string& val) const
 {
-    return Arg::shortID( _typeDesc ); 
+    return Arg::shortID( _typeDesc );
 }
 
 /**
@@ -493,11 +493,11 @@ std::string ValueArg<T>::shortID(const std::string& val) const
 template<class T>
 std::string ValueArg<T>::longID(const std::string& val) const
 {
-    return Arg::longID( _typeDesc ); 
+    return Arg::longID( _typeDesc );
 }
 
 template<class T>
-void ValueArg<T>::_extractValue( const std::string& val ) 
+void ValueArg<T>::_extractValue( const std::string& val )
 {
   VALUE_ARG_HELPER::ValueExtractor<T> ve(_value);
 
@@ -514,8 +514,8 @@ void ValueArg<T>::_extractValue( const std::string& val )
 
   if ( _constraint != NULL )
     if ( ! _constraint->check( _value ) )
-      throw( CmdLineParseException( "Value '" + val + 
-                        "' does not meet constraint: " + 
+      throw( CmdLineParseException( "Value '" + val +
+                        "' does not meet constraint: " +
                       _constraint->description(),
                       toString() ) );
 }

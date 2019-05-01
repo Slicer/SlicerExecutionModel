@@ -28,7 +28,7 @@ extern "C" {
   {
     /** Inputs from calling application to the module **/
     unsigned char Abort;
-    
+
     /** Outputs from the module to the calling application **/
     float Progress;      /// Overall progress
     float StageProgress; /// Progress of a single stage in an algorithm
@@ -63,6 +63,6 @@ extern "C" {
 }
 
 std::ostream& operator<<(std::ostream &os, const ModuleProcessInformation &p);
-    
+
 
 #endif

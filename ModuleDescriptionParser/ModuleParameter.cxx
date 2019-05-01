@@ -54,7 +54,7 @@ ModuleParameter::ModuleParameter()
   this->Index = "";
   this->Multiple = "false";
   this->Aggregate = "false";
-  this->FileExtensionsAsString = "";        
+  this->FileExtensionsAsString = "";
   this->CoordinateSystem = "";
   this->FlagAliasesAsString = "";
   this->DeprecatedFlagAliasesAsString = "";
@@ -196,8 +196,8 @@ void ModuleParameter::SetDeprecatedLongFlagAliasesAsString(const std::string& al
 
 //-----------------------------------------------------------------------------
 std::ostream & operator<<(std::ostream &os, const ModuleParameter &parameter)
-{ 
-  std::vector<std::string>::const_iterator fit;  
+{
+  std::vector<std::string>::const_iterator fit;
 
   os << "    Parameter" << std::endl;
   os << "      " << "Tag: " << parameter.GetTag() << std::endl;
@@ -234,7 +234,7 @@ std::ostream & operator<<(std::ostream &os, const ModuleParameter &parameter)
   os << "      " << "StringToType: " << parameter.GetStringToType() << std::endl;
   os << "      " << "Value: " << parameter.GetValue() << std::endl;
   os << "      " << "Elements: ";
-  std::vector<std::string>::const_iterator eit;  
+  std::vector<std::string>::const_iterator eit;
   for (eit = parameter.GetElements().begin();
        eit != parameter.GetElements().end(); ++eit)
     {

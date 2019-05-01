@@ -270,19 +270,19 @@ main(int argc, char *argv[])
   //
   // If GENERATE_USE_MD5 is defined, generated output will be appended into a stringstream.
   //
-  // Following the generation, the MD5 of both the output buffer and 
+  // Following the generation, the MD5 of both the output buffer and
   // the existing file (if any) will be computed.
-  // 
+  //
   // Three cases can be numbered:
   //   1) Output file [OutputCxx] do NOT exists               => Write output buffer to file.
   //   2) Output file [OutputCxx] exists and MD5 match        => Discard Output buffer.
   //   3) Output file [OutputCxx] exists and MD5 do NOT match => Write output buffer to file.
   //
-  // Computing the MD5 allows to update the file only if required. Since the 
-  // modified time associated the file will be updated only if it really changed, 
+  // Computing the MD5 allows to update the file only if required. Since the
+  // modified time associated the file will be updated only if it really changed,
   // extra compilation cycle could be avoided.
   //
-  
+
   // Do the hard stuff
 #ifdef GENERATECLP_USE_MD5
   std::stringstream sout;
@@ -1183,7 +1183,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
           {
           sout << "Temp";
           }
-        
+
         const std::string cppType = pit->GetCPPType();
         if (!HasValue(*pit) &&
             cppType != "bool")
@@ -1242,7 +1242,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
              << " ";
         sout << pit->GetName();
         if (!HasValue(*pit))
-          {    
+          {
           sout << ";"
                << EOL << std::endl;
           }
@@ -1342,7 +1342,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
          ++pit)
       {
       // Don't generate TCLAP data structures for parameters that are
-      // simple return types 
+      // simple return types
       if ((*pit).IsReturnParameter())
         {
         continue;
@@ -1385,7 +1385,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
              << pit->GetName()
              << "Arg" << "(\""
              << pit->GetFlag()
-             << "\", \"" 
+             << "\", \""
              << pit->GetLongFlag()
              << "\", msg.str(), "
              << "commandLine"
@@ -1438,7 +1438,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
                << pit->GetName()
                << "Arg" << "(\""
                << pit->GetFlag()
-               << "\", \"" 
+               << "\", \""
                << pit->GetLongFlag()
                << "\", msg.str(), "
                << false
@@ -1480,7 +1480,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
                << pit->GetName()
                << "Arg" << "(\""
                << pit->GetFlag()
-               << "\", \"" 
+               << "\", \""
                << pit->GetLongFlag()
                << "\", msg.str(), "
                << false;
@@ -1906,7 +1906,7 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
              << EOL << std::endl;
         sout << "        {"
              << EOL << std::endl;
-        sout << "        " 
+        sout << "        "
              << pit->GetName() << ".push_back("
              << pit->GetStringToType()
              << "(words[_j].c_str()));"
