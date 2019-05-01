@@ -37,7 +37,7 @@ ModuleParameterGroup
 
 //----------------------------------------------------------------------------
 std::ostream & operator<<(std::ostream &os, const ModuleParameterGroup &group)
-{ 
+{
   os << "  Advanced: " << group.GetAdvanced() << std::endl;
   os << "  Label: " << group.GetLabel() << std::endl;
   os << "  Description: " << group.GetDescription() << std::endl;

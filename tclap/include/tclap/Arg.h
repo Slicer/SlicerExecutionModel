@@ -1,24 +1,24 @@
 
-/****************************************************************************** 
- * 
+/******************************************************************************
+ *
  *  file:  Arg.h
- * 
+ *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno .
  *  All rights reverved.
- * 
+ *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
- *  
- *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
- *  DEALINGS IN THE SOFTWARE.  
- *  
- *****************************************************************************/ 
+ *
+ *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ *  DEALINGS IN THE SOFTWARE.
+ *
+ *****************************************************************************/
 
 
 #ifndef TCLAP_ARGUMENT_H
@@ -35,14 +35,14 @@
 
 namespace TCLAP {
 
-/** 
+/**
  * A virtual base class that defines the essential data for all arguments.
  * This class, or one of its existing children, must be subclassed to do
- * anything. 
+ * anything.
  */
 class Arg
 {
-private: 
+private:
 
   /**
    * Indicates whether the rest of the arguments should be ignored.
@@ -53,23 +53,23 @@ private:
    * The delimiter that separates an argument flag/name from the
    * value.
    */
-  static char& delimiterRef() { static char delim = ' '; return delim; } 
+  static char& delimiterRef() { static char delim = ' '; return delim; }
 
 protected:
 
-  /** 
+  /**
    * The single char flag used to identify the argument.
-   * This value (preceded by a dash {-}), can be used to identify 
-   * an argument on the command line.  The _flag can be blank, 
+   * This value (preceded by a dash {-}), can be used to identify
+   * an argument on the command line.  The _flag can be blank,
    * in fact this is how unlabeled args work.  Unlabeled args must
-   * override appropriate functions to get correct handling. Note 
+   * override appropriate functions to get correct handling. Note
    * that the _flag does NOT include the dash as part of the flag.
    */
   std::string _flag;
 
   /**
    * A single work namd indentifying the argument.
-   * This value (preceded by two dashed {--}) can also be used 
+   * This value (preceded by two dashed {--}) can also be used
    * to identify an argument on the command line.  Note that the
    * _name does NOT include the two dashes as part of the _name. The
    * _name cannot be blank.
@@ -77,17 +77,17 @@ protected:
   std::string _name;
 
   /**
-   * Description of the argument. 
+   * Description of the argument.
    */
   std::string _description;
 
-  /** 
+  /**
    * Indicating whether the argument is required.
    */
   bool _required;
 
   /**
-   * Label to be used in usage description.  Normally set to 
+   * Label to be used in usage description.  Normally set to
    * "required", but can be changed when necessary.
    */
   std::string _requireLabel;
@@ -133,9 +133,9 @@ protected:
   void _checkWithVisitor() const;
 
   /**
-   * Primary constructor. YOU (yes you) should NEVER construct an Arg 
+   * Primary constructor. YOU (yes you) should NEVER construct an Arg
    * directly, this is a base class that is extended by various children
-   * that are meant to be used.  Use SwitchArg, ValueArg, MultiArg, 
+   * that are meant to be used.  Use SwitchArg, ValueArg, MultiArg,
    * UnlabeledValueArg, or UnlabeledMultiArg instead.
    *
    * \param flag - The flag identifying the argument.
@@ -145,10 +145,10 @@ protected:
    * \param valreq - Whether the a value is required for the argument.
    * \param v - The visitor checked by the argument. Defaults to NULL.
    */
-  Arg( const std::string& flag, 
-       const std::string& name, 
-       const std::string& desc, 
-       bool req, 
+  Arg( const std::string& flag,
+       const std::string& name,
+       const std::string& desc,
+       bool req,
        bool valreq,
        Visitor* v = NULL );
 
@@ -163,12 +163,12 @@ public:
    * \param argList - The list to add this to.
    */
   virtual void addToList( std::list<Arg*>& argList ) const;
-    
+
   /**
    * Begin ignoring arguments since the "--" argument was specified.
    */
   static void beginIgnoring() { ignoreRestRef() = true; }
-    
+
   /**
    * Whether to ignore the rest.
    */
@@ -178,26 +178,26 @@ public:
    * The delimiter that separates an argument flag/name from the
    * value.
    */
-  static char delimiter() { return delimiterRef(); } 
-    
+  static char delimiter() { return delimiterRef(); }
+
   /**
    * The char used as a place holder when SwitchArgs are combined.
    * Currently set to '*', which shouldn't cause many problems since
-   * *'s are expanded by most shells on the command line.  
+   * *'s are expanded by most shells on the command line.
    */
   static /*const*/ char blankChar() { return '*'; }
-    
+
   /**
    * The char that indicates the beginning of a flag.  Currently '-'.
    */
   static /*const*/ char flagStartChar() { return '-'; }
-    
+
   /**
    * The sting that indicates the beginning of a flag.  Currently "-".
    * Should be identical to flagStartChar.
    */
   static const std::string flagStartString() { return "-"; }
-    
+
   /**
    * The sting that indicates the beginning of a name.  Currently "--".
    * Should be flagStartChar twice.
@@ -217,12 +217,12 @@ public:
 
   /**
    * Pure virtual method meant to handle the parsing and value assignment
-   * of the string on the command line. 
+   * of the string on the command line.
    * \param i - Pointer the the current argument in the list.
-   * \param args - Mutable list of strings. What is 
+   * \param args - Mutable list of strings. What is
    * passed in from main.
    */
-  virtual bool processArg(int *i, std::vector<std::string>& args) = 0; 
+  virtual bool processArg(int *i, std::vector<std::string>& args) = 0;
 
   /**
    * Operator ==.
@@ -275,14 +275,14 @@ public:
   bool isSet() const;
 
   /**
-   * Indicates whether the argument can be ignored, if desired. 
+   * Indicates whether the argument can be ignored, if desired.
    */
   bool isIgnoreable() const;
 
   /**
    * A method that tests whether a string matches this argument.
    * This is generally called by the processArg() method.  This
-   * method could be re-implemented by a child to change how 
+   * method could be re-implemented by a child to change how
    * arguments are specified on the command line.
    * \param s - The string to be compared to the flag/name to determine
    * whether the arg matches.
@@ -309,8 +309,8 @@ public:
 
   /**
    * Trims a value off of the flag.
-   * \param flag - The string from which the flag and value will be 
-   * trimmed. Contains the flag once the value has been trimmed. 
+   * \param flag - The string from which the flag and value will be
+   * trimmed. Contains the flag once the value has been trimmed.
    * \param value - Where the value trimmed from the string will
    * be stored.
    */
@@ -333,8 +333,8 @@ public:
 
   virtual bool allowMore();
   virtual bool acceptsMultipleValues();
-  
-  virtual std::string getValueAsString()const = 0; 
+
+  virtual std::string getValueAsString()const = 0;
 };
 
 /**
@@ -357,10 +357,10 @@ typedef std::list<Visitor*>::iterator VisitorListIterator;
 //BEGIN Arg.cpp
 //////////////////////////////////////////////////////////////////////
 
-inline Arg::Arg(const std::string& flag, 
-                const std::string& name, 
-                const std::string& desc, 
-                bool req, 
+inline Arg::Arg(const std::string& flag,
+                const std::string& name,
+                const std::string& desc,
+                bool req,
                 bool valreq,
                 Visitor* v) :
   _flag(flag),
@@ -375,24 +375,24 @@ inline Arg::Arg(const std::string& flag,
   _xorSet(false),
   _acceptsMultipleValues(false)
 {
-  if ( _flag.length() > 1 ) 
+  if ( _flag.length() > 1 )
     throw(SpecificationException(
             "Argument flag can only be one character long", toString() ) );
 
-  if ( _name != ignoreNameString() &&  
-       ( _flag == Arg::flagStartString() || 
-         _flag == Arg::nameStartString() || 
+  if ( _name != ignoreNameString() &&
+       ( _flag == Arg::flagStartString() ||
+         _flag == Arg::nameStartString() ||
          _flag == " " ) )
-    throw(SpecificationException("Argument flag cannot be either '" + 
-                                 Arg::flagStartString() + "' or '" + 
+    throw(SpecificationException("Argument flag cannot be either '" +
+                                 Arg::flagStartString() + "' or '" +
                                  Arg::nameStartString() + "' or a space.",
                                  toString() ) );
 
-  if ( ( _name.find( Arg::flagStartString(), 0 ) != std::string::npos ) || 
+  if ( ( _name.find( Arg::flagStartString(), 0 ) != std::string::npos ) ||
        ( _name.find( Arg::nameStartString(), 0 ) != std::string::npos ) ||
        ( _name.find( " ", 0 ) != std::string::npos ) )
-    throw(SpecificationException("Argument name cannot contain either '" + 
-                                 Arg::flagStartString() + "' or '" + 
+    throw(SpecificationException("Argument name cannot contain either '" +
+                                 Arg::flagStartString() + "' or '" +
                                  Arg::nameStartString() + "' or space.",
                                  toString() ) );
 
@@ -409,9 +409,9 @@ inline std::string Arg::shortID( const std::string& valueId ) const
   else
     id = Arg::nameStartString() + _name;
 
-  std::string delim = " "; 
+  std::string delim = " ";
   delim[0] = Arg::delimiter(); // ugly!!!
-  
+
   if ( _valueRequired )
     id += delim + "<" + valueId  + ">";
 
@@ -431,7 +431,7 @@ inline std::string Arg::longID( const std::string& valueId ) const
 
     if ( _valueRequired )
       id += " <" + valueId + ">";
-    
+
     id += ",  ";
     }
 
@@ -439,7 +439,7 @@ inline std::string Arg::longID( const std::string& valueId ) const
 
   if ( _valueRequired )
     id += " <" + valueId + ">";
-      
+
   return id;
 
 }
@@ -452,7 +452,7 @@ inline bool Arg::operator==(const Arg& a) const
     return false;
 }
 
-inline std::string Arg::getDescription() const 
+inline std::string Arg::getDescription() const
 {
   std::string desc = "";
   if ( _required )
@@ -462,19 +462,19 @@ inline std::string Arg::getDescription() const
 //    desc += "(value required)  ";
 
   desc += _description;
-  return desc; 
+  return desc;
 }
 
 inline const std::string& Arg::getFlag() const { return _flag; }
 
-inline const std::string& Arg::getName() const { return _name; } 
+inline const std::string& Arg::getName() const { return _name; }
 
 inline bool Arg::isRequired() const { return _required; }
 
 inline bool Arg::isValueRequired() const { return _valueRequired; }
 
-inline bool Arg::isSet() const 
-{ 
+inline bool Arg::isSet() const
+{
   if ( _alreadySet && !_xorSet )
     return true;
   else
@@ -483,21 +483,21 @@ inline bool Arg::isSet() const
 
 inline bool Arg::isIgnoreable() const { return _ignoreable; }
 
-inline void Arg::setRequireLabel( const std::string& s) 
-{ 
+inline void Arg::setRequireLabel( const std::string& s)
+{
   _requireLabel = s;
 }
 
 inline bool Arg::argMatches( const std::string& argFlag ) const
 {
-  // allow matching for patterns like --load-dicom with --load_dicom 
+  // allow matching for patterns like --load-dicom with --load_dicom
   // (more standard and user friendly)
   // only change dashes to underscores if the string starts with --
   std::string fixedFlag(argFlag);
   if ( argFlag.find_first_of(Arg::nameStartString()) == 0 )
     {
-    const std::string::size_type nameStartLen = Arg::nameStartString().length(); 
-    std::string::size_type dashIndex; 
+    const std::string::size_type nameStartLen = Arg::nameStartString().length();
+    std::string::size_type dashIndex;
     while ( (dashIndex = fixedFlag.find_first_of("-", nameStartLen)) != std::string::npos )
       {
       fixedFlag[dashIndex] = '_';

@@ -1,24 +1,24 @@
 
 
-/****************************************************************************** 
- * 
+/******************************************************************************
+ *
  *  file:  ValuesConstraint.h
- * 
+ *
  *  Copyright (c) 2005, Michael E. Smoot
  *  All rights reverved.
- * 
+ *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
- *  
- *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
- *  DEALINGS IN THE SOFTWARE.  
- *  
- *****************************************************************************/ 
+ *
+ *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ *  DEALINGS IN THE SOFTWARE.
+ *
+ *****************************************************************************/
 
 #ifndef TCLAP_VALUESCONSTRAINT_H
 #define TCLAP_VALUESCONSTRAINT_H
@@ -56,10 +56,10 @@ class ValuesConstraint : public Constraint<T>
 public:
 
   /**
-   * Constructor. 
-   * \param allowed - vector of allowed values. 
+   * Constructor.
+   * \param allowed - vector of allowed values.
    */
-  ValuesConstraint(std::vector<T>& allowed);  
+  ValuesConstraint(std::vector<T>& allowed);
 
   /**
    * Virtual destructor.
@@ -67,7 +67,7 @@ public:
   virtual ~ValuesConstraint() {}
 
   /**
-   * Returns a description of the Constraint. 
+   * Returns a description of the Constraint.
    */
   virtual std::string description() const;
 
@@ -79,14 +79,14 @@ public:
   /**
    * The method used to verify that the value parsed from the command
    * line meets the constraint.
-   * \param value - The value that will be checked. 
+   * \param value - The value that will be checked.
    */
   virtual bool check(const T& value) const;
-  
+
 protected:
 
   /**
-   * The list of valid values. 
+   * The list of valid values.
    */
   std::vector<T> _allowed;
 
@@ -100,7 +100,7 @@ protected:
 template<class T>
 ValuesConstraint<T>::ValuesConstraint(std::vector<T>& allowed)
   : _allowed(allowed)
-{ 
+{
   for ( unsigned int i = 0; i < _allowed.size(); i++ )
     {
 
@@ -114,7 +114,7 @@ ValuesConstraint<T>::ValuesConstraint(std::vector<T>& allowed)
 
     os << _allowed[i];
 
-    std::string temp( os.str() ); 
+    std::string temp( os.str() );
 
     if ( i > 0 )
       _typeDesc += "|";
@@ -127,23 +127,23 @@ bool ValuesConstraint<T>::check( const T& val ) const
 {
   if ( std::find(_allowed.begin(),_allowed.end(),val) == _allowed.end() )
     return false;
-  else 
+  else
     return true;
 }
 
 template<class T>
 std::string ValuesConstraint<T>::shortID() const
 {
-  return _typeDesc;  
+  return _typeDesc;
 }
 
 template<class T>
 std::string ValuesConstraint<T>::description() const
 {
-  return _typeDesc;  
+  return _typeDesc;
 }
 
 
 } //namespace TCLAP
-#endif 
+#endif
 

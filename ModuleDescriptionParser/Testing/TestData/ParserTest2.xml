@@ -65,7 +65,7 @@
       <label>Learning Rates</label>
       <default>0.005,0.001,0.0005,0.0002</default>
     </float-vector>
-    
+
     <double>
       <name>TranslationScale</name>
       <longflag>--translationscale</longflag>

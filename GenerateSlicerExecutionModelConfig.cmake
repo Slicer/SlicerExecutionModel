@@ -14,7 +14,7 @@ endif()
 
 set(SlicerExecutionModel_USE_FILE_CONFIG
   ${SlicerExecutionModel_BINARY_DIR}/UseSlicerExecutionModel.cmake)
-  
+
 set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG
   ${SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY}
   )
@@ -43,7 +43,7 @@ set(SlicerExecutionModel_LIBRARY_DIRS_CONFIG
   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
   ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
   )
-  
+
 set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG
   ${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX}
   )

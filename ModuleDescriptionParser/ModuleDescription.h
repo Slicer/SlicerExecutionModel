@@ -38,7 +38,7 @@ public:
 
   void SetIndex(const std::string &ind);
   const std::string& GetIndex() const;
-  
+
   void SetTitle(const std::string &title);
   const std::string& GetTitle() const;
 
@@ -62,10 +62,10 @@ public:
 
   /// Set the type of module: Unknown, SharedObjectModule, CommandLineModule
   void SetType(const std::string &type);
-  
+
   /// Get the type of the module: Unknown, SharedObjectModule, CommandLineModule
   const std::string& GetType() const;
-  
+
   /// Set the target for the module.  This is the entry point for a
   /// shared object module and the full command (with path) for an executable.
   void SetTarget(const std::string &target);
@@ -81,15 +81,15 @@ public:
   /// Get the location for the module.  This is path to the file (shared
   /// object or executable) for the module.
   const std::string& GetLocation() const;
-  
+
   void SetLogo(const ModuleLogo& logo);
   const ModuleLogo& GetLogo() const;
-  
+
   void AddParameterGroup(const ModuleParameterGroup &group);
 
   const std::vector<ModuleParameterGroup>& GetParameterGroups() const;
   std::vector<ModuleParameterGroup>& GetParameterGroups();
-  
+
   void SetParameterGroups(const std::vector<ModuleParameterGroup>& groups);
 
   /// Return true if the module has a parameter matching the \a name.
@@ -170,7 +170,7 @@ public:
 
 private:
   std::string Title;
-  std::string Category; 
+  std::string Category;
   std::string Index;
   std::string Description;
   std::string Version;
@@ -181,7 +181,7 @@ private:
   std::string Type;
   std::string Target;
   std::string Location;
-  std::vector<ModuleParameterGroup> ParameterGroups;  
+  std::vector<ModuleParameterGroup> ParameterGroups;
 
   ModuleProcessInformation ProcessInformation;
   ModuleLogo Logo;

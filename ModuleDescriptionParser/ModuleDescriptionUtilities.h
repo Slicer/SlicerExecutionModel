@@ -20,7 +20,7 @@
 #include <string>
 
 ModuleDescriptionParser_EXPORT void replaceSubWithSub(std::string& s, const char *o, const char  *n);
-ModuleDescriptionParser_EXPORT void trimLeading(std::string& s, const char* extraneousChars = " \t\n"); 
+ModuleDescriptionParser_EXPORT void trimLeading(std::string& s, const char* extraneousChars = " \t\n");
 ModuleDescriptionParser_EXPORT void trimTrailing(std::string& s, const char* extraneousChars = " \t\n");
 ModuleDescriptionParser_EXPORT void trimLeadingAndTrailing(std::string& s, const char* extraneousChars = " \t\n");
 

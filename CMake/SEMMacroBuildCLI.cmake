@@ -109,7 +109,7 @@ macro(SEMMacroBuildCLI)
   if(DEFINED LOCAL_SEM_INCLUDE_DIRECTORIES)
     include_directories(${LOCAL_SEM_INCLUDE_DIRECTORIES})
   endif()
-  
+
   if(DEFINED SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES)
     include_directories(${SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES})
   endif()
@@ -182,7 +182,7 @@ macro(SEMMacroBuildCLI)
 
   # Set labels associated with the target.
   set_target_properties(${cli_targets} PROPERTIES LABELS ${CLP})
-  
+
   # Define default Output directories if it applies
   foreach(type RUNTIME LIBRARY ARCHIVE)
     if(NOT DEFINED LOCAL_SEM_${type}_OUTPUT_DIRECTORY)

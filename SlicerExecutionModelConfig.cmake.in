@@ -6,8 +6,8 @@
 #
 #   SEMMacroBuildCLI(...)
 ##
-# When using the components argument, SlicerExecutionModel_USE_* variables are 
-# automatically set for the SlicerExecutionModel_USE_FILE to pick up.  
+# When using the components argument, SlicerExecutionModel_USE_* variables are
+# automatically set for the SlicerExecutionModel_USE_FILE to pick up.
 # If one wishes to manually set them, the available ones to set include:
 #                    SlicerExecutionModel_USE_GENERATECLP
 #                    SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER
@@ -147,7 +147,7 @@ set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
 set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
 
 #
-# Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated 
+# Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated
 # variables (ModuleDescriptionParser_INCLUDE_DIRS, ...) are exposed.
 #
 if(SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER)

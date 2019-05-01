@@ -1,23 +1,23 @@
 
-/****************************************************************************** 
- * 
+/******************************************************************************
+ *
  *  file:  XMLOutput.h
- * 
+ *
  *  Copyright (c) 2004, Michael E. Smoot
  *  All rights reverved.
- * 
+ *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
- *  
- *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
- *  DEALINGS IN THE SOFTWARE.  
- *  
- *****************************************************************************/ 
+ *
+ *  THE SOFTWARE IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ *  DEALINGS IN THE SOFTWARE.
+ *
+ *****************************************************************************/
 
 #ifndef TCLAP_XMLOUTPUT_H
 #define TCLAP_XMLOUTPUT_H
@@ -36,7 +36,7 @@
 namespace TCLAP {
 
 /**
- * A class that generates XML output for usage() method for the 
+ * A class that generates XML output for usage() method for the
  * given CmdLine and its Args.
  */
 class XMLOutput : public CmdLineOutput
@@ -45,35 +45,35 @@ class XMLOutput : public CmdLineOutput
   public:
 
     /**
-     * Prints the usage to stdout.  Can be overridden to 
+     * Prints the usage to stdout.  Can be overridden to
      * produce alternative behavior.
-     * \param c - The CmdLine object the output is generated for. 
+     * \param c - The CmdLine object the output is generated for.
      */
     virtual void usage(CmdLineInterface& c);
 
     /**
-     * Prints the version to stdout. Can be overridden 
+     * Prints the version to stdout. Can be overridden
      * to produce alternative behavior.
-     * \param c - The CmdLine object the output is generated for. 
+     * \param c - The CmdLine object the output is generated for.
      */
     virtual void version(CmdLineInterface& c);
 
     /**
-     * Prints (to stderr) an error message, short usage 
+     * Prints (to stderr) an error message, short usage
      * Can be overridden to produce alternative behavior.
-     * \param c - The CmdLine object the output is generated for. 
-     * \param e - The ArgException that caused the failure. 
+     * \param c - The CmdLine object the output is generated for.
+     * \param e - The ArgException that caused the failure.
      */
-    virtual void failure(CmdLineInterface& c, 
+    virtual void failure(CmdLineInterface& c,
                  ArgException& e );
 
   protected:
 
     /**
      * Substitutes the char r for string x in string s.
-     * \param s - The string to operate on. 
-     * \param r - The char to replace. 
-     * \param x - What to replace r with. 
+     * \param s - The string to operate on.
+     * \param r - The char to replace.
+     * \param x - What to replace r with.
      */
     void substituteSpecialChars( std::string& s, char r, std::string& x );
     void removeChar( std::string& s, char r);
@@ -83,12 +83,12 @@ class XMLOutput : public CmdLineOutput
 };
 
 
-inline void XMLOutput::version(CmdLineInterface& _cmd) 
-{ 
+inline void XMLOutput::version(CmdLineInterface& _cmd)
+{
   std::cout << _cmd.getVersion() << std::endl;
 }
 
-inline void XMLOutput::usage(CmdLineInterface& _cmd ) 
+inline void XMLOutput::usage(CmdLineInterface& _cmd )
 {
   std::list<Arg*> argList = _cmd.getArgList();
   std::string progName = _cmd.getProgramName();
@@ -105,19 +105,19 @@ inline void XMLOutput::usage(CmdLineInterface& _cmd )
 
   // Start the parameters
   std::cout << "<parameters>" << std::endl;
-  
+
   // Do the xor's first
   for ( int i = 0; (unsigned int)i < xorList.size(); i++ )
     {
     std::cout << "<xor>" << std::endl;
-    for ( ArgVectorIterator it = xorList[i].begin(); 
+    for ( ArgVectorIterator it = xorList[i].begin();
           it != xorList[i].end(); it++ )
       {
       printLongArg((*it));
       }
     std::cout << "</xor>" << std::endl;
     }
-  
+
   // rest of args
   for (ArgListIterator it = argList.begin(); it != argList.end(); it++)
     {
@@ -131,8 +131,8 @@ inline void XMLOutput::usage(CmdLineInterface& _cmd )
 }
 
 inline void XMLOutput::failure( CmdLineInterface& _cmd,
-            ArgException& e ) 
-{ 
+            ArgException& e )
+{
     std::cout << e.what() << std::endl;
 }
 
@@ -159,12 +159,12 @@ inline void XMLOutput::removeChar( std::string& s, char r)
 
   inline std::string XMLOutput::generateSafeString ( std::string s )
   {
-    std::string lt = "&lt;"; 
+    std::string lt = "&lt;";
     std::string gt = "&gt;";
     std::string amp = "&amp;";
     std::string apos = "&apos;";
     std::string quot = "&quot;";
-    
+
     std::out ( s );
     substituteSpecialChars(out,'<',lt);
     substituteSpecialChars(out,'>',gt);
@@ -175,19 +175,19 @@ inline void XMLOutput::removeChar( std::string& s, char r)
     removeChar(out,']');
     return out;
   }
-    
-  
+
+
 inline void XMLOutput::printShortArg(Arg* a)
 {
-  std::string lt = "&lt;"; 
-  std::string gt = "&gt;"; 
+  std::string lt = "&lt;";
+  std::string gt = "&gt;";
 
   std::string id = a->shortID();
   substituteSpecialChars(id,'<',lt);
   substituteSpecialChars(id,'>',gt);
   removeChar(id,'[');
   removeChar(id,']');
-  
+
   std::string choice = "opt";
   if ( a->isRequired() )
     choice = "req";
@@ -196,11 +196,11 @@ inline void XMLOutput::printShortArg(Arg* a)
   if ( a->acceptsMultipleValues() )
     repeat = "repeat";
 
-    
-        
-  std::cout << "<arg choice='" << choice 
-        << "' repeat='" << repeat << "'>" 
-        << id << "</arg>" << std::endl; 
+
+
+  std::cout << "<arg choice='" << choice
+        << "' repeat='" << repeat << "'>"
+        << id << "</arg>" << std::endl;
 
 }
 
@@ -210,7 +210,7 @@ inline void XMLOutput::printLongArg(Arg* a)
   std::string id = a->longID();
   std::string desc = a->getDescription();
 
-  
+
   if ( a->isValueRequired() )
     {
     std::cout << "<value ";
@@ -240,9 +240,9 @@ inline void XMLOutput::printLongArg(Arg* a)
     }
   std::cout << "type=\"" << a->getTypeDescription() << "\" ";
   std::cout << ">" << std::endl;
-  
-  
-  
+
+
+
 
   std::cout << "<simplelist>" << std::endl;
 
@@ -258,4 +258,4 @@ inline void XMLOutput::printLongArg(Arg* a)
 }
 
 } //namespace TCLAP
-#endif 
+#endif

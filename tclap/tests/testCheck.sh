@@ -14,7 +14,7 @@ else
   then
     echo "$cmd OK -- output identical"
   else
-    echo "$cmd Problem!" 
+    echo "$cmd Problem!"
     echo
     echo "TEST ======================================================"
     echo
@@ -25,8 +25,8 @@ else
     echo
     echo "DIFF ======================================================"
     echo "diff tmp.out $out"
-    echo "< = test(new) = tmp.out" 
-    echo "> = expected  = $out" 
+    echo "< = test(new) = tmp.out"
+    echo "> = expected  = $out"
     echo
     diff tmp.out $out
     echo

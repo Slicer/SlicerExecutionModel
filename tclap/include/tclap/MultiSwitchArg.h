@@ -1,5 +1,5 @@
 
-/****************************************************************************** 
+/******************************************************************************
 *
 *  file:  MultiSwitchArg.h
 *
@@ -70,12 +70,12 @@ public:
    * used as a long flag on the command line.
    * \param desc - A description of what the argument is for or
    * does.
-   * \param init - Optional. The initial/default value of this Arg. 
+   * \param init - Optional. The initial/default value of this Arg.
    * Defaults to 0.
    * \param v - An optional visitor.  You probably should not
    * use this unless you have a very good reason.
    */
-  MultiSwitchArg(const std::string& flag, 
+  MultiSwitchArg(const std::string& flag,
                  const std::string& name,
                  const std::string& desc,
                  int init = 0,
@@ -91,12 +91,12 @@ public:
    * \param desc - A description of what the argument is for or
    * does.
    * \param parser - A CmdLine parser object to add this Arg to
-   * \param init - Optional. The initial/default value of this Arg. 
+   * \param init - Optional. The initial/default value of this Arg.
    * Defaults to 0.
    * \param v - An optional visitor.  You probably should not
    * use this unless you have a very good reason.
    */
-  MultiSwitchArg(const std::string& flag, 
+  MultiSwitchArg(const std::string& flag,
                  const std::string& name,
                  const std::string& desc,
                  CmdLineInterface& parser,
@@ -112,13 +112,13 @@ public:
    * \param args - Mutable list of strings. Passed
    * in from main().
    */
-  virtual bool processArg(int* i, std::vector<std::string>& args); 
+  virtual bool processArg(int* i, std::vector<std::string>& args);
 
   /**
    * Returns int, the number of times the switch has been set.
    */
   int getValue();
-  
+
   /**
    * Returns the number of times the switch has been set.
    */
@@ -148,20 +148,20 @@ inline MultiSwitchArg::MultiSwitchArg(const std::string& flag,
 { }
 
 inline MultiSwitchArg::MultiSwitchArg(const std::string& flag,
-                                      const std::string& name, 
-                                      const std::string& desc, 
+                                      const std::string& name,
+                                      const std::string& desc,
                                       CmdLineInterface& parser,
                                       int init,
                                       Visitor* v )
   : SwitchArg(flag, name, desc, false, v),
     _value( init )
-{ 
+{
   parser.add( this );
 }
 
 inline int MultiSwitchArg::getValue() { return _value; }
 
-inline std::string MultiSwitchArg::getValueAsString()const 
+inline std::string MultiSwitchArg::getValueAsString()const
 {
 #if defined(HAVE_SSTREAM)
   std::ostringstream os;
@@ -171,7 +171,7 @@ inline std::string MultiSwitchArg::getValueAsString()const
 #error "Need a stringstream (sstream or strstream) to compile!"
 #endif
   os << _value;
-  return os.str(); 
+  return os.str();
 }
 
 inline bool MultiSwitchArg::processArg(int *i, std::vector<std::string>& args)
@@ -200,7 +200,7 @@ inline bool MultiSwitchArg::processArg(int *i, std::vector<std::string>& args)
     ++_value;
 
     // Check for more in argument and increment value.
-    while ( combinedSwitchesMatch( args[*i] ) ) 
+    while ( combinedSwitchesMatch( args[*i] ) )
       ++_value;
 
     _checkWithVisitor();

@@ -61,7 +61,7 @@
       <xsd:attribute name="multiple" type="xsd:boolean"/>
       <xsd:attribute name="hidden" type="xsd:boolean"/>
     </xsd:complexType>
-    
+
     <xsd:complexType name="scalarType" >
       <xsd:complexContent>
         <xsd:extension base="paramType">
@@ -125,7 +125,7 @@
         </xsd:extension>
       </xsd:complexContent>
     </xsd:complexType>
-    
+
     <xsd:complexType name="flagType">
       <xsd:simpleContent>
         <xsd:extension base="xsd:string">
@@ -134,7 +134,7 @@
         </xsd:extension>
       </xsd:simpleContent>
     </xsd:complexType>
-    
+
     <xsd:complexType name="constraintsType">
       <xsd:sequence>
         <xsd:element name="minimum" type="xsd:double"/>
