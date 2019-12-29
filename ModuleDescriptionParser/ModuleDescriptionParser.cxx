@@ -545,7 +545,7 @@ startElement(void *userData, const char *element, const char **attrs)
 
     // Parse attribute pairs
     parameter->SetCPPType("std::string");
-    parameter->SetType("scalar");
+    parameter->SetType("point");
     for (int attr=0; attr < (attrCount / 2); attr++)
       {
       if ((strcmp(attrs[2*attr], "multiple") == 0))
@@ -563,6 +563,31 @@ startElement(void *userData, const char *element, const char **attrs)
         else
           {
           std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid argument for the attribute \"multiple\". Only \"true\" and \"false\" are accepted.");
+          if (ps->ErrorDescription.size() == 0)
+            {
+            ps->ErrorDescription = error;
+            ps->ErrorLine = XML_GetCurrentLineNumber(ps->Parser);
+            ps->Error = true;
+            }
+          ps->OpenTags.push(name);
+          delete parameter;
+          return;
+          }
+        }
+      else if ((strcmp(attrs[2*attr], "type") == 0))
+        {
+        if ((strcmp(attrs[2*attr+1], "any") == 0) ||
+            (strcmp(attrs[2*attr+1], "point") == 0) ||
+            (strcmp(attrs[2*attr+1], "line") == 0) ||
+            (strcmp(attrs[2*attr+1], "angle") == 0) ||
+            (strcmp(attrs[2*attr+1], "curve") == 0) ||
+            (strcmp(attrs[2*attr+1], "closedcurve")) )
+          {
+          parameter->SetType(attrs[2*attr+1]);
+          }
+        else
+          {
+          std::string error("ModuleDescriptionParser Error: \"" + std::string(attrs[2*attr+1]) + "\" is not a valid value for the attribute \"" + "type" + "\". Only \"point\", \"line\" , \"angle\", \"curve\", \"closedcurve\", and \"any\" are accepted.");
           if (ps->ErrorDescription.size() == 0)
             {
             ps->ErrorDescription = error;
