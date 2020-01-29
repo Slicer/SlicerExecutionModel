@@ -106,6 +106,7 @@ if(SlicerExecutionModel_USE_SERIALIZER)
   set(GenerateCLP_USE_SERIALIZER ON)
 endif()
 
+
 #-----------------------------------------------------------------------------
 # Note: The default values defined below could be overwritten if passed when configuring
 #       SlicerExecutionModel project.
@@ -177,6 +178,10 @@ endmacro()
 endif()
 ###
 
+SETIFEMPTY(SlicerExecutionModel_ADDITIONAL_FORWARD_PATHS_BUILD  "" CACHE PATH "Specify additional forward build directory paths for GenerateCLPLauncher.")
+
+SETIFEMPTY(SlicerExecutionModel_ADDITIONAL_FORWARD_PATHS_INSTALL  "" CACHE PATH "Specify additional forward install directory paths for GenerateCLPLauncher.")
+
 SETIFEMPTY(TCLAP_DIR ${CMAKE_CURRENT_BINARY_DIR}/tclap CACHE PATH "Location of TCLAPConfig.cmake" FORCE)
 add_subdirectory(tclap)
 
@@ -185,6 +190,9 @@ add_subdirectory(ModuleDescriptionParser)
 
 SETIFEMPTY(GenerateCLP_DIR ${CMAKE_CURRENT_BINARY_DIR}/GenerateCLP CACHE PATH "Location of GenerateCLPConfig.cmake" FORCE)
 add_subdirectory(GenerateCLP)
+
+
+
 
 # --------------------------------------------------------------------------
 # Set INCLUDE_DIRS variable
