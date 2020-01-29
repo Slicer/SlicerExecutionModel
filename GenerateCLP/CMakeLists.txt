@@ -157,6 +157,22 @@ endif()
 # where the binary is actually not in the same directory as the shared
 # libraries it depends on.
 #
+
+#Add additional forward paths
+set(additional_forward_paths_build "")
+foreach(lib_path ${SlicerExecutionModel_ADDITIONAL_FORWARD_PATHS_BUILD})
+  string(APPEND additional_forward_paths_build
+      "\"${lib_path}\", "
+    )
+endforeach()
+
+set(additional_forward_paths_install "")
+foreach(lib_path ${SlicerExecutionModel_ADDITIONAL_FORWARD_PATHS_INSTALL})
+  string(APPEND additional_forward_paths_install
+      "\"${lib_path}\", "
+    )
+endforeach()
+
 if(JsonCpp_FOUND)
   get_filename_component(json_library_dir ${JsonCpp_LIBRARY} DIRECTORY)
   set(json_forward_path_build
@@ -171,16 +187,19 @@ set(GenerateCLP_FORWARD_PATH_BUILD " \\
    \".\" CONFIG_DIR_POST, \\
    \"${ITK_DIR}/bin\" CONFIG_DIR_POST, \\
    ${json_forward_path_build} \\
+   ${additional_forward_paths_build} \\
    \"${ModuleDescriptionParser_DIR}/bin\" CONFIG_DIR_POST \\
 ")
 set(GenerateCLP_FORWARD_PATH_INSTALL " \\
    \".\", \\
    \"${ITK_DIR}/bin\", \\
    ${json_forward_path_install} \\
+   ${additional_forward_paths_install} \\
    \"${ModuleDescriptionParser_DIR}/bin\" \\
 ")
 set(GenerateCLP_FORWARD_EXE GenerateCLP)
 set(GenerateCLP_FORWARD_DIR_INSTALL "..")
+
 
 # --------------------------------------------------------------------------
 # Build launcher
