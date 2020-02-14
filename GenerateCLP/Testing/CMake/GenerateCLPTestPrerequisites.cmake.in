@@ -13,6 +13,9 @@ set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
 
 set(JsonCpp_CMAKE_MODULE_PATH "@SlicerExecutionModel_SOURCE_DIR@/CMake")
 
+set(SlicerExecutionModel_USE_UTF8 @SlicerExecutionModel_USE_UTF8@)
+set(SlicerExecutionModel_CMAKE_DIR "@SlicerExecutionModel_CMAKE_DIR@")
+
 # --------------------------------------------------------------------------
 # Sanity checks
 
