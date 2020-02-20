@@ -6,7 +6,7 @@ create_test_sourcelist(Tests ${KIT}CxxTests.cxx
   ModuleDescriptionTest.cxx
   )
 
-add_executable(${KIT}CxxTests
+sem_add_executable(${KIT}CxxTests
   ModuleDescriptionTestingMacros.h
   ModuleDescriptionTestingUtilities.cxx
   ModuleDescriptionTestingUtilities.h
@@ -18,7 +18,7 @@ target_link_libraries(${KIT}CxxTests ${KIT})
 # Build Parser1Test executable
 # --------------------------------------------------------------------------
 set(PARSER1TEST_SOURCE Parser1Test.cxx )
-add_executable(Parser1Test ${PARSER1TEST_SOURCE})
+sem_add_executable(Parser1Test ${PARSER1TEST_SOURCE})
 target_link_libraries(Parser1Test ModuleDescriptionParser )
 
 # --------------------------------------------------------------------------

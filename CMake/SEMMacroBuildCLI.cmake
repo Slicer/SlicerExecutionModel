@@ -156,7 +156,7 @@ macro(SEMMacroBuildCLI)
     set_target_properties(${CLP}Lib PROPERTIES LINK_FLAGS ${_cli_library_link_flags})
   endif()
 
-  add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
+  sem_add_executable(${CLP} ${LOCAL_SEM_CLI_LIBRARY_WRAPPER_CXX})
   set_target_properties(${CLP} PROPERTIES COMPILE_FLAGS "${cli_executable_compile_flags}")
   set(cli_executable_libraries ${CLP}Lib)
   if(DEFINED SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES)

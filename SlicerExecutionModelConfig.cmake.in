@@ -53,6 +53,10 @@ if(SlicerExecutionModel_USE_SERIALIZER AND NOT SlicerExecutionModel_USE_JSONCPP)
   Make sure SlicerExecutionModel_USE_JSONCPP is ON.")
 endif()
 
+# SlicerExecutionModel_USE_UTF8 is optional and it must be turned on at
+# build time to make sure active code page is consistent in all executables.
+set(SlicerExecutionModel_USE_UTF8 @SlicerExecutionModel_USE_UTF8@)
+
 # Set SlicerExecutionModel variables
 set(SlicerExecutionModel_INCLUDE_DIRS
   "@SlicerExecutionModel_INCLUDE_DIRS_CONFIG@"

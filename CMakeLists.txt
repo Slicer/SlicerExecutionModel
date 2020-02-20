@@ -74,6 +74,14 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 #-----------------------------------------------------------------------------
+# ParameterSerializer support for ModuleDescriptionParser and GenerateCLP subprojects
+#-----------------------------------------------------------------------------
+option(SlicerExecutionModel_USE_UTF8 "Make applications use UTF-8 as code page." OFF)
+set(SlicerExecutionModel_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+set(GenerateCLP_USE_UTF8 ${SlicerExecutionModel_USE_UTF8})
+include(SEMFunctionAddExecutable)
+
+#-----------------------------------------------------------------------------
 # Output directories associated with ModuleDescriptionParser and GenerateCLP subprojects
 #-----------------------------------------------------------------------------
 foreach(type LIBRARY RUNTIME ARCHIVE)
@@ -229,8 +237,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/UseSlicerExecutionModel.cmake.in
 set(allscripts
   CMake/FindJsonCpp.cmake
   CMake/SEMCommandLineLibraryWrapper.cxx
+  CMake/SEMFunctionAddExecutable.cmake
   CMake/SEMMacroBuildCLI.cmake
   CMake/SEMToolTestName.cxx.in
+  CMake/WindowsApplicationUseUtf8.manifest
   )
 foreach(SCRIPT ${allscripts})
   get_filename_component(_fileName ${SCRIPT} NAME)

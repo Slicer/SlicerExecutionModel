@@ -105,7 +105,7 @@ set(executable_name GenerateCLP)
 set(GENERATECLP_SOURCE
   GenerateCLP.cxx
   )
-add_executable(${executable_name} ${GENERATECLP_SOURCE})
+sem_add_executable(${executable_name} ${GENERATECLP_SOURCE})
 list(APPEND targets_to_export ${executable_name})
 
 target_link_libraries(${executable_name}
@@ -215,7 +215,7 @@ add_custom_command(TARGET GenerateCLP POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E touch ${GenerateCLPLauncher_SOURCE}
   COMMENT "Force GenerateCLPLauncher to rebuild after GenerateCLP was modified"
   )
-add_executable(GenerateCLPLauncher
+sem_add_executable(GenerateCLPLauncher
   ${GenerateCLPLauncher_SOURCE}
   )
 list(APPEND targets_to_export GenerateCLPLauncher)
