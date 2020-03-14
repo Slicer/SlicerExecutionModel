@@ -28,7 +28,9 @@
 #if !defined(HAVE_STRSTREAM)
 // Assume sstream is available if strstream is not specified
 // (https://sourceforge.net/p/tclap/bugs/23/)
-#define HAVE_SSTREAM
+#  ifndef HAVE_SSTREAM //This may have been defined elsewhere
+#    define HAVE_SSTREAM 1
+#  endif
 #endif
 
 #if defined(HAVE_SSTREAM)
