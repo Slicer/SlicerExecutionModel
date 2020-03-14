@@ -29,7 +29,7 @@
 #  include <config.h>
 #else
 #  ifndef HAVE_SSTREAM //This may have been defined elsewhere
-#  define HAVE_SSTREAM
+#    define HAVE_SSTREAM 1
 #  endif
 #endif
 

@@ -32,7 +32,9 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #else
-#define HAVE_SSTREAM
+#  ifndef HAVE_SSTREAM //This may have been defined elsewhere
+#    define HAVE_SSTREAM 1
+#  endif
 #endif
 
 #if defined(HAVE_SSTREAM)
