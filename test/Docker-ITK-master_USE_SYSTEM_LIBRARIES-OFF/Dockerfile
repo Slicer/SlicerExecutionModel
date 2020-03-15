@@ -1,10 +1,10 @@
-FROM dockbuild/centos5
+FROM dockbuild/centos7
 MAINTAINER Insight Software Consortium <community@itk.org>
 
 WORKDIR /usr/src
 
-# March 21, 2018
-ENV ITK_GIT_COMMIT 6953e199404bf7feb9534d5b58111267be90c963
+# March 15, 2020
+ENV ITK_GIT_COMMIT d67ae984a703a71b2d8d6932216561157b322c28
 
 RUN \
   #
