@@ -1,4 +1,4 @@
-FROM dockbuild/centos5
+FROM dockbuild/centos7
 MAINTAINER Insight Software Consortium <community@itk.org>
 
 WORKDIR /usr/src
