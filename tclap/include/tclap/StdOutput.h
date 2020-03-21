@@ -5,6 +5,7 @@
  *  file:  StdOutput.h
  * 
  *  Copyright (c) 2004, Michael E. Smoot
+ *  Copyright (c) 2017, Google LLC
  *  All rights reserved.
  * 
  *  See the file COPYING in the top directory of this distribution for
@@ -168,7 +169,7 @@ StdOutput::_shortUsage( CmdLineInterface& _cmd,
 	XorHandler xorHandler = _cmd.getXorHandler();
 	std::vector< std::vector<Arg*> > xorList = xorHandler.getXorList();
 
-	std::string s = progName;
+	std::string s = progName + " ";
 
 	spacePrint( os, s, 75, 2, 6 );
 	s.clear();
