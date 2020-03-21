@@ -1,4 +1,6 @@
-project(TCLAP LANGUAGES CXX)
+
+project(TCLAP VERSION 1.2.2 
+LANGUAGES CXX)
 
 # --------------------------------------------------------------------------
 # Install headers
