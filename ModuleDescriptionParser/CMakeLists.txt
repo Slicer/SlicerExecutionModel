@@ -13,21 +13,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # --------------------------------------------------------------------------
-# Prerequisites
-# --------------------------------------------------------------------------
-
-#
-# ITK
-#
-set(${PROJECT_NAME}_ITK_COMPONENTS
-  ITKCommon# For itksys
-  ITKIOXML # For ITKEXPAT
-  ITKExpat # For Expat library
-  )
-find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
-include(${ITK_USE_FILE})
-
-# --------------------------------------------------------------------------
 # Option(s)
 # --------------------------------------------------------------------------
 if(NOT DEFINED BUILD_SHARED_LIBS)
@@ -42,6 +27,22 @@ if(ModuleDescriptionParser_USE_SERIALIZER)
   find_package(ParameterSerializer REQUIRED)
   include_directories(${ParameterSerializer_INCLUDE_DIRS})
 endif()
+
+# --------------------------------------------------------------------------
+# Prerequisites
+# --------------------------------------------------------------------------
+
+#
+# ITK
+#
+set(${PROJECT_NAME}_ITK_COMPONENTS
+  ITKCommon# For itksys
+  ITKIOXML # For ITKEXPAT
+  ITKExpat # For Expat library
+  )
+
+find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+include(${ITK_USE_FILE})
 
 #-----------------------------------------------------------------------------
 # Testing
