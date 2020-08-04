@@ -146,9 +146,21 @@ endif()
 set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
 set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
 set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
-set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
-set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
-set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+
+set(SlicerExecutionModel_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+if(NOT "${SlicerExecutionModel_JsonCpp_INCLUDE_DIR}" STREQUAL "")
+  set(JsonCpp_INCLUDE_DIR ${SlicerExecutionModel_JsonCpp_INCLUDE_DIR})
+endif()
+
+set(SlicerExecutionModel_JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+if(NOT "${SlicerExecutionModel_JsonCpp_LIBRARY}" STREQUAL "")
+  set(JsonCpp_LIBRARY ${SlicerExecutionModel_JsonCpp_LIBRARY})
+endif()
+
+set(SlicerExecutionModel_ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+if(NOT "${SlicerExecutionModel_ParameterSerializer_DIR}" STREQUAL "")
+  set(ParameterSerializer_DIR ${SlicerExecutionModel_ParameterSerializer_DIR})
+endif()
 
 #
 # Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated
