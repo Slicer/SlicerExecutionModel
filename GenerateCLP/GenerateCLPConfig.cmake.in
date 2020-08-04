@@ -12,9 +12,21 @@ set(SlicerExecutionModel_CMAKE_DIR "@SlicerExecutionModel_CMAKE_DIR@")
 set(TCLAP_DIR "@TCLAP_DIR@")
 set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
 set(ITK_DIR "@ITK_DIR_CONFIG@")
-set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
-set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
-set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+
+set(GenerateCLP_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+if(NOT "${GenerateCLP_JsonCpp_INCLUDE_DIR}" STREQUAL "")
+  set(JsonCpp_INCLUDE_DIR ${GenerateCLP_JsonCpp_INCLUDE_DIR})
+endif()
+
+set(GenerateCLP_JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+if(NOT "${GenerateCLP_JsonCpp_LIBRARY}" STREQUAL "")
+  set(JsonCpp_LIBRARY ${GenerateCLP_JsonCpp_LIBRARY})
+endif()
+
+set(GenerateCLP_ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+if(NOT "${GenerateCLP_ParameterSerializer_DIR}" STREQUAL "")
+  set(ParameterSerializer_DIR ${GenerateCLP_ParameterSerializer_DIR})
+endif()
 
 find_program(GENERATECLP_EXE
   NAMES GenerateCLPLauncher GenerateCLP
