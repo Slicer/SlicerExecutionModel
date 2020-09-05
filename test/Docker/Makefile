@@ -6,7 +6,7 @@
 DOCKER = docker
 
 # DockerHub organization and repository to pull/push the images from/to
-ORG = slicer
+ORG = hjmjohnson
 REPO = slicerexecutionmodel
 
 DIRECTORIES = \

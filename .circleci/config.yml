@@ -6,7 +6,7 @@ jobs:
   itk-v4.8.0_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
+      - image: hjmjohnson/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
@@ -16,7 +16,7 @@ jobs:
   itk-v4.10.1_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
+      - image: hjmjohnson/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
@@ -28,7 +28,7 @@ jobs:
   itk-v4.13.0_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
+      - image: hjmjohnson/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
@@ -41,7 +41,7 @@ jobs:
   itk-master_use_system_libraries-off:
     <<: *build-settings
     docker:
-      - image: slicer/slicerexecutionmodel:${CIRCLE_JOB}
+      - image: hjmjohnson/slicerexecutionmodel:${CIRCLE_JOB}
     steps:
       - checkout
       - run:
