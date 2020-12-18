@@ -525,8 +525,12 @@ void GenerateDeSerialization( std::ostream & sout,
     | "    return EXIT_FAILURE;"
     | "    }"
     | "  Json::Value root;"
-    | "  Json::Reader reader;"
-    | "  reader.parse( fStream, root );"
+    | "  Json::CharReaderBuilder builder;"
+    | "  JSONCPP_STRING errs;"
+    | "  if (!parseFromStream(builder, fStream, &root, &errs)) {"
+    | "    std::cout << errs << std::endl;"
+    | "    return EXIT_FAILURE;"
+    | "  }"
     | "  const Json::Value & parameters = root[\"Parameters\"];";
 
   typedef std::vector<ModuleParameterGroup> ModuleParameterGroupsType;
@@ -593,8 +597,9 @@ void GenerateSerialization( std::ostream & sout,
     | "    std::cerr << \"Could not open file: \" << parametersSerializeArg.getValue() << \" for writing.\" << std::endl;"
     | "    return EXIT_FAILURE;"
     | "    }"
-    | "  Json::StyledStreamWriter writer;"
-    | "  writer.write( fStream, root );"
+    | "  Json::StreamWriterBuilder builder;"
+    | "  const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());"
+    | "  writer->write( root, &fStream );"
     | "  fStream.close();"
     | "  }";
 }
