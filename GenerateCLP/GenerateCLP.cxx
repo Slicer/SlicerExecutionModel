@@ -455,6 +455,7 @@ void GeneratePre(std::ostream &sout, ModuleDescription &, int argc, char *argv[]
   sout << "#include <sstream>" << std::endl;
 #ifdef GenerateCLP_USE_JSONCPP
   sout << "#include <fstream>\n";
+  sout << "#include <memory>\n";
 #endif // GenerateCLP_USE_JSONCPP
 #ifdef GenerateCLP_USE_SERIALIZER
   sout << "#include <stdexcept>\n";
@@ -521,8 +522,12 @@ void GenerateDeSerialization( std::ostream & sout,
     | "        return EXIT_FAILURE;"
     | "        }"
     | "      Json::Value root;"
-    | "      Json::Reader reader;"
-    | "      reader.parse( fStream, root );"
+    | "      Json::CharReaderBuilder builder;"
+    | "      std::string errs;"
+    | "      if (!Json::parseFromStream(builder, fStream, &root, &errs)) {"
+    | "        std::cerr << \"Could not parse file: \" << argv[arg_idx+1] << std::endl << errs << std::endl;"
+    | "        return EXIT_FAILURE;"
+    | "      }"
     | "      const Json::Value & parameters = root[\"Parameters\"];";
 
   typedef std::vector<ModuleParameterGroup> ModuleParameterGroupsType;
@@ -687,8 +692,9 @@ void GenerateSerialization( std::ostream & sout,
     | "    std::cerr << \"Could not open file: \" << parametersSerializeArg.getValue() << \" for writing.\" << std::endl;"
     | "    return EXIT_FAILURE;"
     | "    }"
-    | "  Json::StyledStreamWriter writer;"
-    | "  writer.write( fStream, root );"
+    | "  Json::StreamWriterBuilder builder;"
+    | "  const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());"
+    | "  writer->write( root, &fStream );"
     | "  fStream.close();"
     | "  }";
 }
