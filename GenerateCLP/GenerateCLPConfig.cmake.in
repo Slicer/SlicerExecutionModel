@@ -9,7 +9,9 @@ set(GenerateCLP_USE_JSONCPP "@GenerateCLP_USE_JSONCPP@")
 set(GenerateCLP_USE_SERIALIZER "@GenerateCLP_USE_SERIALIZER@")
 set(TCLAP_DIR "@TCLAP_DIR@")
 set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
-set(ITK_DIR "@ITK_DIR_CONFIG@")
+if (NOT DEFINED ITK_DIR)
+  set(ITK_DIR "@ITK_DIR_CONFIG@")
+endif()
 
 find_program(GENERATECLP_EXE
   NAMES GenerateCLPLauncher GenerateCLP

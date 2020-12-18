@@ -9,7 +9,9 @@ set(ModuleDescriptionParser_USE_FILE
   "@ModuleDescriptionParser_USE_FILE_CONFIG@"
   )
 
-set(ITK_DIR "@ITK_DIR_CONFIG@")
+if (NOT DEFINED ITK_DIR)
+  set(ITK_DIR "@ITK_DIR_CONFIG@")
+endif()
 
 set(ModuleDescriptionParser_ITK_COMPONENTS "@ModuleDescriptionParser_ITK_COMPONENTS@")
 
