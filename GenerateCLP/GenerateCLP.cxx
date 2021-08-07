@@ -55,7 +55,6 @@
 #include <cstdio>
 #include <fstream>
 #include <sstream>
-#include "expat.h"
 #include <string>
 #include <vector>
 
@@ -89,8 +88,8 @@ namespace
  */
 bool NeedsTemp(const ModuleParameter &parameter)
 {
-  std::string type = parameter.GetCPPType();
-  std::string multi = parameter.GetMultiple();
+  const std::string& type = parameter.GetCPPType();
+  const std::string& multi = parameter.GetMultiple();
   return (((type == "std::vector<int>" ||
            type == "std::vector<float>" ||
            type == "std::vector<double>" ||
@@ -100,8 +99,8 @@ bool NeedsTemp(const ModuleParameter &parameter)
 /* Some types need quotes in the initialization. */
 bool NeedsQuotes(const ModuleParameter &parameter)
 {
-  std::string type = parameter.GetCPPType();
-  std::string multi = parameter.GetMultiple();
+  const std::string& type = parameter.GetCPPType();
+  const std::string& multi = parameter.GetMultiple();
   return (((type == "std::vector<int>" ||
            type == "std::vector<float>" ||
            type == "std::vector<double>" ||
@@ -113,7 +112,7 @@ bool NeedsQuotes(const ModuleParameter &parameter)
 }
 bool IsEnumeration(const ModuleParameter &parameter)
 {
-  std::string type = parameter.GetTag();
+  const std::string& type = parameter.GetTag();
   return (type == "string-enumeration" ||
           type == "integer-enumeration" ||
           type == "float-enumeration" ||
@@ -122,13 +121,13 @@ bool IsEnumeration(const ModuleParameter &parameter)
 
 bool IsVectorOfVectors(const ModuleParameter &parameter)
 {
-  std::string type = parameter.GetCPPType();
+  const std::string& type = parameter.GetCPPType();
   return (type == "std::vector<std::vector<float> >");
 }
 
 bool HasValue(const ModuleParameter &parameter)
 {
-  return (parameter.GetValue().size() > 0 && parameter.GetMultiple() != "true");
+  return (!parameter.GetValue().empty() && parameter.GetMultiple() != "true");
 }
 
 /* Generate the preamble to the code. This includes the required
@@ -166,7 +165,7 @@ void GenerateSplitFilenames(std::ostream &);
  * command line arguments.
  */
 void GenerateExports(std::ostream &);
-void GeneratePluginDataSymbols(std::ostream &, std::vector<std::string>&, std::string);
+void GeneratePluginDataSymbols(std::ostream &, std::vector<std::string>&, const std::string&);
 void GeneratePluginEntryPoints(std::ostream &, std::vector<std::string> &);
 void GeneratePluginProcedures(std::ostream &, std::vector<std::string> &);
 void GenerateLOGO(std::ostream &, std::vector<std::string> &);
@@ -225,7 +224,7 @@ main(int argc, char *argv[])
 
   // Get the length of the file
   fin.seekg (0, std::ios::end);
-  const size_t len = fin.tellg();
+  const std::streamsize len = fin.tellg();
   fin.seekg (0, std::ios::beg);
   char * XML = new char[len+1];
   fin.read (XML, len);
@@ -298,7 +297,7 @@ main(int argc, char *argv[])
     return EXIT_FAILURE;
     }
 #endif
-  if (logoFiles.size() > 0 && !itksys::SystemTools::FileExists(logoFiles[0].c_str()))
+  if (!logoFiles.empty() && !itksys::SystemTools::FileExists(logoFiles[0].c_str()))
     {
     std::cerr << argv[0] << ": Cannot open " << logoFiles[0] << " as a logo file" << std::endl;
     return EXIT_FAILURE;
@@ -366,7 +365,7 @@ main(int argc, char *argv[])
       std::string existingOutputFileMD5 =
           itksys::SystemTools::LowerCase(std::string(computedExistingOutputFileMD5, 32));
 
-      if (outputBufferMD5.compare(existingOutputFileMD5) == 0)
+      if (outputBufferMD5 == existingOutputFileMD5)
         {
         std::cout << "GenerateCLP: File "
                   << itksys::SystemTools::GetFilenameName(OutputCxx) << " up-to-date." << std::endl;
@@ -576,7 +575,7 @@ void GenerateDeSerialization( std::ostream & sout,
             | "            {";
           if (IsVectorOfVectors(*paramIt))
             {
-            w | "            std::string value = \"\";"
+            w | "            std::string value;"
               | "            for (unsigned int j = 0; j < param[i].size(); ++j)"
               | "              {"
               | "              value += param[i][j].asString();"
@@ -609,7 +608,7 @@ void GenerateDeSerialization( std::ostream & sout,
             | "          }"
             | "        else if(param.size() > 0)"
             | "          {"
-            | "          std::string value = \"\";"
+            | "          std::string value;"
             | "          for (unsigned int i = 0; i < param.size(); ++i)"
             | "            {"
             | "            value += param[i].asString();"
@@ -722,7 +721,7 @@ void GenerateSplitFilenames(std::ostream &sout)
   sout << "  const std::string::size_type n = text.length();" << std::endl;
   sout << "  bool quoted;" << std::endl;
   sout << "  std::string comma(\",\");" << std::endl;
-  sout << "  std::string quote(\"\\\"\");" << std::endl;
+  sout << R"(  std::string quote("\"");)" << std::endl;
   sout << "  std::string::size_type start = text.find_first_not_of(comma);" << std::endl;
   sout << "  while (start < n)" << std::endl;
   sout << "    {" << std::endl;
@@ -767,7 +766,7 @@ void GenerateExports(std::ostream &sout)
   sout << std::endl;
 }
 
-void GeneratePluginDataSymbols(std::ostream &sout, std::vector<std::string>& logos, std::string XMLFile)
+void GeneratePluginDataSymbols(std::ostream &sout, std::vector<std::string>& logos, const std::string& XMLFile)
 {
   sout << "extern \"C\" {" << std::endl;
   sout << "Module_EXPORT char XMLModuleDescription[] = " << std::endl;
@@ -780,15 +779,15 @@ void GeneratePluginDataSymbols(std::ostream &sout, std::vector<std::string>& log
 
     // replace quotes with escaped quotes
     std::string cleanLine;
-    for (std::string::size_type j = 0; j < line.length(); j++)
+    for (const char j : line)
       {
-      if (line[j] == '\"')
+      if (j == '\"')
         {
         cleanLine.append("\\\"");
         }
       else
         {
-        cleanLine.append(1,line[j]);
+        cleanLine.append(1,j);
         }
       }
     sout << "\"" << cleanLine << "\\n\"" << std::endl;
@@ -875,9 +874,9 @@ void GeneratePluginProcedures(std::ostream &sout, std::vector<std::string> &logo
 
 void GenerateLOGO(std::ostream &sout, std::vector<std::string> &logos)
 {
-  if (logos.size() > 0)
+  if (!logos.empty())
     {
-    std::string EOL(" \\");
+    const std::string EOL(" \\");
 
     sout << "#define GENERATE_LOGO \\" << std::endl;
     // Generate special section to produce logo description
@@ -903,7 +902,7 @@ void GenerateLOGO(std::ostream &sout, std::vector<std::string> &logos)
 
 void GenerateXML(std::ostream &sout)
 {
-  std::string EOL(" \\");
+  const std::string EOL(" \\");
 
   sout << "#define GENERATE_XML \\" << std::endl;
   // Generate special section to produce xml description
@@ -916,7 +915,7 @@ void GenerateXML(std::ostream &sout)
 
 void GenerateEchoArgs(std::ostream &sout, ModuleDescription &module)
 {
-  std::string EOL(" \\");
+  const std::string EOL(" \\");
   sout << "#define GENERATE_ECHOARGS \\" << std::endl;
 
   sout << "if (echoSwitch)" << EOL << std::endl;
@@ -960,7 +959,7 @@ void GenerateEchoArgs(std::ostream &sout, ModuleDescription &module)
         {
         sout << "for (unsigned int _i= 0; _i < " << pit->GetName() << "Temp.size(); _i++)" << EOL << std::endl;
         sout << "{" << EOL << std::endl;
-        sout << "std::cout << \"" << pit->GetName() << "[\" << _i << \"]: \";" << EOL << std::endl;
+        sout << "std::cout << \"" << pit->GetName() << R"([" << _i << "]: ";)" << EOL << std::endl;
         sout << "std::vector<std::string> words;" << EOL << std::endl;
         sout << "words.clear();" << EOL << std::endl;
         if ((*pit).GetTag() == "file")
@@ -1019,7 +1018,7 @@ void GenerateEchoArgs(std::ostream &sout, ModuleDescription &module)
 
 void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
 {
-  std::string EOL(" \\");
+  const std::string EOL(" \\");
   sout << "#define GENERATE_DECLARE \\" << std::endl;
 
   ModuleParameterGroup autoParameters;
@@ -1120,11 +1119,11 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
         {
         if(!pit->GetFlag().empty())
           {
-          sout << "    nonbooleanFlags.push_back(\"-" << pit->GetFlag() <<"\");" << EOL << std::endl;
+          sout << "    nonbooleanFlags.emplace_back(\"-" << pit->GetFlag() <<"\");" << EOL << std::endl;
           }
         if (!pit->GetLongFlag().empty())
           {
-          sout << "    nonbooleanFlags.push_back(\"--" << pit->GetLongFlag() <<"\");" << EOL << std::endl;
+          sout << "    nonbooleanFlags.emplace_back(\"--" << pit->GetLongFlag() <<"\");" << EOL << std::endl;
           }
         }
       }
@@ -1189,15 +1188,15 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
             cppType != "bool")
           {
           // Initialized to avoid compiler warnings.
-          if (cppType.compare("int") == 0)
+          if (cppType == "int")
             {
             sout << " = 0";
             }
-          else if (cppType.compare("float") == 0)
+          else if (cppType == "float")
             {
             sout << " = 0.0f";
             }
-          else if (cppType.compare("double") == 0)
+          else if (cppType == "double")
             {
             sout << " = 0.0";
             }
@@ -1274,7 +1273,7 @@ void GenerateDeclare(std::ostream &sout, ModuleDescription &module)
         for (unsigned int e = 0; e < (pit->GetElements()).size(); e++)
           {
           sout << "    "
-               << pit->GetName() << "Allowed.push_back(";
+               << pit->GetName() << "Allowed.emplace_back(";
           if (NeedsQuotes(*pit))
             {
             sout << "\"";
@@ -1309,9 +1308,18 @@ void GenerateTCLAP(std::ostream &sout, ModuleDescription &module)
   sout << "#define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT" << std::endl;
 }
 
+std::string bool_to_string(const bool v)
+{
+  if( v )
+  {
+    return "true";
+  }
+  return "false";
+}
+
 void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
 {
-  std::string EOL(" \\");
+  const std::string EOL(" \\");
   sout << "#define GENERATE_TCLAP_PARSE \\" << std::endl;
 
   sout << "    std::string fullDescription(\"Description: \");" << EOL << std::endl;
@@ -1414,13 +1422,13 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
                << "\", msg.str(), ";
           if (pit->GetMultiple() != "true")
             {
-            sout << true
+            sout << bool_to_string(true)
                  << ", "
                  << pit->GetName();
             }
           else
             {
-            sout << false;
+            sout << bool_to_string(false);
             }
           sout << ", "
                << "\""
@@ -1441,7 +1449,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
                << "\", \""
                << pit->GetLongFlag()
                << "\", msg.str(), "
-               << false
+               << bool_to_string(false)
                << ", "
                << pit->GetName();
           sout << ", "
@@ -1483,7 +1491,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
                << "\", \""
                << pit->GetLongFlag()
                << "\", msg.str(), "
-               << false;
+               << bool_to_string(false);
           if (pit->GetMultiple() != "true")
             {
             sout << ", "
@@ -1522,7 +1530,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
          pit != git->GetParameters().end();
          ++pit)
       {
-      if (pit->GetFlagAliases().size() != 0)
+      if (!pit->GetFlagAliases().empty())
         {
         std::vector<std::string>::const_iterator ait;
         for (ait = pit->GetFlagAliases().begin();
@@ -1542,7 +1550,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
          pit != git->GetParameters().end();
          ++pit)
       {
-      if (pit->GetDeprecatedFlagAliases().size() != 0)
+      if (!pit->GetDeprecatedFlagAliases().empty())
         {
         std::vector<std::string>::const_iterator ait;
         for (ait = pit->GetDeprecatedFlagAliases().begin();
@@ -1562,7 +1570,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
          pit != git->GetParameters().end();
          ++pit)
       {
-      if (pit->GetLongFlagAliases().size() != 0)
+      if (!pit->GetLongFlagAliases().empty())
         {
         std::vector<std::string>::const_iterator ait;
         for (ait = pit->GetLongFlagAliases().begin();
@@ -1582,7 +1590,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
          pit != git->GetParameters().end();
          ++pit)
       {
-      if (pit->GetDeprecatedLongFlagAliases().size() != 0)
+      if (!pit->GetDeprecatedLongFlagAliases().empty())
         {
         std::vector<std::string>::const_iterator ait;
         for (ait = pit->GetDeprecatedLongFlagAliases().begin();
@@ -1598,10 +1606,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
 
   sout << "    /* Go through argc and consolidate the JSON with the parameters from the command line */" << EOL << std::endl;
   sout << "    /* In case of conflict, take the command line. */" << EOL << std::endl;
-  sout << "    std::map<std::string,std::string>::iterator ait;" << EOL << std::endl;
-  sout << "    std::map<std::string,std::string>::iterator dait;" << EOL << std::endl;
-  sout << "    std::vector<std::string>::iterator dvOptionnalArgsIt = deserializedVectorFlaggedArgs.begin();" << EOL << std::endl;
-  sout << "    std::map<std::string, std::vector<std::string> >::iterator dvMultipleArgsIt;" << EOL << std::endl;
+  sout << "    auto dvOptionnalArgsIt = deserializedVectorFlaggedArgs.begin();" << EOL << std::endl;
   sout << "    size_t noFlagCounter = 0;" << EOL << std::endl;
   sout << "    size_t ac = 1;" << EOL << std::endl;
   sout << EOL << std::endl;
@@ -1619,8 +1624,8 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           {" << EOL << std::endl;
   //     short flag re-mapping
   sout << "           /* Short flag remapping */" << EOL << std::endl;
-  sout << "           ait = flagAliasMap.find(flag);" << EOL << std::endl;
-  sout << "           dait = deprecatedFlagAliasMap.find(flag);" << EOL << std::endl;
+  sout << "           auto ait = flagAliasMap.find(flag);" << EOL << std::endl;
+  sout << "           auto dait = deprecatedFlagAliasMap.find(flag);" << EOL << std::endl;
   sout << "           if (ait != flagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
@@ -1628,7 +1633,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             }" << EOL << std::endl;
   sout << "           else if (dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             std::cout << \"Flag \\\"\" << flag << \"\\\" is deprecated. Please use flag \\\"\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
+  sout << R"(             std::cout << "Flag \"" << flag << "\" is deprecated. Please use flag \"" << (*dait).second << "\" instead. " << std::endl;)" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
   sout << "             flag = (*dait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
@@ -1636,8 +1641,8 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "         else" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
   sout << "           /* Long flag remapping */" << EOL << std::endl;
-  sout << "           ait = longFlagAliasMap.find(flag);" << EOL << std::endl;
-  sout << "           dait = deprecatedLongFlagAliasMap.find(flag);" << EOL << std::endl;
+  sout << "           auto ait = longFlagAliasMap.find(flag);" << EOL << std::endl;
+  sout << "           auto dait = deprecatedLongFlagAliasMap.find(flag);" << EOL << std::endl;
   sout << "           if (ait != longFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
@@ -1645,15 +1650,15 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             }" << EOL << std::endl;
   sout << "           else if (dait != deprecatedLongFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             std::cout << \"Long flag \\\"\" << flag << \"\\\" is deprecated. Please use long flag \\\"\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
+  sout << R"(             std::cout << "Long flag \"" << flag << "\" is deprecated. Please use long flag \"" << (*dait).second << "\" instead. " << std::endl;)" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
   sout << "             flag = (*dait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
-  sout << "         bool isMultiple = multipleFlags.find(flag) != multipleFlags.end();" << EOL << std::endl;
-  sout << "         bool isBoolean = std::find(nonbooleanFlags.begin(), nonbooleanFlags.end(), flag) == nonbooleanFlags.end();" << EOL << std::endl;
+  sout << "         const bool isMultiple = multipleFlags.find(flag) != multipleFlags.end();" << EOL << std::endl;
+  sout << "         const bool isBoolean = std::find(nonbooleanFlags.begin(), nonbooleanFlags.end(), flag) == nonbooleanFlags.end();" << EOL << std::endl;
   sout << "         dvOptionnalArgsIt = std::find(deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end(), flag);" << EOL << std::endl;
-  sout << "         bool isPresentVFA = dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end();" << EOL << std::endl;
+  sout << "         const bool isPresentVFA = dvOptionnalArgsIt != deserializedVectorFlaggedArgs.end();" << EOL << std::endl;
   //   Compiling: 3 booleans => 8 cases
   //   But isBoolean && isMultiple is impossible, so a total of => 6 cases
   sout << "         if (isBoolean)" << EOL << std::endl;
@@ -1665,15 +1670,15 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   //       Already present -> Do nothing
   //       Not present -> Add the flag
   sout << "             {" << EOL << std::endl;
-  sout << "             deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.emplace_back(flag);" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           ++ac;" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         else if (isMultiple)" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
   //     Multiple cases:
-  sout << "           dvMultipleArgsIt = deserializedMultipleArgsMap.find(flag);" << EOL << std::endl;
-  sout << "           bool isPresentMA = dvMultipleArgsIt != deserializedMultipleArgsMap.end();" << EOL << std::endl;
+  sout << "           auto dvMultipleArgsIt = deserializedMultipleArgsMap.find(flag);" << EOL << std::endl;
+  sout << "           const bool isPresentMA = dvMultipleArgsIt != deserializedMultipleArgsMap.end();" << EOL << std::endl;
   sout << "           /*Ignore if boolean and already present*/" << EOL << std::endl;
   sout << "           /*Reset/Add the value if first deserialize or not present*/" << EOL << std::endl;
   sout << "           if (!isPresentMA || !multipleFlags[flag])" << EOL << std::endl;
@@ -1686,13 +1691,13 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             }" << EOL << std::endl;
   //       In any case, add the value and move on
   sout << "           ++ac;" << EOL << std::endl;
-  sout << "           std::string value = \"\";" << EOL << std::endl;
+  sout << "           std::string value;" << EOL << std::endl;
   sout << "           if (ac < static_cast<size_t>(argc))" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             value = argv[ac];" << EOL << std::endl;
   sout << "             ++ac;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
-  sout << "           deserializedMultipleArgsMap[flag].push_back(value);" << EOL << std::endl;
+  sout << "           deserializedMultipleArgsMap[flag].emplace_back(value);" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         else" << EOL << std::endl;
   //     Other cases:
@@ -1701,10 +1706,10 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           if (!isPresentVFA)" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   //       Not here -> Add flag
-  sout << "             deserializedVectorFlaggedArgs.push_back(flag);" << EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.emplace_back(flag);" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           ++ac;" << EOL << std::endl;
-  sout << "           std::string value = \"\";" << EOL << std::endl;
+  sout << "           std::string value;" << EOL << std::endl;
   sout << "           if (ac < static_cast<size_t>(argc))" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             value = argv[ac];" << EOL << std::endl;
@@ -1713,7 +1718,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   //       In any case add/set the value and move on
   sout << "           if (!isPresentVFA)" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             deserializedVectorFlaggedArgs.push_back(value); "<< EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.emplace_back(value); "<< EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           else" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
@@ -1732,8 +1737,8 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           std::string newFlag =\"-\";" << EOL << std::endl;
   sout << "           newFlag += tf;" << EOL << std::endl;
   //   Remapping
-  sout << "           ait = flagAliasMap.find(newFlag);" << EOL << std::endl;
-  sout << "           dait = deprecatedFlagAliasMap.find(newFlag);" << EOL << std::endl;
+  sout << "           auto ait = flagAliasMap.find(newFlag);" << EOL << std::endl;
+  sout << "           auto dait = deprecatedFlagAliasMap.find(newFlag);" << EOL << std::endl;
   sout << "           if (ait != flagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
@@ -1741,7 +1746,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "             }" << EOL << std::endl;
   sout << "           else if (dait != deprecatedFlagAliasMap.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             std::cout << \"Flag \\\"\" << newFlag << \"\\\" is deprecated. Please use flag \\\"\" << (*dait).second << \"\\\" instead. \" << std::endl;" << EOL << std::endl;
+  sout << R"(             std::cout << "Flag \"" << newFlag << "\" is deprecated. Please use flag \"" << (*dait).second << "\" instead. " << std::endl;)" << EOL << std::endl;
   sout << "             /* remap the flag */" << EOL << std::endl;
   sout << "             newFlag = (*dait).second;" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
@@ -1750,7 +1755,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           /*These flags are always boolean, just add it if it's not there already */" << EOL << std::endl;
   sout << "           if (dvOptionnalArgsIt == deserializedVectorFlaggedArgs.end())" << EOL << std::endl;
   sout << "             {" << EOL << std::endl;
-  sout << "             deserializedVectorFlaggedArgs.push_back(newFlag);" << EOL << std::endl;
+  sout << "             deserializedVectorFlaggedArgs.emplace_back(newFlag);" << EOL << std::endl;
   sout << "             }" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         ++ac;" << EOL << std::endl;
@@ -1765,7 +1770,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "           }" << EOL << std::endl;
   sout << "         else" << EOL << std::endl;
   sout << "           {" << EOL << std::endl;
-  sout << "           deserializedVectorPositionalArgs.push_back(argv[ac]);" << EOL << std::endl;
+  sout << "           deserializedVectorPositionalArgs.emplace_back(argv[ac]);" << EOL << std::endl;
   sout << "           }" << EOL << std::endl;
   sout << "         ++ac;" << EOL << std::endl;
   sout << "         ++noFlagCounter;" << EOL << std::endl;
@@ -1775,15 +1780,14 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
 
   sout << "    /* Put the now compiled arguments in the argvVector */" << EOL << std::endl;
   sout << "    std::vector<std::string> argvVector;" << EOL << std::endl;
-  sout << "    argvVector.push_back(argv[0]);" << EOL << std::endl;
+  sout << "    argvVector.emplace_back(argv[0]);" << EOL << std::endl;
   sout << "    argvVector.insert(argvVector.end(), deserializedVectorFlaggedArgs.begin(), deserializedVectorFlaggedArgs.end());" << EOL << std::endl;
-  sout << "    std::map<std::string, std::vector<std::string> >::iterator mavit;" << EOL << std::endl;
-  sout << "    for (mavit = deserializedMultipleArgsMap.begin(); mavit != deserializedMultipleArgsMap.end(); ++mavit)" << EOL << std::endl;
+  sout << "    for (auto & mavit : deserializedMultipleArgsMap)" << EOL << std::endl;
   sout << "      {" << EOL << std::endl;
-  sout << "      for (size_t i = 0; i < mavit->second.size(); ++i)" << EOL << std::endl;
+  sout << "      for (size_t i = 0; i < mavit.second.size(); ++i)" << EOL << std::endl;
   sout << "        {" << EOL << std::endl;
-  sout << "        argvVector.push_back(mavit->first);" << EOL << std::endl;
-  sout << "        argvVector.push_back(mavit->second.at(i));" << EOL << std::endl;
+  sout << "        argvVector.emplace_back(mavit.first);" << EOL << std::endl;
+  sout << "        argvVector.emplace_back(mavit.second.at(i));" << EOL << std::endl;
   sout << "        }" << EOL << std::endl;
   sout << "      }" << EOL << std::endl;
   sout << "    argvVector.insert(argvVector.end(), deserializedVectorPositionalArgs.begin(), deserializedVectorPositionalArgs.end());" << EOL << std::endl;
@@ -1792,7 +1796,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "   std::vector<char*> vargs;" << EOL << std::endl;
   sout << "   for (ac = 0; ac < argvVector.size(); ++ac)" << EOL << std::endl;
   sout << "     { " << EOL << std::endl;
-  sout << "     vargs.push_back(const_cast<char *>(argvVector[ac].c_str()));" << EOL << std::endl;
+  sout << "     vargs.emplace_back(const_cast<char *>(argvVector[ac].c_str()));" << EOL << std::endl;
   sout << "     }" << EOL << std::endl;
 
   // Generate the code to parse the command line
@@ -1802,14 +1806,14 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "  }" << EOL << std::endl;
   sout << "catch ( TCLAP::ArgException & e )" << EOL << std::endl;
   sout << "  {" << EOL << std::endl;
-  sout << "  std::cerr << \"error: \" << e.error() << \" for arg \" << e.argId() << std::endl;" << EOL << std::endl;
+  sout << R"(  std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;)" << EOL << std::endl;
   sout << "  return ( EXIT_FAILURE );" << EOL << std::endl;
   sout << "  }" << std::endl;
 }
 
 void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & module, bool onlyIfSet)
 {
-  std::string EOL(" \\");
+  const std::string EOL(" \\");
   sout << "#define GENERATE_TCLAP_ASSIGNMENT";
   if( onlyIfSet )
     {
@@ -1907,7 +1911,7 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
         sout << "        {"
              << EOL << std::endl;
         sout << "        "
-             << pit->GetName() << ".push_back("
+             << pit->GetName() << ".emplace_back("
              << pit->GetStringToType()
              << "(words[_j].c_str()));"
              << EOL << std::endl;
@@ -1938,19 +1942,19 @@ void GenerateTCLAPAssignment(std::ostream & sout, const ModuleDescription & modu
           sout << "        std::vector<" << pit->GetArgType() << "> elements;" << EOL << std::endl;
           sout << "        for (unsigned int _j= 0; _j < words.size(); _j++)" << EOL << std::endl;
           sout << "          {" << EOL << std::endl;
-          sout << "          elements.push_back("
+          sout << "          elements.emplace_back("
                << pit->GetStringToType()
                << "(words[_j].c_str()));"
                << EOL << std::endl;
           sout << "          }" << EOL << std::endl;
-          sout << "        " << pit->GetName() << ".push_back(elements);"
+          sout << "        " << pit->GetName() << ".emplace_back(elements);"
                << EOL << std::endl;
           }
         else
           {
           sout << "        for (unsigned int _j= 0; _j < words.size(); _j++)" << EOL << std::endl;
           sout << "          {" << EOL << std::endl;
-          sout << "            " << pit->GetName() << ".push_back("
+          sout << "            " << pit->GetName() << ".emplace_back("
                << pit->GetStringToType()
                << "(words[_j].c_str()));"
                << EOL << std::endl;
@@ -1980,16 +1984,17 @@ void GeneratePost(std::ostream &sout)
 #ifdef GenerateCLP_USE_JSONCPP
        << "GENERATE_SERIALIZATION;"
 #endif // GenerateCLP_USE_JSONCPP
-       << std::endl;
+      << "static_assert(true, \"\") /* Used to allow end-of-macro semi-colon */"
+      << std::endl;
 }
 
 void GenerateProcessInformationAddressDecoding(std::ostream &sout)
 {
-  std::string EOL(" \\");
+  static const std::string EOL(" \\");
   sout << "#define GENERATE_ProcessInformationAddressDecoding \\" << std::endl;
 
   sout << "ModuleProcessInformation *CLPProcessInformation = 0;" << EOL << std::endl;
-  sout << "if (processInformationAddressString != \"\")" << EOL << std::endl;
+  sout << "if (!processInformationAddressString.empty())" << EOL << std::endl;
   sout << "{" << EOL << std::endl;
   sout << "sscanf(processInformationAddressString.c_str(), \"%p\", &CLPProcessInformation);" << EOL << std::endl;
   sout << "}" << std::endl;
@@ -2021,7 +2026,7 @@ bool ComputeFileMD5(const char* source, char* md5out)
   // Should be efficient enough on most system:
   const int bufferSize = 4096;
   char buffer[bufferSize];
-  unsigned char const* buffer_uc =
+  auto buffer_uc =
     reinterpret_cast<unsigned char const*>(buffer);
   // This copy loop is very sensitive on certain platforms with
   // slightly broken stream libraries (like HPUX).  Normally, it is
@@ -2052,7 +2057,7 @@ std::string ComputeStringMD5(const char* input)
   itksysMD5_Append(md5, reinterpret_cast<unsigned char const*>(input), -1);
   itksysMD5_FinalizeHex(md5, md5out);
   itksysMD5_Delete(md5);
-  return std::string(md5out, 32);
+  return std::string{md5out, 32};
 }
 #endif
 

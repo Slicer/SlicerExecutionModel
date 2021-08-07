@@ -95,7 +95,7 @@ splitString (const std::string &text,
     {
     std::string::size_type stop = text.find_first_of(separators, start);
     if (stop > n) stop = n;
-    words.push_back(text.substr(start, stop - start));
+    words.emplace_back(text.substr(start, stop - start));
     start = text.find_first_not_of(separators, stop+1);
     }
 }
@@ -127,11 +127,11 @@ splitFilenames (const std::string &text,
       }
     if (!quoted)
       {
-      words.push_back(text.substr(start, stop - start));
+      words.emplace_back(text.substr(start, stop - start));
       }
     else
       {
-      words.push_back(text.substr(start+1, stop - start-2));
+      words.emplace_back(text.substr(start+1, stop - start-2));
       }
     start = text.find_first_not_of(comma, stop+1);
     }
@@ -216,18 +216,18 @@ try \
            if (ait != flagAliasMap.end()) \
              { \
              /* remap the flag */ \
-             targs.push_back(std::string("-") + ait->second); \
+             targs.emplace_back(std::string("-") + ait->second); \
              } \
            else if (dait != deprecatedFlagAliasMap.end()) \
              { \
              std::cout << "Flag \"" << argv[ac] << "\" is deprecated. Please use flag \"-" << dait->second << "\" instead. " << std::endl; \
              /* remap the flag */ \
-             targs.push_back(std::string("-") + dait->second); \
+             targs.emplace_back(std::string("-") + dait->second); \
              } \
            } \
          else \
            { \
-           targs.push_back(argv[ac]); \
+           targs.emplace_back(argv[ac]); \
            } \
          } \
        else if (strlen(argv[ac]) > 2 && argv[ac][0]=='-' && argv[ac][1]=='-') \
@@ -241,18 +241,18 @@ try \
            if (ait != longFlagAliasMap.end()) \
              { \
              /* remap the flag */ \
-             targs.push_back("--" + ait->second); \
+             targs.emplace_back("--" + ait->second); \
              } \
            else if (dait != deprecatedLongFlagAliasMap.end()) \
              { \
              std::cout << "Long flag \"" << argv[ac] << "\" is deprecated. Please use long flag \"--" << dait->second << "\" instead. " << std::endl; \
              /* remap the flag */ \
-             targs.push_back("--" + dait->second); \
+             targs.emplace_back("--" + dait->second); \
              } \
            } \
          else \
            { \
-           targs.push_back(argv[ac]); \
+           targs.emplace_back(argv[ac]); \
            } \
          } \
        else if (strlen(argv[ac]) > 2 && argv[ac][0]=='-' && argv[ac][1]!='-') \
@@ -285,13 +285,13 @@ try \
              rflag += tf; \
              } \
            } \
-         targs.push_back(rflag); \
+         targs.emplace_back(rflag); \
          } \
        else \
          { \
          /* skip the argument without remapping (this is the case for any */ \
          /* arguments for flags */ \
-         targs.push_back(argv[ac]); \
+         targs.emplace_back(argv[ac]); \
          } \
        } \
  \
@@ -299,7 +299,7 @@ try \
    std::vector<char*> vargs; \
    for (size_t ac = 0; ac < targs.size(); ++ac) \
      {  \
-     vargs.push_back(const_cast<char *>(targs[ac].c_str())); \
+     vargs.emplace_back(const_cast<char *>(targs[ac].c_str())); \
      } \
     commandLine.parse ( static_cast<int>(vargs.size()), (char**) &(vargs[0]) ); \
   } \
@@ -325,12 +325,14 @@ catch ( TCLAP::ArgException & e ) \
         splitFilenames(logoFilesTemp[_i], words); \
         for (unsigned int _j= 0; _j < words.size(); _j++) \
           { \
-            logoFiles.push_back((words[_j].c_str())); \
+            logoFiles.emplace_back((words[_j].c_str())); \
           } \
         } \
       } \
 
 #define GENERATE_TCLAP GENERATE_TCLAP_PARSE;GENERATE_TCLAP_ASSIGNMENT
+
+#if 0
 #define GENERATE_TCLAP_ASSIGNMENT_IFSET \
     if( UseTCLAPArg.isSet() ) \
       { \
@@ -372,10 +374,11 @@ catch ( TCLAP::ArgException & e ) \
         splitFilenames(logoFilesTemp[_i], words); \
         for (unsigned int _j= 0; _j < words.size(); _j++) \
           { \
-            logoFiles.push_back((words[_j].c_str())); \
+            logoFiles.emplace_back((words[_j].c_str())); \
           } \
         } \
-      } \
+      }
+#endif
 
 #define GENERATE_ECHOARGS \
 if (echoSwitch) \
@@ -403,8 +406,8 @@ std::cout << "    returnParameterFile: " << returnParameterFile << std::endl; \
 }
 #define GENERATE_ProcessInformationAddressDecoding \
 ModuleProcessInformation *CLPProcessInformation = 0; \
-if (processInformationAddressString != "") \
+if (!processInformationAddressString.empty()) \
 { \
 sscanf(processInformationAddressString.c_str(), "%p", &CLPProcessInformation); \
 }
-#define PARSE_ARGS GENERATE_LOGO;GENERATE_XML;GENERATE_TCLAP;GENERATE_ECHOARGS;GENERATE_ProcessInformationAddressDecoding;
+#define PARSE_ARGS GENERATE_LOGO;GENERATE_XML;GENERATE_TCLAP;GENERATE_ECHOARGS;GENERATE_ProcessInformationAddressDecoding;static_assert(true,"")
