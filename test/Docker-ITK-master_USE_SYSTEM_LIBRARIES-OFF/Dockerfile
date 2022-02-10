@@ -3,8 +3,8 @@ MAINTAINER Insight Software Consortium <community@itk.org>
 
 WORKDIR /usr/src
 
-# March 15, 2020
-ENV ITK_GIT_COMMIT d67ae984a703a71b2d8d6932216561157b322c28
+# February 7, 2022
+ENV ITK_GIT_COMMIT d6774dac041f76a1a5939bd46d0c64f282dd1545
 
 RUN \
   #
