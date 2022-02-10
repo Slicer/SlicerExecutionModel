@@ -3,8 +3,9 @@ MAINTAINER Insight Software Consortium <community@itk.org>
 
 WORKDIR /usr/src
 
-# February 7, 2022
-ENV ITK_GIT_COMMIT d6774dac041f76a1a5939bd46d0c64f282dd1545
+# February 10, 2022
+# - master (d6774dac0) of 2022-02-07 and changes from https://github.com/InsightSoftwareConsortium/ITK/pull/3187
+ENV ITK_GIT_COMMIT 060131b628e9a2d3f4613adc077ac04dd1a4ea7b
 
 RUN \
   #
@@ -14,7 +15,7 @@ RUN \
   #
   # Checkout
   #
-  git clone git://github.com/InsightSoftwareConsortium/ITK ITK && \
+  git clone git://github.com/jcfr/ITK ITK && \
   cd ITK && git reset --hard ${ITK_GIT_COMMIT} && \
   #
   # Configure
