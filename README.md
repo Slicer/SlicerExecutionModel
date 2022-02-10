@@ -81,12 +81,18 @@ environment is made available in docker images:
 * Testing using a given environment is enabled updating the [.circleci/config.yml](.circleci/config.yml) file.
 * Before enabling an environment, associated docker image has to be (1) built locally and (2) pushed to [dockerhub](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags/).
 
-Available environments are:
+#### Available environments
+
+* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off)
+
+
+#### Deprecated environments
+
+_Deprecated environments are not maintained, corresponding Dockerfiles have been deleted and associated SlicerExecutionModel continuous integration settings have been removed._
 
 * [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off)
 * [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off)
 * [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off)
-* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off)
 
 
 ### Adding or updating a testing environment
