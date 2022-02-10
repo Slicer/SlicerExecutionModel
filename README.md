@@ -83,16 +83,18 @@ environment is made available in docker images:
 
 #### Available environments
 
-* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-master_use_system_libraries-off)
+* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-master_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-master_use_system_libraries-off)
 
 
 #### Deprecated environments
 
 _Deprecated environments are not maintained, corresponding Dockerfiles have been deleted and associated SlicerExecutionModel continuous integration settings have been removed._
 
-* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.8.0_use_system_libraries-off)
-* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.10.1_use_system_libraries-off)
-* [![](https://images.microbadger.com/badges/version/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off.svg)](https://microbadger.com/images/slicer/slicerexecutionmodel:itk-v4.13.0_use_system_libraries-off)
+* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-v4.8.0_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-v4.8.0_use_system_libraries-off)
+
+* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-v4.10.1_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-v4.10.1_use_system_libraries-off)
+
+* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-v4.13.0_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-v4.13.0_use_system_libraries-off)
 
 
 ### Adding or updating a testing environment
