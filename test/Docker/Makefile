@@ -10,10 +10,7 @@ ORG = slicer
 REPO = slicerexecutionmodel
 
 DIRECTORIES = \
-  Docker-ITK-master_USE_SYSTEM_LIBRARIES-OFF \
-  Docker-ITK-v4.13.0_USE_SYSTEM_LIBRARIES-OFF \
-  Docker-ITK-v4.10.1_USE_SYSTEM_LIBRARIES-OFF \
-  Docker-ITK-v4.8.0_USE_SYSTEM_LIBRARIES-OFF
+  Docker-ITK-master_USE_SYSTEM_LIBRARIES-OFF
 
 # On CircleCI, do not attempt to delete container
 # See https://circleci.com/docs/docker-btrfs-error/
