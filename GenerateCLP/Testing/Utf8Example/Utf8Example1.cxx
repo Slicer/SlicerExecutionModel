@@ -74,7 +74,6 @@ int main (int argc, char *argv[])
   rts.close();
 
 #ifdef _WIN32
-  
   // Check current windows version before proceeding
   RTL_OSVERSIONINFOW rovi = GetRealOSVersion();
   std::cout << "Windows version: " << rovi.dwMajorVersion << "." << rovi.dwMinorVersion << " build " << rovi.dwBuildNumber << std::endl;
