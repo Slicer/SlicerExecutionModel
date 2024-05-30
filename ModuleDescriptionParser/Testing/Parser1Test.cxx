@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
-  std::ifstream fin(argv[1],std::ios::in);
+  std::ifstream fin(argv[1],std::ios::in | std::ios::binary);
   if (fin.fail())
     {
     std::cerr << argv[0] << ": Cannot open " << argv[1] << " for input" << std::endl;
