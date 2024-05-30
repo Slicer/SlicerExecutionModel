@@ -16,7 +16,7 @@
 #define itksys_SHARED_FORWARD_OPTION_PRINT "--print"
 #define itksys_SHARED_FORWARD_OPTION_LDD "--ldd"
 
-#include <itksys/SharedForward.h>
+#include "SharedForward.h"
 
 int main(int argc, char *argv[])
 {

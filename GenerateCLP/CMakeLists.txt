@@ -211,6 +211,11 @@ configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/GenerateCLPLauncher.c.in
   ${GenerateCLPLauncher_SOURCE}
   @ONLY)
+set(KWSYS_NAMESPACE itksys)
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/SharedForward.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/SharedForward.h
+  @ONLY)
 add_custom_command(TARGET GenerateCLP POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E touch ${GenerateCLPLauncher_SOURCE}
   COMMENT "Force GenerateCLPLauncher to rebuild after GenerateCLP was modified"
