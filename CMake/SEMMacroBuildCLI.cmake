@@ -270,5 +270,9 @@ macro(SEMMacroBuildCLI)
   endforeach()
   set(${MODULE_NAME}_TARGETS_FOLDER ${LOCAL_SEM_FOLDER})
 
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${LOCAL_SEM_INSTALL_RUNTIME_DESTINATION})
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT "RuntimeLibraries")
+  include(InstallRequiredSystemLibraries)
+
 endmacro()
 
