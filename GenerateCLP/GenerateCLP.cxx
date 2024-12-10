@@ -1339,6 +1339,7 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
   sout << "      std::ostringstream msg;" << EOL << std::endl;
 
   // Second pass generates TCLAP declarations
+  int longflagMissingCount = 0;
   std::vector<ModuleParameterGroup>::const_iterator git;
   std::vector<ModuleParameter>::const_iterator pit;
   for (git = module.GetParameterGroups().begin();
@@ -1355,6 +1356,8 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
         {
         continue;
         }
+
+      bool longflagMissing = false;
 
       sout << "    msg.str(\"\");";
       sout << "msg << "
@@ -1389,6 +1392,10 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
 
       if (pit->GetCPPType() == "bool")
         {
+        if (pit->GetLongFlag().empty())
+          {
+          longflagMissing = true;
+          }
         sout << "    TCLAP::SwitchArg "
              << pit->GetName()
              << "Arg" << "(\""
@@ -1440,6 +1447,10 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
           }
         else if (IsEnumeration(*pit))
           {
+          if (pit->GetLongFlag().empty())
+            {
+            longflagMissing = true;
+            }
           sout << "    TCLAP::ValueArg<";
           sout << pit->GetCPPType();
           sout << "> "
@@ -1460,6 +1471,10 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
           }
         else
           {
+          if (pit->GetLongFlag().empty())
+            {
+            longflagMissing = true;
+            }
           if (pit->GetMultiple() == "true")
             {
             sout << "    TCLAP::MultiArg<";
@@ -1509,6 +1524,19 @@ void GenerateTCLAPParse(std::ostream &sout, ModuleDescription &module)
                << "commandLine);"
                << EOL << std::endl << EOL << std::endl;
           }
+        }
+      if (longflagMissing)
+        {
+        std::cerr << "GenerateCLP: Warning: Required 'longflag' is not specified for parameter '" << pit->GetName() << "'." << std::endl;
+        longflagMissingCount++;
+        }
+      if (longflagMissingCount > 1)
+        {
+        // If only one parameter is missing a longflag, then TCLAP can still be used.
+        // However, multiple parameters missing longflags will cause TCLAP to throw an exception at runtime.
+        // It is better to report the error here, at compile time.
+        std::cerr << "GenerateCLP: Error: multiple parameters found with missing 'longflag'. Code generation aborted." << std::endl;
+        exit(EXIT_FAILURE);
         }
       }
     }
