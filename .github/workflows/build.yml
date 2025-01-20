@@ -1,0 +1,30 @@
+name: CI (Build)
+
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        image_tag: [itk-master_use_system_libraries-off]
+    container:
+      image: slicer/slicerexecutionmodel:${{ matrix.image_tag}}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: "Test"
+        run: ./test/Docker/test.sh ${{ matrix.image_tag}}
+
+      - name: "Test Serializer"
+        run: ./test/Docker/test-serializer.sh ${{ matrix.image_tag}}
