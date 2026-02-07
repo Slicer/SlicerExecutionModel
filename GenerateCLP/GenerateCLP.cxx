@@ -383,7 +383,9 @@ main(int argc, char *argv[])
     std::cout << parametersGroupsMsg.str();
     std::cout.flush();
 
-    std::ofstream sOutputFile(OutputCxx.c_str(),std::ios::out);
+    // Must use ios::binary because in-memory string uses LF and CR/LF would be
+    // used on Windows in non-binary mode to the source code
+    std::ofstream sOutputFile(OutputCxx.c_str(), std::ios::out | std::ios::binary);
     if (sOutputFile.fail())
       {
       std::cerr << argv[0] << ": Cannot open " << OutputCxx << " for output" << std::endl;
