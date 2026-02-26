@@ -16,12 +16,19 @@
 #include "ModuleDescription.h"
 #include "ModuleDescriptionUtilities.h"
 
+#include <itkConfigure.h>
+#if ITK_VERSION_MAJOR >= 6
+#  include <itk_expat.h> // ITK v6 and above <itk_expat.h> to redirect to system or itk mangled symbols as needed
+#else
+#  include <expat.h> // ITK v5 and below re-used the common <expat.h> for itk mangled symbols
+#endif
+
 #include <iostream>
 #include <string>
 #include <string.h>
 #include <vector>
 #include <stack>
-#include "expat.h"
+
 
 /*********************
  * Utility procedures for strings
