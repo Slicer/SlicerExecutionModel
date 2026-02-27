@@ -15,7 +15,7 @@ RUN \
   #
   # Checkout
   #
-  git clone git://github.com/jcfr/ITK ITK && \
+  git clone https://github.com/jcfr/ITK.git ITK && \
   cd ITK && git reset --hard ${ITK_GIT_COMMIT} && \
   #
   # Configure
