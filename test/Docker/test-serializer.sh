@@ -7,7 +7,7 @@ set -ex
 
 # jsoncpp
 cd /usr/src
-git clone git://github.com/Slicer/jsoncpp.git
+git clone https://github.com/Slicer/jsoncpp.git
 mkdir jsoncpp-build && cd $_
 cmake -G Ninja \
   -DBUILD_TESTING:BOOL=OFF \
@@ -23,7 +23,7 @@ ninja install
 
 # ParameterSerializer
 cd /usr/src
-git clone git://github.com/Slicer/ParameterSerializer.git
+git clone https://github.com/Slicer/ParameterSerializer.git
 mkdir ParameterSerializer-build && cd $_
 cmake \
   -G Ninja \
