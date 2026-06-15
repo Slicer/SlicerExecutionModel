@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 3.13.4...3.14.2)
 cmake_policy(VERSION 3.13.4...3.14.2)
 
 #-----------------------------------------------------------------------------
-# Enable C++11
+# Enable C++17 (C++20 and C++23 are also supported)
 #-----------------------------------------------------------------------------
 #####
 ##  Set the default target language standard properties
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
+  set(CMAKE_CXX_STANDARD 17) # Supported values are ``17``, ``20``, and ``23``.
 endif()
 if(NOT CMAKE_CXX_STANDARD_REQUIRED)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,7 +16,7 @@ endif()
 if(NOT CMAKE_CXX_EXTENSIONS)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
-set(VALID_CXX_STANDARDS "11" "14" "17")
+set(VALID_CXX_STANDARDS "17" "20" "23")
 if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
    message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}.")
 endif()
