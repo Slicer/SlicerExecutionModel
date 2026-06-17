@@ -1,11 +1,10 @@
-FROM dockbuild/centos7
+FROM dockcross/linux-x64
 MAINTAINER Insight Software Consortium <community@itk.org>
 
 WORKDIR /usr/src
 
-# February 10, 2022
-# - master (d6774dac0) of 2022-02-07 and changes from https://github.com/InsightSoftwareConsortium/ITK/pull/3187
-ENV ITK_GIT_COMMIT 060131b628e9a2d3f4613adc077ac04dd1a4ea7b
+# "ac65b49c34fcfa3c3422a66026c7fe2bbaa88902" # slicer-v5.4.5-2025-11-19-f51594a
+ENV ITK_GIT_COMMIT=ac65b49c34fcfa3c3422a66026c7fe2bbaa88902
 
 RUN \
   #
@@ -15,13 +14,11 @@ RUN \
   #
   # Checkout
   #
-  git clone https://github.com/jcfr/ITK.git ITK && \
-  cd ITK && git reset --hard ${ITK_GIT_COMMIT} && \
+  git clone https://github.com/Slicer/ITK.git ${working_dir}/ITK && \
+  cd ${working_dir}/ITK && git reset --hard ${ITK_GIT_COMMIT} && \
   #
   # Configure
   #
-  cd $working_dir && \
-  mkdir ITK-build && cd $_ && \
   cmake \
     -G Ninja \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
@@ -35,7 +32,7 @@ RUN \
     -DModule_ITKCommon:BOOL=ON \
     -DModule_ITKIOXML:BOOL=ON \
     -DModule_ITKExpat:BOOL=ON \
-    ../ITK && \
+    -S ${working_dir}/ITK -B ${working_dir}/ITK-build && \
   #
   # Build and install
   #
