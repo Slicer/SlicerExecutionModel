@@ -18,5 +18,6 @@ set(GENERATECLP_EXE "${GENERATECLP_EXE}${__EXE_EXT}")
 get_filename_component(GENERATECLP_EXE "${GENERATECLP_EXE}" ABSOLUTE)
 set(TCLAP_DIR "@TCLAP_DIR@")
 set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
-set(ITK_DIR "@ITK_DIR@")
-
+if (NOT DEFINED ITK_DIR)
+  set(ITK_DIR "@ITK_DIR@")
+endif()

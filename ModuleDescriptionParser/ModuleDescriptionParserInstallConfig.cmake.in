@@ -16,4 +16,6 @@ set(ModuleDescriptionParser_USE_FILE
   "${ModuleDescriptionParser_CONFIG_DIR}/UseModuleDescriptionParser.cmake"
   )
 
-set(ITK_DIR "@ITK_DIR@")
+if (NOT DEFINED ITK_DIR)
+  set(ITK_DIR "@ITK_DIR@")
+endif()
