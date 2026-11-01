@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ubuntu-itk-v5.4.8
+            os: ubuntu-24.04
+            itk: v5.4.8
+          - name: ubuntu-itk-v5.4.8-serializer
+            os: ubuntu-24.04
+            itk: v5.4.8
+            serializer: true
+          - name: ubuntu-itk-main
+            os: ubuntu-24.04
+            itk: main
+          - name: macos-itk-v5.4.8
+            os: macos-14
+            itk: v5.4.8
+          - name: windows-itk-v5.4.8
+            os: windows-2022
+            itk: v5.4.8
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: src
+
+      # A branch ref resolves to its current commit, so the cache follows ITK main.
+      - name: Resolve ITK ${{ matrix.itk }}
+        run: |
+          sha=$(git ls-remote https://github.com/InsightSoftwareConsortium/ITK.git \
+            "refs/heads/${{ matrix.itk }}" "refs/tags/${{ matrix.itk }}^{}" | head -n 1 | cut -f 1)
+          test -n "$sha"
+          echo "ITK_SHA=$sha" >> "$GITHUB_ENV"
+
+      # Only the ITK modules SlicerExecutionModel depends on are built.
+      # ITK sits under runner.temp: Windows limits the ITK source path to 50 characters.
+      - name: Restore ITK
+        id: cache-itk
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/itk-install
+          key: itk-${{ env.ITK_SHA }}-${{ runner.os }}-v1
+
+      - name: Build ITK
+        if: steps.cache-itk.outputs.cache-hit != 'true'
+        run: |
+          cd "$RUNNER_TEMP"
+          git init -q itk-src
+          git -C itk-src fetch -q --depth 1 \
+            https://github.com/InsightSoftwareConsortium/ITK.git "$ITK_SHA"
+          git -C itk-src checkout -q FETCH_HEAD
+          cmake -S itk-src -B itk-build \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DCMAKE_INSTALL_PREFIX:PATH="$RUNNER_TEMP/itk-install" \
+            -DBUILD_SHARED_LIBS:BOOL=OFF \
+            -DBUILD_TESTING:BOOL=OFF \
+            -DBUILD_EXAMPLES:BOOL=OFF \
+            -DITK_LEGACY_REMOVE:BOOL=ON \
+            -DITK_BUILD_DEFAULT_MODULES:BOOL=OFF \
+            -DITK_USE_SYSTEM_LIBRARIES:BOOL=OFF \
+            -DModule_ITKCommon:BOOL=ON \
+            -DModule_ITKIOXML:BOOL=ON \
+            -DModule_ITKExpat:BOOL=ON
+          cmake --build itk-build --config Release
+          cmake --install itk-build --config Release
+
+      - name: Build ParameterSerializer
+        if: matrix.serializer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libjsoncpp-dev
+          git clone https://github.com/Slicer/ParameterSerializer.git ps-src
+          git -C ps-src checkout 3b40b7fb14f907341196eba870e857b292a01f4f
+          cmake -S ps-src -B ps-build \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DCMAKE_POLICY_VERSION_MINIMUM:STRING=3.5 \
+            -DCMAKE_PREFIX_PATH:PATH="$RUNNER_TEMP/itk-install" \
+            -DBUILD_TESTING:BOOL=OFF
+          cmake --build ps-build
+          echo "SEM_EXTRA_ARGS=-DSlicerExecutionModel_USE_JSONCPP:BOOL=ON -DSlicerExecutionModel_USE_SERIALIZER:BOOL=ON -DParameterSerializer_DIR:PATH=$GITHUB_WORKSPACE/ps-build" >> "$GITHUB_ENV"
+
+      - name: Configure
+        run: |
+          cmake -S src -B build \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DCMAKE_PREFIX_PATH:PATH="$RUNNER_TEMP/itk-install" \
+            -DBUILD_TESTING:BOOL=ON \
+            -DSITE:STRING=GitHubActions \
+            -DBUILDNAME:STRING="${{ matrix.name }}_${{ github.event.pull_request.number && format('PR{0}', github.event.pull_request.number) || github.ref_name }}" \
+            ${SEM_EXTRA_ARGS}
+
+      - name: Build, test, and submit to CDash
+        working-directory: build
+        run: ctest --build-config Release --dashboard Experimental --output-on-failure --parallel 4
