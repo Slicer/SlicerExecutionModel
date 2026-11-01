@@ -29,15 +29,18 @@ jobs:
             os: ubuntu-24.04
             itk: v5.4.8
             serializer: true
+            install-development: true
           - name: ubuntu-itk-main
             os: ubuntu-24.04
             itk: main
           - name: macos-itk-v5.4.8
             os: macos-14
             itk: v5.4.8
+            install-development: true
           - name: windows-itk-v5.4.8
             os: windows-2022
             itk: v5.4.8
+            install-development: true
 
     defaults:
       run:
@@ -112,6 +115,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=Release \
             -DCMAKE_PREFIX_PATH:PATH="$RUNNER_TEMP/itk-install" \
             -DBUILD_TESTING:BOOL=ON \
+            -DSlicerExecutionModel_INSTALL_NO_DEVELOPMENT:BOOL=${{ matrix.install-development && 'OFF' || 'ON' }} \
             -DSITE:STRING=GitHubActions \
             -DBUILDNAME:STRING="${{ matrix.name }}_${{ github.event.pull_request.number && format('PR{0}', github.event.pull_request.number) || github.ref_name }}" \
             ${SEM_EXTRA_ARGS}
