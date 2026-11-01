@@ -31,10 +31,10 @@ configure_file(
 #
 #
 
-# TODO Configure ModuleDescriptionParserConfig.cmake for the install tree.
-#
-#configure_file(
-#  ${ModuleDescriptionParser_SOURCE_DIR}/ModuleDescriptionParserInstallConfig.cmake.in
-#  ${ModuleDescriptionParser_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
-#  @ONLY
-#  )
+file(RELATIVE_PATH ModuleDescriptionParser_CONFIG_TO_PREFIX
+  "/prefix/lib/ModuleDescriptionParser" "/prefix")
+configure_file(
+  ${ModuleDescriptionParser_SOURCE_DIR}/ModuleDescriptionParserInstallConfig.cmake.in
+  ${ModuleDescriptionParser_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
+  @ONLY
+  )
