@@ -65,7 +65,7 @@ int TestValues()
   CHECK_STD_STRING(desc.GetLocation(),         "");
   CHECK_BOOL(desc.HasParameter(""),            false);
   CHECK_BOOL(desc.HasReturnParameters(),       false);
-  CHECK_INT(desc.GetParameterGroups().size(),  0);
+  CHECK_INT(static_cast<int>(desc.GetParameterGroups().size()), 0);
   CHECK_BOOL(desc.ReadParameterFile(""),       false);
   CHECK_BOOL(desc.WriteParameterFile(""),      false);
 
