@@ -48,7 +48,7 @@ endif()
 if(DEFINED SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
   set(GenerateCLP_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
   set(ModuleDescriptionParser_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
-  set(tclap_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
+  set(TCLAP_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
 endif()
 
 if(NOT DEFINED SlicerExecutionModel_EXPORT_FILE)
