@@ -30,7 +30,12 @@ set(${PROJECT_NAME}_ITK_COMPONENTS
   )
 find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
 set(ITK_NO_IO_FACTORY_REGISTER_MANAGER 1) # See Slicer/Libs/ITKFactoryRegistration/CMakeLists.txt
-include(${ITK_USE_FILE})
+if(ITK_INTERFACE_LIBRARIES)
+  set(${PROJECT_NAME}_ITK_LIBRARIES ${ITK_INTERFACE_LIBRARIES})
+else()
+  include(${ITK_USE_FILE})
+  set(${PROJECT_NAME}_ITK_LIBRARIES ${ITK_LIBRARIES})
+endif()
 
 # --------------------------------------------------------------------------
 # Option(s)
@@ -115,7 +120,7 @@ target_link_libraries(${executable_name}
   ${JsonCpp_LIBRARIES}
   ${ParameterSerializer_LIBRARIES}
   ModuleDescriptionParser
-  ${ITK_LIBRARIES}
+  ${${PROJECT_NAME}_ITK_LIBRARIES}
   )
 
 # --------------------------------------------------------------------------
