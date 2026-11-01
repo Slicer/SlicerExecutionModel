@@ -132,6 +132,20 @@ endif()
 if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
   set(${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT ON)
 endif()
+if(NOT DEFINED ModuleDescriptionParser_INSTALL_LIB_DIR)
+  set(ModuleDescriptionParser_INSTALL_LIB_DIR lib/ModuleDescriptionParser)
+endif()
+file(RELATIVE_PATH _gclp_bin_to_mdp_lib
+  "/prefix/${GenerateCLP_INSTALL_BIN_DIR}" "/prefix/${ModuleDescriptionParser_INSTALL_LIB_DIR}")
+if(APPLE)
+  set(_gclp_rpath_origin "@loader_path")
+else()
+  set(_gclp_rpath_origin "$ORIGIN")
+endif()
+set_target_properties(${executable_name} PROPERTIES
+  INSTALL_RPATH "${_gclp_rpath_origin}/${_gclp_bin_to_mdp_lib}"
+  INSTALL_RPATH_USE_LINK_PATH ON
+  )
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
   install(TARGETS GenerateCLP RUNTIME
     DESTINATION ${GenerateCLP_INSTALL_BIN_DIR} COMPONENT Development
@@ -142,15 +156,12 @@ endif()
 # Install support files
 # --------------------------------------------------------------------------
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
-  install(FILES ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake_install
+  install(FILES
+    ${GenerateCLP_BINARY_DIR}/install/GenerateCLPConfig.cmake
+    ${GenerateCLP_BINARY_DIR}/UseGenerateCLP.cmake
+    ${GenerateCLP_BINARY_DIR}/GenerateCLP.cmake
     DESTINATION lib/GenerateCLP
     COMPONENT Development
-    RENAME GenerateCLPConfig.cmake
-    )
-  install(FILES ${GenerateCLP_BINARY_DIR}/UseGenerateCLP.cmake_install
-    DESTINATION lib/GenerateCLP
-    COMPONENT Development
-    RENAME UseGenerateCLP.cmake
     )
 endif()
 
@@ -197,13 +208,12 @@ set(GenerateCLP_FORWARD_PATH_BUILD " \\
 ")
 set(GenerateCLP_FORWARD_PATH_INSTALL " \\
    \".\", \\
-   \"${ITK_DIR}/bin\", \\
    ${json_forward_path_install} \\
    ${additional_forward_paths_install} \\
-   \"${ModuleDescriptionParser_DIR}/bin\" \\
+   \"${_gclp_bin_to_mdp_lib}\" \\
 ")
 set(GenerateCLP_FORWARD_EXE GenerateCLP)
-set(GenerateCLP_FORWARD_DIR_INSTALL "..")
+set(GenerateCLP_FORWARD_DIR_INSTALL ".")
 
 
 # --------------------------------------------------------------------------
@@ -236,7 +246,7 @@ add_dependencies(GenerateCLPLauncher GenerateCLP)
 # --------------------------------------------------------------------------
 if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
   install(TARGETS GenerateCLPLauncher RUNTIME
-    DESTINATION bin COMPONENT Development
+    DESTINATION ${GenerateCLP_INSTALL_BIN_DIR} COMPONENT Development
     )
 endif()
 

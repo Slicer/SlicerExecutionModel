@@ -20,3 +20,9 @@ set(ITK_DIR_CONFIG ${ITK_DIR})
 configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPConfig.cmake.in
   ${GenerateCLP_BINARY_DIR}/GenerateCLPConfig.cmake @ONLY)
 
+
+# Configure GenerateCLPConfig.cmake for the install tree.
+file(RELATIVE_PATH GenerateCLP_CONFIG_TO_PREFIX "/prefix/lib/GenerateCLP" "/prefix")
+set(ModuleDescriptionParser_INSTALL_LIB_DIR_CONFIG ${ModuleDescriptionParser_INSTALL_LIB_DIR})
+configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPInstallConfig.cmake.in
+  ${GenerateCLP_BINARY_DIR}/install/GenerateCLPConfig.cmake @ONLY)
