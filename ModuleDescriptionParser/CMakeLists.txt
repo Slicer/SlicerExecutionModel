@@ -42,7 +42,12 @@ set(${PROJECT_NAME}_ITK_COMPONENTS
   )
 
 find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
-include(${ITK_USE_FILE})
+if(ITK_INTERFACE_LIBRARIES)
+  set(${PROJECT_NAME}_ITK_LIBRARIES ${ITK_INTERFACE_LIBRARIES})
+else()
+  include(${ITK_USE_FILE})
+  set(${PROJECT_NAME}_ITK_LIBRARIES ${ITK_LIBRARIES})
+endif()
 
 #-----------------------------------------------------------------------------
 # Testing
@@ -167,7 +172,7 @@ generate_export_header(${lib_name}
   ## )
 
 set(libs
-  ${ITK_LIBRARIES}
+  ${${PROJECT_NAME}_ITK_LIBRARIES}
   )
 
 #
