@@ -1,7 +1,7 @@
 SlicerExecutionModel
 ====================
 
-[![Circle CI](https://circleci.com/gh/Slicer/SlicerExecutionModel.svg?style=svg)](https://circleci.com/gh/Slicer/SlicerExecutionModel)
+[![CI](https://github.com/Slicer/SlicerExecutionModel/actions/workflows/ci.yml/badge.svg)](https://github.com/Slicer/SlicerExecutionModel/actions/workflows/ci.yml)
 
 Overview
 --------
@@ -59,62 +59,25 @@ comments posted by the reviewers, you may have to revisit your patches.
 
 ### Automatic testing of pull requests
 
-When you submit a PR to the SlicerExecutionModel repo, CircleCI will run the build and test suite on the
-head of the branch. If you add new commits onto the branch, those will also automatically
-be run through the CI process. The status of the CI process (passing, failing, or in progress) will
-be displayed directly in the PR page in GitHub.
+When you submit a PR to the SlicerExecutionModel repo, GitHub Actions builds and
+tests the head of the branch, and again for every new commit pushed to it. The
+status of each job is displayed on the PR page in GitHub.
 
-The CircleCI build will run according to the [.circleci/config.yml](.circleci/config.yml) file,
-which is useful as an example for how to set up your own environment for testing.
-
-Your test results will be posted on [SlicerExecutionModel's dashboard](http://slicer.cdash.org/index.php?project=SlicerExecutionModel).
-These results will list any failed tests. You can reach your
-build by clicking the build status link on your GitHub PR.
-
+The jobs are defined in [.github/workflows/ci.yml](.github/workflows/ci.yml).
+Each job builds the ITK modules SlicerExecutionModel needs (ITKCommon,
+ITKIOXML, and ITKExpat) from a pinned ITK tag, caches that build, then
+configures, builds, and tests SlicerExecutionModel with CMake and CTest. No
+custom Docker images are involved, so the same steps work on a developer
+machine.
 
 ### Testing environments
 
-With each PR, SlicerExecutionModel is built and tested against multiple version of ITK. Each
-environment is made available in docker images:
-
-* Each environment is described in a ``Dockerfile`` found in a ``Docker-ITK-vX.Y.Z`` subdirectory of [test](./test).
-* Testing using a given environment is enabled updating the [.circleci/config.yml](.circleci/config.yml) file.
-* Before enabling an environment, associated docker image has to be (1) built locally and (2) pushed to [dockerhub](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags/).
-
-#### Available environments
-
-* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-master_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-master_use_system_libraries-off)
-
-
-#### Deprecated environments
-
-_Deprecated environments are not maintained, corresponding Dockerfiles have been deleted and associated SlicerExecutionModel continuous integration settings have been removed._
-
-* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-v4.8.0_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-v4.8.0_use_system_libraries-off)
-
-* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-v4.10.1_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-v4.10.1_use_system_libraries-off)
-
-* [![](https://img.shields.io/docker/image-size/slicer/slicerexecutionmodel/itk-v4.13.0_use_system_libraries-off)](https://hub.docker.com/r/slicer/slicerexecutionmodel/tags?page=1&name=itk-v4.13.0_use_system_libraries-off)
-
-
-### Adding or updating a testing environment
-
-To add a testing environment:
-* create a new directory in [test](test) following the existing convention (``test/Docker-ITK-vX.Y.Z[_qualifier]``)
-* add a ``Dockerfile``
-* update list of ``DIRECTORIES`` in [test/Docker/Makefile](test/Docker/Makefile)
-* add a new job to [.circleci/config.yml](.circleci/config.yml)
-* update list of environments in ``README.md``
-
-To update a testing environment:
-* update ``test/Docker-ITK-vX.Y.Z[_qualifier]/Dockerfile``
-
-Then, after adding or updating an environment, build and publish images:
-
-    cd test/Docker
-    make push
-
-And finally, create a PR with your changes.
+The workflow matrix covers Linux, macOS, and Windows, more than one ITK
+version, and a Linux build with JsonCpp and ParameterSerializer enabled. To
+add or update an environment, edit the `matrix` in
+[.github/workflows/ci.yml](.github/workflows/ci.yml) and open a PR. Changing
+the `itk` value of an entry changes its cache key, so the new ITK is built on
+the first run.
 
 ### How to integrate a PR
 
