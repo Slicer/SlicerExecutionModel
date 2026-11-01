@@ -96,8 +96,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( SEMModuleParameterGroupSerializer,
-    ParameterSerializer );
+  itkOverrideGetNameOfClassMacro( SEMModuleParameterGroupSerializer );
 
   virtual void Serialize();
   virtual void DeSerialize();
