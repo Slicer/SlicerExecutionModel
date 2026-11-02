@@ -123,3 +123,33 @@ jobs:
       - name: Build, test, and submit to CDash
         working-directory: build
         run: ctest --build-config Release --dashboard Experimental --output-on-failure --parallel 4
+
+  build-test-apt:
+    name: ubuntu-latest-itk-apt
+    runs-on: ubuntu-latest
+
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: src
+
+      - name: Install ITK from APT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libinsighttoolkit5-dev
+          dpkg-query -W libinsighttoolkit5-dev
+
+      - name: Configure
+        run: |
+          cmake -S src -B build \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_TESTING:BOOL=ON \
+            -DSITE:STRING=GitHubActions \
+            -DBUILDNAME:STRING="ubuntu-latest-itk-apt_${{ github.event.pull_request.number && format('PR{0}', github.event.pull_request.number) || github.ref_name }}"
+
+      - name: Build, test, and submit to CDash
+        working-directory: build
+        run: ctest --dashboard Experimental --output-on-failure --parallel 4
