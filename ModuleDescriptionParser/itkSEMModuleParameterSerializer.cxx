@@ -96,7 +96,7 @@ SEMModuleParameterSerializer
   SEMModuleParameter * moduleParameter =
     dynamic_cast< SEMModuleParameter * >
       ( this->GetTargetObject() );
-  if( moduleParameter == NULL )
+  if( moduleParameter == nullptr )
     {
     itkWarningMacro("SEMModuleParameterSerializer target object not set");
     }
@@ -152,7 +152,7 @@ SEMModuleParameterSerializer
 
   Superclass::DeSerialize();
 
-  if( moduleParameter != NULL )
+  if( moduleParameter != nullptr )
     {
     ModuleParameter & parameter =
       moduleParameter->GetModuleParameter();

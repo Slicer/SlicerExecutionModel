@@ -60,7 +60,7 @@ SEMModuleParameterGroupSerializer
   SEMModuleParameterGroup * parameterGroup =
     dynamic_cast< SEMModuleParameterGroup * >
       ( this->GetTargetObject() );
-  if( parameterGroup == NULL )
+  if( parameterGroup == nullptr )
     {
     itkWarningMacro("SEMModuleParameterGroupSerializer target object not set");
     }
@@ -105,7 +105,7 @@ SEMModuleParameterGroupSerializer
     dynamic_cast< SEMModuleParameterGroup * >
       ( this->GetTargetObject() );
 
-  if( parameterGroup != NULL )
+  if( parameterGroup != nullptr )
     {
     // First, we must instantiate the ParameterSerializerArray
     // with one element of the correct ParameterSerializer type
@@ -118,7 +118,7 @@ SEMModuleParameterGroupSerializer
 
   Superclass::DeSerialize();
 
-  if( parameterGroup != NULL )
+  if( parameterGroup != nullptr )
     {
     ModuleParameterGroup & group = parameterGroup->GetModuleParameterGroup();
     group.SetDescription( this->m_Description->GetValue() );

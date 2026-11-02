@@ -75,7 +75,7 @@ SEMModuleDescriptionSerializer
   SEMModuleDescription * description =
     dynamic_cast< SEMModuleDescription * >
     ( this->GetTargetObject() );
-  if( description == NULL )
+  if( description == nullptr )
     {
     itkWarningMacro("SEMModuleDescriptionSerializer target object not set");
     }
@@ -130,7 +130,7 @@ SEMModuleDescriptionSerializer
     dynamic_cast< SEMModuleDescription * >
     ( this->GetTargetObject() );
 
-  if( description != NULL )
+  if( description != nullptr )
     {
     // First, we must instantiate the ParameterSerializerArray
     // with one element of the correct ParameterSerializer type
@@ -143,7 +143,7 @@ SEMModuleDescriptionSerializer
 
   Superclass::DeSerialize();
 
-  if( description != NULL )
+  if( description != nullptr )
     {
     ModuleDescription & moduleDescription =
       description->GetModuleDescription();

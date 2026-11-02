@@ -40,10 +40,12 @@ namespace itk
 class ModuleDescriptionParser_EXPORT SEMModuleParameterGroup: public LightObject
 {
 public:
-  typedef SEMModuleParameterGroup    Self;
-  typedef LightObject                Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  using Self = SEMModuleParameterGroup;
+  using Superclass = LightObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
+
+  ITK_DISALLOW_COPY_AND_MOVE(SEMModuleParameterGroup);
 
   itkNewMacro( Self );
 
@@ -65,14 +67,10 @@ public:
     }
 
 protected:
-  SEMModuleParameterGroup() {}
-  ~SEMModuleParameterGroup() {}
+  SEMModuleParameterGroup() = default;
+  ~SEMModuleParameterGroup() override = default;
 
   ModuleParameterGroup m_ModuleParameterGroup;
-
-private:
-  SEMModuleParameterGroup( const SEMModuleParameterGroup & ); // purposely not implemented
-  void operator=( const SEMModuleParameterGroup & ); // purposely not implemented
 };
 
 /** \class SEMModuleParameterGroupSerializer
@@ -86,11 +84,13 @@ class ModuleDescriptionParser_EXPORT SEMModuleParameterGroupSerializer:
   public ParameterSerializer
 {
 public:
-  /** Standard class typedefs. */
-  typedef SEMModuleParameterGroupSerializer  Self;
-  typedef ParameterSerializer                Superclass;
-  typedef SmartPointer< Self >               Pointer;
-  typedef SmartPointer< const Self >         ConstPointer;
+  /** Standard class type aliases. */
+  using Self = SEMModuleParameterGroupSerializer;
+  using Superclass = ParameterSerializer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
+
+  ITK_DISALLOW_COPY_AND_MOVE(SEMModuleParameterGroupSerializer);
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -98,21 +98,17 @@ public:
   /** Run-time type information (and related methods). */
   itkOverrideGetNameOfClassMacro( SEMModuleParameterGroupSerializer );
 
-  virtual void Serialize();
-  virtual void DeSerialize();
+  void Serialize() override;
+  void DeSerialize() override;
 
 protected:
   SEMModuleParameterGroupSerializer();
-  virtual ~SEMModuleParameterGroupSerializer();
+  ~SEMModuleParameterGroupSerializer() override;
 
   StringValue * m_Description;
   StringValue * m_Label;
 
   ParameterSerializerArrayValue * m_ModuleParameters;
-
-private:
-  SEMModuleParameterGroupSerializer( const Self & );
-  void operator=( const Self & ); // purposely not implemented
 };
 
 } // end namespace itk
