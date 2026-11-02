@@ -18,6 +18,12 @@ SlicerExecutionModel is documented here:
 
 https://www.slicer.org/wiki/Documentation/Nightly/Developers/SlicerExecutionModel.
 
+Requirements
+------------
+
+* ITK 5.3 or newer (5.4 or newer for ParameterSerializer support)
+* A C++17 compiler (C++20 and C++23 are also supported)
+
 Contributing
 ------------
 
