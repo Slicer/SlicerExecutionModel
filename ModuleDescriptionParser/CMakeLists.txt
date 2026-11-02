@@ -41,15 +41,12 @@ set(${PROJECT_NAME}_ITK_COMPONENTS
   ITKExpat # For Expat library
   )
 
-find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+find_package(ITK 5.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
 if(ITK_INTERFACE_LIBRARIES)
   set(${PROJECT_NAME}_ITK_LIBRARIES ${ITK_INTERFACE_LIBRARIES})
 else()
   include(${ITK_USE_FILE})
   set(${PROJECT_NAME}_ITK_LIBRARIES ${ITK_LIBRARIES})
-endif()
-if(ModuleDescriptionParser_USE_SERIALIZER AND ITK_VERSION VERSION_LESS 5.4)
-  message(FATAL_ERROR "ModuleDescriptionParser_USE_SERIALIZER requires ITK 5.4 or newer (found ${ITK_VERSION})")
 endif()
 
 #-----------------------------------------------------------------------------

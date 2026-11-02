@@ -18,7 +18,7 @@ if(NOT ITK_FOUND) #Do not clobber existing found version of ITK
   set(${PROJECT_NAME}_ITK_COMPONENTS
     ${ModuleDescriptionParser_ITK_COMPONENTS}
      )
-  find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+  find_package(ITK 5.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
   # Allow other projects to specify a different list of COMPONENTS
   set(ITK_FOUND FALSE)
 endif()
