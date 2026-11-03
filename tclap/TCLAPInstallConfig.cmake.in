@@ -1,11 +1,14 @@
 # tclap could be installed anywhere, so set all paths based on where
-# this file was found (which should be the lib/tclap directory of the
-# installation)
+# this file was found.
 get_filename_component(tclap_CONFIG_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component(_tclap_prefix
+  "${tclap_CONFIG_DIR}/@TCLAP_CONFIG_TO_PREFIX@" ABSOLUTE
+  )
 
 # The TCLAP include directories.
 #    tclap include files referenced as "tclap/foo.h"
-set(TCLAP_INCLUDE_DIRS "${tclap_CONFIG_DIR}/../../include/")
+set(TCLAP_INCLUDE_DIRS "${_tclap_prefix}/@CMAKE_INSTALL_INCLUDEDIR@")
 
 # The TCLAP USE file
 set(TCLAP_USE_FILE "${tclap_CONFIG_DIR}/UseTCLAP.cmake")
+unset(_tclap_prefix)

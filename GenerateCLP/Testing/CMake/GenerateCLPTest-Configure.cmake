@@ -25,10 +25,17 @@ set(PRINT_COMMAND 0)
 
 # --------------------------------------------------------------------------
 # Configure
+if(NOT DEFINED TEST_GenerateCLP_DIR)
+  set(TEST_GenerateCLP_DIR ${GenerateCLP_BINARY_DIR})
+endif()
+if(NOT DEFINED TEST_SlicerExecutionModel_DIR)
+  set(TEST_SlicerExecutionModel_DIR ${SlicerExecutionModel_BINARY_DIR})
+endif()
 set(command ${CMAKE_COMMAND}
   -DCMAKE_BUILD_TYPE:STRING=${generateclp_build_type}
   -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-  -DGenerateCLP_DIR:PATH=${GenerateCLP_BINARY_DIR}
+  -DGenerateCLP_DIR:PATH=${TEST_GenerateCLP_DIR}
+  -DSlicerExecutionModel_DIR:PATH=${TEST_SlicerExecutionModel_DIR}
   -DGenerateCLP_USE_JSONCPP:BOOL=${GenerateCLP_USE_JSONCPP}
   -DSlicerExecutionModel_USE_UTF8:BOOL=${SlicerExecutionModel_USE_UTF8}
   -DJsonCpp_CMAKE_MODULE_PATH:PATH=${JsonCpp_CMAKE_MODULE_PATH}

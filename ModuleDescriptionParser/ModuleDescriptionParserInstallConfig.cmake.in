@@ -1,19 +1,42 @@
 # ModuleDescriptionParser could be installed anywhere, so set all paths based
-# on where this file was found (which should be the lib/ModuleDescriptionParser
-# directory of the installation)
+# on where this file was found.
 get_filename_component(ModuleDescriptionParser_CONFIG_DIR
   "${CMAKE_CURRENT_LIST_FILE}" PATH
   )
+get_filename_component(_mdp_prefix
+  "${ModuleDescriptionParser_CONFIG_DIR}/@ModuleDescriptionParser_CONFIG_TO_PREFIX@" ABSOLUTE
+  )
 
-#
 set(ModuleDescriptionParser_INCLUDE_DIRS
-  "${ModuleDescriptionParser_CONFIG_DIR}/../../include/ModuleDescriptionParser"
+  "${_mdp_prefix}/@CMAKE_INSTALL_INCLUDEDIR@/ModuleDescriptionParser"
   )
 set(ModuleDescriptionParser_LIBRARY_DIRS
-  "${ModuleDescriptionParser_CONFIG_DIR}"
+  "${_mdp_prefix}/@ModuleDescriptionParser_INSTALL_LIB_DIR@"
   )
 set(ModuleDescriptionParser_USE_FILE
   "${ModuleDescriptionParser_CONFIG_DIR}/UseModuleDescriptionParser.cmake"
   )
 
-set(ITK_DIR "@ITK_DIR@")
+if(NOT DEFINED ITK_DIR)
+  set(ITK_DIR "@ITK_DIR@")
+endif()
+
+set(ModuleDescriptionParser_ITK_COMPONENTS "@ModuleDescriptionParser_ITK_COMPONENTS@")
+
+set(ModuleDescriptionParser_USE_SERIALIZER "@ModuleDescriptionParser_USE_SERIALIZER@")
+
+include(CMakeFindDependencyMacro)
+if(NOT ITK_FOUND)
+  find_dependency(ITK COMPONENTS ${ModuleDescriptionParser_ITK_COMPONENTS})
+endif()
+if(ModuleDescriptionParser_USE_SERIALIZER)
+  if(NOT DEFINED ParameterSerializer_DIR)
+    set(ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+  endif()
+  find_dependency(ParameterSerializer)
+endif()
+
+if(NOT TARGET ModuleDescriptionParser)
+  include("${ModuleDescriptionParser_CONFIG_DIR}/ModuleDescriptionParserTargets.cmake")
+endif()
+unset(_mdp_prefix)

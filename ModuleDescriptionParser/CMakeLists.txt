@@ -92,10 +92,24 @@ configure_file(
 # --------------------------------------------------------------------------
 # Install headers
 # --------------------------------------------------------------------------
-if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
-  set(${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT ON)
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_DEVELOPMENT)
+  set(_install_development_default OFF)
+  if(DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT AND NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+    set(_install_development_default ON)
+  endif()
+  option(${PROJECT_NAME}_INSTALL_DEVELOPMENT "Install the headers and CMake support files" ${_install_development_default})
 endif()
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+include(GNUInstallDirs)
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_BIN_DIR)
+  set(${PROJECT_NAME}_INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
+endif()
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_LIB_DIR)
+  set(${PROJECT_NAME}_INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+endif()
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_CONFIG_DIR)
+  set(${PROJECT_NAME}_INSTALL_CONFIG_DIR ${${PROJECT_NAME}_INSTALL_LIB_DIR}/cmake/${PROJECT_NAME})
+endif()
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(FILES
     BatchMakeUtilities.h
     itkSEMModuleDescriptionSerializer.h
@@ -111,7 +125,7 @@ if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
     ModuleProcessInformation.h
     ${CMAKE_CURRENT_BINARY_DIR}/ModuleDescriptionParserExport.h
     ${CMAKE_CURRENT_BINARY_DIR}/${configure_header_file}
-    DESTINATION include/${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
     COMPONENT Development
     )
 endif()
@@ -217,18 +231,11 @@ export(TARGETS ${lib_name} FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targe
 # --------------------------------------------------------------------------
 # Install library
 # --------------------------------------------------------------------------
-if(NOT DEFINED ${PROJECT_NAME}_INSTALL_BIN_DIR)
-  set(${PROJECT_NAME}_INSTALL_BIN_DIR bin)
-endif()
-
-if(NOT DEFINED ${PROJECT_NAME}_INSTALL_LIB_DIR)
-  set(${PROJECT_NAME}_INSTALL_LIB_DIR lib/${PROJECT_NAME})
-endif()
-
-install(TARGETS ${lib_name}
+install(TARGETS ${lib_name} EXPORT ${PROJECT_NAME}Targets
   RUNTIME DESTINATION ${${PROJECT_NAME}_INSTALL_BIN_DIR} COMPONENT RuntimeLibraries
   LIBRARY DESTINATION ${${PROJECT_NAME}_INSTALL_LIB_DIR} COMPONENT RuntimeLibraries
   ARCHIVE DESTINATION ${${PROJECT_NAME}_INSTALL_LIB_DIR} COMPONENT Development
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
   )
 
 # --------------------------------------------------------------------------
@@ -241,11 +248,13 @@ endif()
 # --------------------------------------------------------------------------
 # Install support files
 # --------------------------------------------------------------------------
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/UseModuleDescriptionParser.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
-    DESTINATION lib/${lib_name} COMPONENT Development)
+    DESTINATION ${${PROJECT_NAME}_INSTALL_CONFIG_DIR} COMPONENT Development)
+  install(EXPORT ${PROJECT_NAME}Targets
+    DESTINATION ${${PROJECT_NAME}_INSTALL_CONFIG_DIR} COMPONENT Development)
 endif()
 
 # --------------------------------------------------------------------------

@@ -1,22 +1,44 @@
 # GenerateCLP could be installed anywhere, so set all paths based on where
-# this file was found (which should be the lib/GenerateCLP directory of the
-# installation)
+# this file was found.
 get_filename_component(GenerateCLP_CONFIG_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component(_gclp_prefix
+  "${GenerateCLP_CONFIG_DIR}/@GenerateCLP_CONFIG_TO_PREFIX@" ABSOLUTE
+  )
 
-if(WIN32)
-  set(__EXE_EXT ".exe")
-endif()
-
-set(GenerateCLP_INCLUDE_DIRS "${GenerateCLP_CONFIG_DIR}/../../include/GenerateCLP")
-set(GenerateCLP_LIBRARY_DIRS "${GenerateCLP_CONFIG_DIR}")
+set(GenerateCLP_INCLUDE_DIRS "")
+set(GenerateCLP_LIBRARY_DIRS "${_gclp_prefix}/@ModuleDescriptionParser_INSTALL_LIB_DIR_CONFIG@")
+set(GenerateCLP_CMAKE_DIR "${GenerateCLP_CONFIG_DIR}")
 set(GenerateCLP_USE_FILE "${GenerateCLP_CONFIG_DIR}/UseGenerateCLP.cmake")
-set(GENERATECLP_EXE "${GenerateCLP_CONFIG_DIR}/../../bin/GenerateCLP")
-if(NOT WIN32)
-  set(GENERATECLP_EXE "${GENERATECLP_EXE}Launcher")
-endif()
-set(GENERATECLP_EXE "${GENERATECLP_EXE}${__EXE_EXT}")
-get_filename_component(GENERATECLP_EXE "${GENERATECLP_EXE}" ABSOLUTE)
-set(TCLAP_DIR "@TCLAP_DIR@")
-set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
-set(ITK_DIR "@ITK_DIR@")
+set(GenerateCLP_USE_JSONCPP "@GenerateCLP_USE_JSONCPP@")
+set(GenerateCLP_USE_SERIALIZER "@GenerateCLP_USE_SERIALIZER@")
+set(GENERATECLP_EXE "${_gclp_prefix}/@GenerateCLP_INSTALL_BIN_DIR@/GenerateCLP@CMAKE_EXECUTABLE_SUFFIX@")
 
+if(NOT DEFINED SlicerExecutionModel_USE_UTF8)
+  set(SlicerExecutionModel_USE_UTF8 "@SlicerExecutionModel_USE_UTF8@")
+endif()
+if(NOT DEFINED SlicerExecutionModel_CMAKE_DIR)
+  set(SlicerExecutionModel_CMAKE_DIR "${_gclp_prefix}/@SlicerExecutionModel_INSTALL_CONFIG_DIR@/CMake")
+endif()
+set(TCLAP_DIR "${_gclp_prefix}/@TCLAP_INSTALL_CONFIG_DIR_CONFIG@")
+set(ModuleDescriptionParser_DIR "${_gclp_prefix}/@ModuleDescriptionParser_INSTALL_CONFIG_DIR_CONFIG@")
+if(NOT DEFINED ITK_DIR)
+  set(ITK_DIR "@ITK_DIR@")
+endif()
+
+set(GenerateCLP_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+if(NOT "${GenerateCLP_JsonCpp_INCLUDE_DIR}" STREQUAL "")
+  set(JsonCpp_INCLUDE_DIR ${GenerateCLP_JsonCpp_INCLUDE_DIR})
+endif()
+
+set(GenerateCLP_JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+if(NOT "${GenerateCLP_JsonCpp_LIBRARY}" STREQUAL "")
+  set(JsonCpp_LIBRARY ${GenerateCLP_JsonCpp_LIBRARY})
+endif()
+
+set(GenerateCLP_ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+if(NOT "${GenerateCLP_ParameterSerializer_DIR}" STREQUAL "")
+  set(ParameterSerializer_DIR ${GenerateCLP_ParameterSerializer_DIR})
+endif()
+
+include("${SlicerExecutionModel_CMAKE_DIR}/SEMFunctionAddExecutable.cmake")
+unset(_gclp_prefix)

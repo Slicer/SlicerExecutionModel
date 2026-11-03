@@ -15,6 +15,8 @@
 #                    SlicerExecutionModel_USE_JSONCPP
 #                    SlicerExecutionModel_USE_SERIALIZER
 
+get_filename_component(SlicerExecutionModel_CONFIG_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
 # Check if components where passed to find_package()
 if(SlicerExecutionModel_FIND_COMPONENTS)
   foreach(component ${SlicerExecutionModel_FIND_COMPONENTS})
@@ -70,7 +72,7 @@ set(DEFAULT_SEM_TARGET_LIBRARIES
 set(SlicerExecutionModel_USE_FILE
   "@SlicerExecutionModel_USE_FILE_CONFIG@"
   )
-set(SlicerExecutionModel_CMAKE_DIR ${SlicerExecutionModel_DIR}/CMake)
+set(SlicerExecutionModel_CMAKE_DIR "@SlicerExecutionModel_CMAKE_DIR_CONFIG@")
 
 # If not already defined, set default "output directories" used by SEMMacroBuildCLI.cmake
 if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY)
@@ -138,14 +140,14 @@ if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX)
 endif()
 
 # The SlicerExecutionModel targets file.
-if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
-  include("@SlicerExecutionModel_EXPORT_FILE@")
+if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE_CONFIG@")
+  include("@SlicerExecutionModel_EXPORT_FILE_CONFIG@")
 endif()
 
 # Set *_DIR variable so that find_package() works appropriately
-set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
-set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
-set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
+set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR_CONFIG@")
+set(GenerateCLP_DIR "@GenerateCLP_DIR_CONFIG@")
+set(TCLAP_DIR "@TCLAP_DIR_CONFIG@")
 
 set(SlicerExecutionModel_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
 if(NOT "${SlicerExecutionModel_JsonCpp_INCLUDE_DIR}" STREQUAL "")

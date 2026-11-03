@@ -6,6 +6,7 @@ set(CMAKE_EXECUTABLE_SUFFIX "@CMAKE_EXECUTABLE_SUFFIX@")
 
 set(generateclp_cmake_generator "@CMAKE_GENERATOR@")
 set(GenerateCLP_BINARY_DIR "@GenerateCLP_BINARY_DIR@")
+set(SlicerExecutionModel_BINARY_DIR "@SlicerExecutionModel_BINARY_DIR@")
 
 set(GenerateCLP_USE_JSONCPP @GenerateCLP_USE_JSONCPP@)
 set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")

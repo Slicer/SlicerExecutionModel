@@ -33,23 +33,37 @@ include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${SlicerExecutionModel_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
 
-if(DEFINED SlicerExecutionModel_INSTALL_BIN_DIR)
-  set(GenerateCLP_INSTALL_BIN_DIR ${SlicerExecutionModel_INSTALL_BIN_DIR})
-  set(ModuleDescriptionParser_INSTALL_BIN_DIR ${SlicerExecutionModel_INSTALL_BIN_DIR})
-  set(tclap_INSTALL_BIN_DIR ${SlicerExecutionModel_INSTALL_BIN_DIR})
-endif()
+include(GNUInstallDirs)
 
-if(DEFINED SlicerExecutionModel_INSTALL_LIB_DIR)
-  set(GenerateCLP_INSTALL_LIB_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR})
-  set(ModuleDescriptionParser_INSTALL_LIB_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR})
-  set(tclap_INSTALL_LIB_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR})
+if(NOT DEFINED SlicerExecutionModel_INSTALL_BIN_DIR)
+  set(SlicerExecutionModel_INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
 endif()
+if(NOT DEFINED SlicerExecutionModel_INSTALL_LIB_DIR)
+  set(SlicerExecutionModel_INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+endif()
+foreach(_subproject GenerateCLP ModuleDescriptionParser TCLAP)
+  set(${_subproject}_INSTALL_BIN_DIR ${SlicerExecutionModel_INSTALL_BIN_DIR})
+  set(${_subproject}_INSTALL_LIB_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR})
+endforeach()
 
+set(_sem_install_development_default OFF)
 if(DEFINED SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
-  set(GenerateCLP_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
-  set(ModuleDescriptionParser_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
-  set(tclap_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
+  message(DEPRECATION "SlicerExecutionModel_INSTALL_NO_DEVELOPMENT is deprecated, set SlicerExecutionModel_INSTALL_DEVELOPMENT instead")
+  if(NOT SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
+    set(_sem_install_development_default ON)
+  endif()
 endif()
+option(SlicerExecutionModel_INSTALL_DEVELOPMENT
+  "Install the headers, CMake support files, and GenerateCLP needed to build CLI modules against the install tree"
+  ${_sem_install_development_default})
+set(GenerateCLP_INSTALL_DEVELOPMENT ${SlicerExecutionModel_INSTALL_DEVELOPMENT})
+set(ModuleDescriptionParser_INSTALL_DEVELOPMENT ${SlicerExecutionModel_INSTALL_DEVELOPMENT})
+set(TCLAP_INSTALL_DEVELOPMENT ${SlicerExecutionModel_INSTALL_DEVELOPMENT})
+
+set(SlicerExecutionModel_INSTALL_CONFIG_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR}/cmake/SlicerExecutionModel)
+set(GenerateCLP_INSTALL_CONFIG_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR}/cmake/GenerateCLP)
+set(ModuleDescriptionParser_INSTALL_CONFIG_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR}/cmake/ModuleDescriptionParser)
+set(TCLAP_INSTALL_CONFIG_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR}/cmake/tclap)
 
 if(NOT DEFINED SlicerExecutionModel_EXPORT_FILE)
   set(SlicerExecutionModel_EXPORT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SlicerExecutionModelTargets.cmake)
@@ -247,3 +261,16 @@ foreach(SCRIPT ${allscripts})
   configure_file(${SCRIPT}
     ${CMAKE_CURRENT_BINARY_DIR}/CMake/${_fileName} COPYONLY IMMEDIATE)
 endforeach()
+
+if(SlicerExecutionModel_INSTALL_DEVELOPMENT)
+  install(FILES ${allscripts}
+    DESTINATION ${SlicerExecutionModel_INSTALL_CONFIG_DIR}/CMake
+    COMPONENT Development
+    )
+  install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/UseSlicerExecutionModel.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/install/SlicerExecutionModelConfig.cmake
+    DESTINATION ${SlicerExecutionModel_INSTALL_CONFIG_DIR}
+    COMPONENT Development
+    )
+endif()
