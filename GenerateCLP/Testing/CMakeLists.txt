@@ -12,7 +12,7 @@ configure_file(
 # Install SlicerExecutionModel into a test prefix
 #
 set(_test_install_tree OFF)
-if(NOT SlicerExecutionModel_INSTALL_NO_DEVELOPMENT AND DEFINED SlicerExecutionModel_BINARY_DIR)
+if(SlicerExecutionModel_INSTALL_DEVELOPMENT AND DEFINED SlicerExecutionModel_BINARY_DIR)
   set(_test_install_tree ON)
   set(_test_install_dir ${CMAKE_CURRENT_BINARY_DIR}/SlicerExecutionModel-install)
   add_test(NAME SlicerExecutionModel-Install

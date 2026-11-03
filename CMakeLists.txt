@@ -45,15 +45,20 @@ if(DEFINED SlicerExecutionModel_INSTALL_LIB_DIR)
   set(tclap_INSTALL_LIB_DIR ${SlicerExecutionModel_INSTALL_LIB_DIR})
 endif()
 
+set(_sem_install_development_default OFF)
 if(DEFINED SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
-  set(GenerateCLP_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
-  set(ModuleDescriptionParser_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
-  set(TCLAP_INSTALL_NO_DEVELOPMENT ${SlicerExecutionModel_INSTALL_NO_DEVELOPMENT})
+  message(DEPRECATION "SlicerExecutionModel_INSTALL_NO_DEVELOPMENT is deprecated, set SlicerExecutionModel_INSTALL_DEVELOPMENT instead")
+  if(NOT SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
+    set(_sem_install_development_default ON)
+  endif()
 endif()
+option(SlicerExecutionModel_INSTALL_DEVELOPMENT
+  "Install the headers, CMake support files, and GenerateCLP needed to build CLI modules against the install tree"
+  ${_sem_install_development_default})
+set(GenerateCLP_INSTALL_DEVELOPMENT ${SlicerExecutionModel_INSTALL_DEVELOPMENT})
+set(ModuleDescriptionParser_INSTALL_DEVELOPMENT ${SlicerExecutionModel_INSTALL_DEVELOPMENT})
+set(TCLAP_INSTALL_DEVELOPMENT ${SlicerExecutionModel_INSTALL_DEVELOPMENT})
 
-if(NOT DEFINED SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
-  set(SlicerExecutionModel_INSTALL_NO_DEVELOPMENT ON)
-endif()
 set(SlicerExecutionModel_INSTALL_CONFIG_DIR lib/SlicerExecutionModel)
 
 if(NOT DEFINED SlicerExecutionModel_EXPORT_FILE)
@@ -253,7 +258,7 @@ foreach(SCRIPT ${allscripts})
     ${CMAKE_CURRENT_BINARY_DIR}/CMake/${_fileName} COPYONLY IMMEDIATE)
 endforeach()
 
-if(NOT SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
+if(SlicerExecutionModel_INSTALL_DEVELOPMENT)
   install(FILES ${allscripts}
     DESTINATION ${SlicerExecutionModel_INSTALL_CONFIG_DIR}/CMake
     COMPONENT Development

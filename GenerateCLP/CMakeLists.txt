@@ -129,8 +129,12 @@ target_link_libraries(${executable_name}
 if(NOT DEFINED GenerateCLP_INSTALL_BIN_DIR)
   set(GenerateCLP_INSTALL_BIN_DIR bin)
 endif()
-if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
-  set(${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT ON)
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_DEVELOPMENT)
+  set(_install_development_default OFF)
+  if(DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT AND NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+    set(_install_development_default ON)
+  endif()
+  option(${PROJECT_NAME}_INSTALL_DEVELOPMENT "Install the headers and CMake support files" ${_install_development_default})
 endif()
 if(NOT DEFINED ModuleDescriptionParser_INSTALL_LIB_DIR)
   set(ModuleDescriptionParser_INSTALL_LIB_DIR lib/ModuleDescriptionParser)
@@ -146,7 +150,7 @@ set_target_properties(${executable_name} PROPERTIES
   INSTALL_RPATH "${_gclp_rpath_origin}/${_gclp_bin_to_mdp_lib}"
   INSTALL_RPATH_USE_LINK_PATH ON
   )
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(TARGETS GenerateCLP RUNTIME
     DESTINATION ${GenerateCLP_INSTALL_BIN_DIR} COMPONENT Development
     )
@@ -155,7 +159,7 @@ endif()
 # --------------------------------------------------------------------------
 # Install support files
 # --------------------------------------------------------------------------
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(FILES
     ${GenerateCLP_BINARY_DIR}/install/GenerateCLPConfig.cmake
     ${GenerateCLP_BINARY_DIR}/UseGenerateCLP.cmake
@@ -244,7 +248,7 @@ add_dependencies(GenerateCLPLauncher GenerateCLP)
 # --------------------------------------------------------------------------
 # Install launcher
 # --------------------------------------------------------------------------
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(TARGETS GenerateCLPLauncher RUNTIME
     DESTINATION ${GenerateCLP_INSTALL_BIN_DIR} COMPONENT Development
     )

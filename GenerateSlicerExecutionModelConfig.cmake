@@ -65,7 +65,7 @@ configure_file(
 # Settings specific for installation trees
 #
 #
-if(SlicerExecutionModel_INSTALL_NO_DEVELOPMENT)
+if(NOT SlicerExecutionModel_INSTALL_DEVELOPMENT)
   return()
 endif()
 

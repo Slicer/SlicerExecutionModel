@@ -92,10 +92,14 @@ configure_file(
 # --------------------------------------------------------------------------
 # Install headers
 # --------------------------------------------------------------------------
-if(NOT DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
-  set(${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT ON)
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_DEVELOPMENT)
+  set(_install_development_default OFF)
+  if(DEFINED ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT AND NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+    set(_install_development_default ON)
+  endif()
+  option(${PROJECT_NAME}_INSTALL_DEVELOPMENT "Install the headers and CMake support files" ${_install_development_default})
 endif()
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(FILES
     BatchMakeUtilities.h
     itkSEMModuleDescriptionSerializer.h
@@ -242,7 +246,7 @@ endif()
 # --------------------------------------------------------------------------
 # Install support files
 # --------------------------------------------------------------------------
-if(NOT ${PROJECT_NAME}_INSTALL_NO_DEVELOPMENT)
+if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/UseModuleDescriptionParser.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
