@@ -31,3 +31,4 @@ tclap.pc
 tests/test*.log
 tests/test*.trs
 tests/tmp.out
+settings.json

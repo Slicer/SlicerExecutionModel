@@ -39,6 +39,8 @@ namespace TCLAP {
  * EitherOf or OneOf derived classes are used.
  */
 class ArgGroup : public ArgContainer {
+    friend class CmdLine;
+    friend class CmdLineInterface;
 public:
     typedef std::list<Arg *> Container;
     typedef Container::iterator iterator;
@@ -88,14 +90,13 @@ public:
      * consistency with other args).
      */
     void setParser(CmdLineInterface &parser) {
-        if (_parser) {
+        if (_parser)
             throw SpecificationException("Arg group can have only one parser");
-        }
-
+        if (parser.attachGroup(*this)) return;
+        // Preserve the legacy path for custom CmdLineInterface implementations.
         _parser = &parser;
-        for (iterator it = begin(); it != end(); ++it) {
+        for (iterator it = begin(); it != end(); ++it)
             parser.addToArgList(*it);
-        }
     }
 
     /**
@@ -174,10 +175,10 @@ public:
 };
 
 /**
- * Implements a group of arguments where any combination is possible
- * (including all or none). This is mostly used in case one optional
- * argument allows additional arguments to be specified (for example
- * [-c [-de] [-n <int>]]).
+ * Groups arguments for presentation without imposing a selection rule.
+ * Any combination of members may be selected, subject to each argument's
+ * own requirements. This group does not enforce conditional dependencies;
+ * applications must check any additional dependencies themselves.
  */
 class AnyOf : public ArgGroup {
 public:
@@ -191,16 +192,18 @@ public:
 
 inline ArgContainer &ArgGroup::add(Arg *arg) {
     for (iterator it = begin(); it != end(); it++) {
-        if (*arg == **it) {
+        if (arg->conflictsWith(**it)) {
             throw SpecificationException(
                 "Argument with same flag/name already exists!", arg->longID());
         }
     }
 
-    _args.push_back(arg);
+    Container members(_args);
+    members.push_back(arg);
     if (_parser) {
         _parser->addToArgList(arg);
     }
+    _args.swap(members);
 
     return *this;
 }
@@ -211,7 +214,7 @@ inline bool ExclusiveArgGroup::validate() {
 
     for (const_iterator it = begin(); it != end(); ++it) {
         if ((*it)->isSet()) {
-            if (arg != NULL && !(*arg == **it)) {
+            if (arg != NULL && arg != *it) {
                 // We found a matching argument, but one was
                 // already found previously.
                 throw CmdLineParseException(

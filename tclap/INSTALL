@@ -1,0 +1,85 @@
+Basic Installation
+==================
+
+TCLAP is a header-only library, so on most modern systems you can
+simply copy the .../include/tclap directory to your project, or simply
+add .../include to the include path for the compiler. The path prefix
+"..." here refers to the root directory of TCLAP (i.e., where you
+cloned or extracted it).
+
+CMake Installation
+==================
+
+TCLAP requires CMake 3.13 or later (https://cmake.org/) to configure,
+build, test, and install the library. Run the following commands from
+the root TCLAP directory:
+
+cmake -S . -B build
+cmake --build build
+cmake --build build --target install
+
+This detects the system configuration and installs the headers in the
+default install location. To install in an alternative location, use:
+
+cmake -S . -B build -DCMAKE_INSTALL_PREFIX=</your/install/prefix>
+cmake --build build --target install
+
+Using an installed package
+--------------------------
+
+A CMake application can use the installed headers through TCLAP::TCLAP.
+For an application with main.cpp, its CMakeLists.txt can contain:
+
+  cmake_minimum_required(VERSION 3.13)
+  project(app LANGUAGES CXX)
+  set(CMAKE_CXX_STANDARD 98)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  find_package(TCLAP CONFIG REQUIRED)
+  add_executable(app main.cpp)
+  target_link_libraries(app PRIVATE TCLAP::TCLAP)
+
+Configure it with the installation prefix when it is outside normal search
+locations:
+
+  cmake -S . -B app-build -DCMAKE_PREFIX_PATH=/your/install/prefix
+  cmake --build app-build
+
+If CMAKE_INSTALL_LIBDIR places package metadata outside CMake's usual search
+layout, set TCLAP_DIR to the directory containing TCLAPConfig.cmake instead.
+
+For direct compiler commands, supply the installed include directory. Define
+HAVE_TCLAP_CONFIG_H to include the generated tclap/TCLAPConfig.h configuration
+and version metadata when using a configured installation. The default header
+configuration also supports direct use without that macro.
+
+Building without tests
+======================
+
+The default project build includes examples, unit tests and portable fuzz
+seed tests. The example tests require Python 3. Set BUILD_TESTING=OFF to
+skip test registration and the Python dependency. Unit tests and portable
+fuzz regression runners default to the initial value of BUILD_TESTING;
+explicitly enabled fuzz targets can still be built without registering tests.
+Use a fresh build directory when switching tests off: existing directories
+can retain old CTest registrations and cached developer-target options.
+
+For a library-only configuration, use a fresh build directory and configure
+with BUILD_TESTING=OFF, BUILD_EXAMPLES=OFF and BUILD_DOC=OFF, for example
+(from the build directory):
+
+cmake -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DBUILD_DOC=OFF ..
+
+VisualStudio Users
+==================
+
+VisualStudio can work with CMake, use the "File->Open Folder" option
+to import the project into VisualStudio.
+
+Release staging
+---------------
+Generate documentation with BUILD_DOC=ON, then stage it with:
+
+  bash scripts/release.sh SOURCE_DIR DEST_DIR BUILD_DIR
+
+BUILD_DIR is optional and defaults to SOURCE_DIR/build. Paths may contain spaces.

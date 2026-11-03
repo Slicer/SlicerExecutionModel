@@ -44,6 +44,12 @@ class CmdLineOutput;
  * along the parsing to the appropriate Arg classes.
  */
 class CmdLineInterface : public ArgContainer {
+    friend class ArgGroup;
+protected:
+    // Return true when the implementation handles the whole attachment.
+    // The default lets ArgGroup keep the legacy custom-parser path.
+    virtual bool attachGroup(ArgGroup &) { return false; }
+
 public:
     /**
      * Destructor
@@ -135,6 +141,12 @@ public:
      * Returns the message string.
      */
     virtual std::string getMessage() const = 0;
+
+    /**
+     * Translates a built-in message using the current translator.
+     */
+    virtual std::string translateMessage(const std::string &messageId,
+                                         const std::string &fallback) const = 0;
 
     /**
      * Indicates whether or not the help and version switches were created

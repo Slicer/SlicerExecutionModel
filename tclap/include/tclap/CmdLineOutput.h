@@ -36,7 +36,7 @@
 #include <vector>
 
 namespace TCLAP {
-const char TCLAP_PATH_SEPARATOR =
+const char PATH_SEPARATOR =
 #ifdef _WIN32
 	'\\';
 #else
@@ -108,7 +108,7 @@ inline std::string removeSuffix(std::string s, const std::string &suffix) {
 }
 
 inline std::string basename(std::string s) {
-    size_t p = s.find_last_of(TCLAP_PATH_SEPARATOR);
+    size_t p = s.find_last_of(PATH_SEPARATOR);
     if (p != std::string::npos) {
         s.erase(0, p + 1);
     }

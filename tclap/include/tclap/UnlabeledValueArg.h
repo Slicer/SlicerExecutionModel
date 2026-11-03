@@ -208,7 +208,6 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
     : ValueArg<T>("", name, desc, req, val, typeDesc, v) {
     _ignoreable = ignoreable;
 
-    OptionalUnlabeledTracker::check(req, toString());
 }
 
 template <class T>
@@ -219,7 +218,6 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
                                         bool ignoreable, Visitor *v)
     : ValueArg<T>("", name, desc, req, val, typeDesc, v) {
     _ignoreable = ignoreable;
-    OptionalUnlabeledTracker::check(req, toString());
     parser.add(this);
 }
 
@@ -233,7 +231,6 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
                                         bool ignoreable, Visitor *v)
     : ValueArg<T>("", name, desc, req, val, constraint, v) {
     _ignoreable = ignoreable;
-    OptionalUnlabeledTracker::check(req, toString());
 }
 
 template <class T>
@@ -244,7 +241,6 @@ UnlabeledValueArg<T>::UnlabeledValueArg(const std::string &name,
                                         bool ignoreable, Visitor *v)
     : ValueArg<T>("", name, desc, req, val, constraint, v) {
     _ignoreable = ignoreable;
-    OptionalUnlabeledTracker::check(req, toString());
     parser.add(this);
 }
 
@@ -256,8 +252,6 @@ bool UnlabeledValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
     if (_alreadySet) return false;
 
     if (_hasBlanks(args[*i])) return false;
-
-    // never ignore an unlabeled arg
 
     _extractValue(args[*i]);
     _alreadySet = true;
@@ -271,10 +265,8 @@ bool UnlabeledValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
  */
 template <class T>
 bool UnlabeledValueArg<T>::operator==(const Arg &a) const {
-    if (_name == a.getName() || _description == a.getDescription())
-        return true;
-    else
-        return false;
+    return _name == a.getName() ||
+           this->getDescription() == a.getDescription();
 }
 
 template <class T>
