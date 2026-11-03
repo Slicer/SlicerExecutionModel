@@ -74,26 +74,21 @@ file(RELATIVE_PATH _sem_config_to_prefix
 string(REGEX REPLACE "/$" "" _sem_config_to_prefix "${_sem_config_to_prefix}")
 set(_sem_prefix "\${SlicerExecutionModel_CONFIG_DIR}/${_sem_config_to_prefix}")
 
-set(_sem_mdp_lib_dir lib/ModuleDescriptionParser)
-if(DEFINED ModuleDescriptionParser_INSTALL_LIB_DIR)
-  set(_sem_mdp_lib_dir ${ModuleDescriptionParser_INSTALL_LIB_DIR})
-endif()
-
 set(SlicerExecutionModel_INCLUDE_DIRS_CONFIG
-  "${_sem_prefix}/include/ModuleDescriptionParser"
-  "${_sem_prefix}/include"
+  "${_sem_prefix}/${CMAKE_INSTALL_INCLUDEDIR}/ModuleDescriptionParser"
+  "${_sem_prefix}/${CMAKE_INSTALL_INCLUDEDIR}"
   ${_additional_include_dirs}
   )
 set(SlicerExecutionModel_USE_FILE_CONFIG
   "\${SlicerExecutionModel_CONFIG_DIR}/UseSlicerExecutionModel.cmake")
 set(SlicerExecutionModel_CMAKE_DIR_CONFIG "\${SlicerExecutionModel_CONFIG_DIR}/CMake")
-set(SlicerExecutionModel_LIBRARY_DIRS_CONFIG "${_sem_prefix}/${_sem_mdp_lib_dir}")
+set(SlicerExecutionModel_LIBRARY_DIRS_CONFIG "${_sem_prefix}/${ModuleDescriptionParser_INSTALL_LIB_DIR}")
 set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG
   "\${SlicerExecutionModel_CMAKE_DIR}/SEMCommandLineLibraryWrapper.cxx")
 set(SlicerExecutionModel_EXPORT_FILE_CONFIG "")
-set(ModuleDescriptionParser_DIR_CONFIG "${_sem_prefix}/lib/ModuleDescriptionParser")
-set(GenerateCLP_DIR_CONFIG "${_sem_prefix}/lib/GenerateCLP")
-set(TCLAP_DIR_CONFIG "${_sem_prefix}/lib/tclap")
+set(ModuleDescriptionParser_DIR_CONFIG "${_sem_prefix}/${ModuleDescriptionParser_INSTALL_CONFIG_DIR}")
+set(GenerateCLP_DIR_CONFIG "${_sem_prefix}/${GenerateCLP_INSTALL_CONFIG_DIR}")
+set(TCLAP_DIR_CONFIG "${_sem_prefix}/${TCLAP_INSTALL_CONFIG_DIR}")
 
 configure_file(
   ${SlicerExecutionModel_SOURCE_DIR}/SlicerExecutionModelConfig.cmake.in

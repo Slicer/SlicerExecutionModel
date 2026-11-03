@@ -52,7 +52,7 @@ macro(generateclp_add_test cliname stepname)
       -DTEST_SOURCE_DIR:PATH=${CMAKE_CURRENT_SOURCE_DIR}/${cliname}
       -DTEST_BINARY_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/InstallTree-${cliname}
       -DTEST_CONFIGURATION:STRING=$<CONFIGURATION>
-      -DTEST_GenerateCLP_DIR:PATH=${_test_install_dir}/lib/GenerateCLP
+      -DTEST_GenerateCLP_DIR:PATH=${_test_install_dir}/${GenerateCLP_INSTALL_CONFIG_DIR}
       -DTEST_SlicerExecutionModel_DIR:PATH=${_test_install_dir}/${SlicerExecutionModel_INSTALL_CONFIG_DIR}
       -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/GenerateCLPTest-${stepname}.cmake)
     if(NOT "${stepname}" STREQUAL "Configure")

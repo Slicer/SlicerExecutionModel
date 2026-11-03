@@ -8,7 +8,7 @@ get_filename_component(_mdp_prefix
   )
 
 set(ModuleDescriptionParser_INCLUDE_DIRS
-  "${_mdp_prefix}/include/ModuleDescriptionParser"
+  "${_mdp_prefix}/@CMAKE_INSTALL_INCLUDEDIR@/ModuleDescriptionParser"
   )
 set(ModuleDescriptionParser_LIBRARY_DIRS
   "${_mdp_prefix}/@ModuleDescriptionParser_INSTALL_LIB_DIR@"

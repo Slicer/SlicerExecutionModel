@@ -126,8 +126,15 @@ target_link_libraries(${executable_name}
 # --------------------------------------------------------------------------
 # Install executable
 # --------------------------------------------------------------------------
+include(GNUInstallDirs)
 if(NOT DEFINED GenerateCLP_INSTALL_BIN_DIR)
-  set(GenerateCLP_INSTALL_BIN_DIR bin)
+  set(GenerateCLP_INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
+endif()
+if(NOT DEFINED GenerateCLP_INSTALL_LIB_DIR)
+  set(GenerateCLP_INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+endif()
+if(NOT DEFINED GenerateCLP_INSTALL_CONFIG_DIR)
+  set(GenerateCLP_INSTALL_CONFIG_DIR ${GenerateCLP_INSTALL_LIB_DIR}/cmake/GenerateCLP)
 endif()
 if(NOT DEFINED ${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   set(_install_development_default OFF)
@@ -137,7 +144,7 @@ if(NOT DEFINED ${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   option(${PROJECT_NAME}_INSTALL_DEVELOPMENT "Install the headers and CMake support files" ${_install_development_default})
 endif()
 if(NOT DEFINED ModuleDescriptionParser_INSTALL_LIB_DIR)
-  set(ModuleDescriptionParser_INSTALL_LIB_DIR lib/ModuleDescriptionParser)
+  set(ModuleDescriptionParser_INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
 endif()
 file(RELATIVE_PATH _gclp_bin_to_mdp_lib
   "/prefix/${GenerateCLP_INSTALL_BIN_DIR}" "/prefix/${ModuleDescriptionParser_INSTALL_LIB_DIR}")
@@ -164,7 +171,7 @@ if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
     ${GenerateCLP_BINARY_DIR}/install/GenerateCLPConfig.cmake
     ${GenerateCLP_BINARY_DIR}/UseGenerateCLP.cmake
     ${GenerateCLP_BINARY_DIR}/GenerateCLP.cmake
-    DESTINATION lib/GenerateCLP
+    DESTINATION ${GenerateCLP_INSTALL_CONFIG_DIR}
     COMPONENT Development
     )
 endif()

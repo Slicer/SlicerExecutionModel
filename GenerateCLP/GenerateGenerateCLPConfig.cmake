@@ -22,7 +22,15 @@ configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPConfig.cmake.in
 
 
 # Configure GenerateCLPConfig.cmake for the install tree.
-file(RELATIVE_PATH GenerateCLP_CONFIG_TO_PREFIX "/prefix/lib/GenerateCLP" "/prefix")
+file(RELATIVE_PATH GenerateCLP_CONFIG_TO_PREFIX "/prefix/${GenerateCLP_INSTALL_CONFIG_DIR}" "/prefix")
+if(NOT DEFINED ModuleDescriptionParser_INSTALL_CONFIG_DIR)
+  set(ModuleDescriptionParser_INSTALL_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/ModuleDescriptionParser)
+endif()
+if(NOT DEFINED TCLAP_INSTALL_CONFIG_DIR)
+  set(TCLAP_INSTALL_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/tclap)
+endif()
 set(ModuleDescriptionParser_INSTALL_LIB_DIR_CONFIG ${ModuleDescriptionParser_INSTALL_LIB_DIR})
+set(ModuleDescriptionParser_INSTALL_CONFIG_DIR_CONFIG ${ModuleDescriptionParser_INSTALL_CONFIG_DIR})
+set(TCLAP_INSTALL_CONFIG_DIR_CONFIG ${TCLAP_INSTALL_CONFIG_DIR})
 configure_file(${GenerateCLP_SOURCE_DIR}/GenerateCLPInstallConfig.cmake.in
   ${GenerateCLP_BINARY_DIR}/install/GenerateCLPConfig.cmake @ONLY)

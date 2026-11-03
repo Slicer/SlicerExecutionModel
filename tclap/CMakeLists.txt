@@ -177,12 +177,19 @@ if(NOT DEFINED ${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   endif()
   option(${PROJECT_NAME}_INSTALL_DEVELOPMENT "Install the headers and CMake support files" ${_install_development_default})
 endif()
+include(GNUInstallDirs)
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_LIB_DIR)
+  set(${PROJECT_NAME}_INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+endif()
+if(NOT DEFINED ${PROJECT_NAME}_INSTALL_CONFIG_DIR)
+  set(${PROJECT_NAME}_INSTALL_CONFIG_DIR ${${PROJECT_NAME}_INSTALL_LIB_DIR}/cmake/tclap)
+endif()
 if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   file(GLOB headers "${TCLAP_SOURCE_DIR}/include/tclap/*.h")
   # Note "COPYING" is a filename containing the license file
   install(
     FILES ${headers} COPYING
-    DESTINATION include/tclap COMPONENT Development
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tclap COMPONENT Development
     )
 endif()
 
@@ -193,7 +200,7 @@ if(${PROJECT_NAME}_INSTALL_DEVELOPMENT)
   install(FILES
     ${TCLAP_BINARY_DIR}/UseTCLAP.cmake
     ${TCLAP_BINARY_DIR}/install/TCLAPConfig.cmake
-    DESTINATION lib/tclap COMPONENT Development
+    DESTINATION ${${PROJECT_NAME}_INSTALL_CONFIG_DIR} COMPONENT Development
     )
 endif()
 

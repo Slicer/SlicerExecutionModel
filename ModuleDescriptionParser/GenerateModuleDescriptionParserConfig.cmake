@@ -32,7 +32,7 @@ configure_file(
 #
 
 file(RELATIVE_PATH ModuleDescriptionParser_CONFIG_TO_PREFIX
-  "/prefix/lib/ModuleDescriptionParser" "/prefix")
+  "/prefix/${ModuleDescriptionParser_INSTALL_CONFIG_DIR}" "/prefix")
 configure_file(
   ${ModuleDescriptionParser_SOURCE_DIR}/ModuleDescriptionParserInstallConfig.cmake.in
   ${ModuleDescriptionParser_BINARY_DIR}/install/ModuleDescriptionParserConfig.cmake
