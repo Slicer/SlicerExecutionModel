@@ -163,10 +163,13 @@ endif()
 # --------------------------------------------------------------------------
 # Vendored-source provenance
 # --------------------------------------------------------------------------
-# The include/tclap/*.h headers and config.h.in are kept byte-identical to
-# upstream TCLAP tag 1.4.0-rc2 (sf.net/projects/tclap, commit 81b3d2a0).
-# Re-sync by diffing this tree against that tag; the *.in templates,
-# GenerateTCLAPConfig.cmake, and the blocks below are Slicer-only glue.
+# The include/tclap/*.h headers, config.h.in, and the AUTHORS, ChangeLog,
+# COPYING, INSTALL, NEWS, and README files come from upstream TCLAP tag
+# v1.4.0 (https://github.com/DAarno/tclap, branch 1.4, commit bad995c4),
+# with one local change: PATH_SEPARATOR is renamed TCLAP_PATH_SEPARATOR in
+# CmdLineOutput.h (DAarno/tclap#2). Re-sync by diffing this tree against
+# that tag; the *.in templates, GenerateTCLAPConfig.cmake, and the blocks
+# below are Slicer-only glue.
 # --------------------------------------------------------------------------
 # Install headers
 # --------------------------------------------------------------------------

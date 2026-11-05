@@ -27,6 +27,7 @@
 #include <tclap/Constraint.h>
 #include <tclap/sstream.h>
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -43,7 +44,7 @@ public:
      * Constructor.
      * \param allowed - vector of allowed values.
      */
-    explicit ValuesConstraint(std::vector<T> &allowed);
+    explicit ValuesConstraint(const std::vector<T> &allowed);
 
     /**
      * Virtual destructor.
@@ -80,7 +81,7 @@ protected:
 };
 
 template <class T>
-ValuesConstraint<T>::ValuesConstraint(std::vector<T> &allowed)
+ValuesConstraint<T>::ValuesConstraint(const std::vector<T> &allowed)
     : _allowed(allowed), _typeDesc("") {
     for (unsigned int i = 0; i < _allowed.size(); i++) {
         std::ostringstream os;
@@ -95,10 +96,7 @@ ValuesConstraint<T>::ValuesConstraint(std::vector<T> &allowed)
 
 template <class T>
 bool ValuesConstraint<T>::check(const T &val) const {
-    if (std::find(_allowed.begin(), _allowed.end(), val) == _allowed.end())
-        return false;
-    else
-        return true;
+    return std::find(_allowed.begin(), _allowed.end(), val) != _allowed.end();
 }
 
 template <class T>

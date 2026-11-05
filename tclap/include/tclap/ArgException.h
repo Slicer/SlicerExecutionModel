@@ -48,7 +48,8 @@ public:
         : std::exception(),
           _errorText(text),
           _argId(id),
-          _typeDescription(td) {}
+          _typeDescription(td),
+          _what(_argId + " -- " + _errorText) {}
 
     /**
      * Destructor.
@@ -74,9 +75,7 @@ public:
      * Returns the arg id and error text.
      */
     const char *what() const throw() {
-        static std::string ex;
-        ex = _argId + " -- " + _errorText;
-        return ex.c_str();
+        return _what.c_str();
     }
 
     /**
@@ -101,6 +100,9 @@ private:
      * between different child exceptions.
      */
     std::string _typeDescription;
+
+    // Prepared in the constructor: what() cannot allocate or throw.
+    std::string _what;
 };
 
 /**

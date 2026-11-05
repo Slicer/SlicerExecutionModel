@@ -52,8 +52,10 @@ struct StringLike {
 
 /**
  * A class can inherit from this object to make it have string like
- * traits. This is a compile time thing and does not add any overhead
- * to the inherenting class.
+ * traits. The category selects parsing behavior at compile time.
+ * This helper has a virtual destructor, so inheriting from it makes
+ * the derived type polymorphic. Specialize ArgTraits instead if that
+ * is undesirable.
  */
 struct StringLikeTrait {
     typedef StringLike ValueCategory;
@@ -62,8 +64,10 @@ struct StringLikeTrait {
 
 /**
  * A class can inherit from this object to make it have value like
- * traits. This is a compile time thing and does not add any overhead
- * to the inherenting class.
+ * traits. The category selects parsing behavior at compile time.
+ * This helper has a virtual destructor, so inheriting from it makes
+ * the derived type polymorphic. Specialize ArgTraits instead if that
+ * is undesirable.
  */
 struct ValueLikeTrait {
     typedef ValueLike ValueCategory;
