@@ -197,6 +197,58 @@ static const char kwsys_shared_forward_path_slash[2] = {
 #    define KWSYS_SHARED_FORWARD_MAXPATH 16384
 #  endif
 
+/* The size of the buffer holding the runtime search path.  */
+#  define KWSYS_SHARED_FORWARD_LDPATH_SIZE 65535
+
+/* Set an environment variable from a "NAME=value" string that must remain
+   valid for the life of the process.  Standard C has no portable setter:
+   use the conformant _putenv on Windows and putenv elsewhere.  */
+#  if defined(_WIN32)
+#    define KWSYS_SHARED_FORWARD_PUTENV _putenv
+#  else
+#    define KWSYS_SHARED_FORWARD_PUTENV putenv
+#  endif
+
+/* Bounded string helpers built on standard C (strlen/memcpy).  The
+   destination is always null-terminated and never overflowed; input that
+   does not fit is truncated, which makes the later path lookup fail
+   instead of corrupting memory.  */
+static void kwsys_shared_forward_append(char* dst, size_t size,
+                                        const char* src, size_t n)
+{
+  size_t len = strlen(dst);
+  size_t room = (len + 1 < size) ? (size - len - 1) : 0;
+  if (n > room) {
+    n = room;
+  }
+  memcpy(dst + len, src, n);
+  dst[len + n] = 0;
+}
+
+static void kwsys_shared_forward_cat(char* dst, size_t size, const char* src)
+{
+  kwsys_shared_forward_append(dst, size, src, strlen(src));
+}
+
+/* Whether n more characters and the terminator fit in dst.  */
+static int kwsys_shared_forward_fits(const char* dst, size_t size, size_t n)
+{
+  return strlen(dst) + n < size;
+}
+
+static void kwsys_shared_forward_copy(char* dst, size_t size, const char* src)
+{
+  dst[0] = 0;
+  kwsys_shared_forward_cat(dst, size, src);
+}
+
+static void kwsys_shared_forward_copyn(char* dst, size_t size, const char* src,
+                                       size_t n)
+{
+  dst[0] = 0;
+  kwsys_shared_forward_append(dst, size, src, n);
+}
+
 /* Select the environment variable holding the shared library runtime
    search path for this platform and build configuration.  Also select
    ldd command equivalent.  */
@@ -463,7 +515,7 @@ static void kwsys_shared_forward_strerror(char* message)
   }
 #  else
   /* Implementation for UNIX.  */
-  strcpy(message, strerror(errno));
+  kwsys_shared_forward_copy(message, KWSYS_SHARED_FORWARD_MAXPATH, strerror(errno));
 #  endif
 }
 
@@ -521,23 +573,25 @@ static void kwsys_shared_forward_dirname(const char* begin, char* result)
   /* Handle each case of the index of the last slash.  */
   if (last_slash_index < 0) {
     /* No slashes.  */
-    strcpy(result, ".");
+    kwsys_shared_forward_copy(result, KWSYS_SHARED_FORWARD_MAXPATH, ".");
   } else if (last_slash_index == 0) {
     /* Only one leading slash.  */
-    strcpy(result, kwsys_shared_forward_path_slash);
+    kwsys_shared_forward_copy(result, KWSYS_SHARED_FORWARD_MAXPATH,
+                             kwsys_shared_forward_path_slash);
   }
 #  if defined(_WIN32)
   else if (last_slash_index == 2 && begin[1] == ':') {
     /* Only one leading drive letter and slash.  */
-    strncpy(result, begin, (size_t)last_slash_index);
-    result[last_slash_index] = KWSYS_SHARED_FORWARD_PATH_SLASH;
-    result[last_slash_index + 1] = 0;
+    kwsys_shared_forward_copyn(result, KWSYS_SHARED_FORWARD_MAXPATH, begin,
+                               (size_t)last_slash_index);
+    kwsys_shared_forward_cat(result, KWSYS_SHARED_FORWARD_MAXPATH,
+                             kwsys_shared_forward_path_slash);
   }
 #  endif
   else {
     /* A non-leading slash.  */
-    strncpy(result, begin, (size_t)last_slash_index);
-    result[last_slash_index] = 0;
+    kwsys_shared_forward_copyn(result, KWSYS_SHARED_FORWARD_MAXPATH, begin,
+                               (size_t)last_slash_index);
   }
 }
 
@@ -604,16 +658,21 @@ static int kwsys_shared_forward_self_path(const char* argv0, char* result)
           --length;
         }
 
-        /* Construct the name of the executable in this location.  */
-        strncpy(result, first, length);
-        result[length] = KWSYS_SHARED_FORWARD_PATH_SLASH;
-        strcpy(result + (length) + 1, argv0);
+        /* Construct the name of the executable in this location, skipping
+           a directory too long to hold it.  */
+        if (length + 1 + strlen(argv0) < KWSYS_SHARED_FORWARD_MAXPATH) {
+          kwsys_shared_forward_copyn(result, KWSYS_SHARED_FORWARD_MAXPATH,
+                                     first, length);
+          kwsys_shared_forward_cat(result, KWSYS_SHARED_FORWARD_MAXPATH,
+                                   kwsys_shared_forward_path_slash);
+          kwsys_shared_forward_cat(result, KWSYS_SHARED_FORWARD_MAXPATH, argv0);
 
-        /* Check if it exists and is executable.  */
-        if (kwsys_shared_forward_is_executable(result)) {
-          /* Found it.  */
-          result[length] = 0;
-          return 1;
+          /* Check if it exists and is executable.  */
+          if (kwsys_shared_forward_is_executable(result)) {
+            /* Found it.  */
+            result[length] = 0;
+            return 1;
+          }
         }
       }
 
@@ -635,20 +694,21 @@ static int kwsys_shared_forward_fullpath(const char* self_path,
   /* Check the specified path type.  */
   if (in_path[0] == '/') {
     /* Already a full path.  */
-    strcpy(result, in_path);
+    kwsys_shared_forward_copy(result, KWSYS_SHARED_FORWARD_MAXPATH, in_path);
   }
 #  if defined(_WIN32)
   else if (in_path[0] && in_path[1] == ':') {
     /* Already a full path.  */
-    strcpy(result, in_path);
+    kwsys_shared_forward_copy(result, KWSYS_SHARED_FORWARD_MAXPATH, in_path);
   }
 #  endif
   else {
     /* Relative to self path.  */
     char temp_path[KWSYS_SHARED_FORWARD_MAXPATH];
-    strcpy(temp_path, self_path);
-    strcat(temp_path, kwsys_shared_forward_path_slash);
-    strcat(temp_path, in_path);
+    kwsys_shared_forward_copy(temp_path, KWSYS_SHARED_FORWARD_MAXPATH, self_path);
+    kwsys_shared_forward_cat(temp_path, KWSYS_SHARED_FORWARD_MAXPATH,
+                             kwsys_shared_forward_path_slash);
+    kwsys_shared_forward_cat(temp_path, KWSYS_SHARED_FORWARD_MAXPATH, in_path);
     if (!kwsys_shared_forward_realpath(temp_path, result)) {
       if (desc) {
         char msgbuf[KWSYS_SHARED_FORWARD_MAXPATH];
@@ -723,7 +783,7 @@ static int kwsys_shared_forward_get_settings(const char* self_path,
 
 #  if defined(KWSYS_SHARED_FORWARD_CONFIG_NAME)
     /* Use the original self path directory.  */
-    strcpy(self_path_logical, self_path);
+    kwsys_shared_forward_copy(self_path_logical, KWSYS_SHARED_FORWARD_MAXPATH, self_path);
 #  endif
   }
 
@@ -731,17 +791,23 @@ static int kwsys_shared_forward_get_settings(const char* self_path,
   {
     const char** dir;
     for (dir = search_path; *dir; ++dir) {
-      /* Add separator between path components.  */
-      if (dir != search_path) {
-        strcat(ldpath, kwsys_shared_forward_path_sep);
-      }
-
-      /* Add this path component.  */
-      if (!kwsys_shared_forward_fullpath(self_path_logical, *dir,
-                                         ldpath + strlen(ldpath),
+      char entry[KWSYS_SHARED_FORWARD_MAXPATH];
+      size_t sep_length =
+        (dir != search_path) ? strlen(kwsys_shared_forward_path_sep) : 0;
+      if (!kwsys_shared_forward_fullpath(self_path_logical, *dir, entry,
                                          "runtime path entry")) {
         return 0;
       }
+      if (!kwsys_shared_forward_fits(ldpath, KWSYS_SHARED_FORWARD_LDPATH_SIZE,
+                                     sep_length + strlen(entry))) {
+        fprintf(stderr, "Runtime search path is too long.\n");
+        return 0;
+      }
+      if (sep_length) {
+        kwsys_shared_forward_cat(ldpath, KWSYS_SHARED_FORWARD_LDPATH_SIZE,
+                                 kwsys_shared_forward_path_sep);
+      }
+      kwsys_shared_forward_cat(ldpath, KWSYS_SHARED_FORWARD_LDPATH_SIZE, entry);
     }
   }
 
@@ -767,7 +833,7 @@ static void kwsys_shared_forward_print_failure(char const* const* argv)
 }
 
 /* Static storage space to store the updated environment variable.  */
-static char kwsys_shared_forward_ldpath[65535] =
+static char kwsys_shared_forward_ldpath[KWSYS_SHARED_FORWARD_LDPATH_SIZE] =
   KWSYS_SHARED_FORWARD_LDPATH "=";
 
 /* Main driver function to be called from main.  */
@@ -784,12 +850,25 @@ static int @KWSYS_NAMESPACE@_shared_forward_to_real(int argc, char** argv_in)
       /* Append the old runtime search path.  */
       const char* old_ldpath = getenv(KWSYS_SHARED_FORWARD_LDPATH);
       if (old_ldpath) {
-        strcat(kwsys_shared_forward_ldpath, kwsys_shared_forward_path_sep);
-        strcat(kwsys_shared_forward_ldpath, old_ldpath);
+        /* A truncated value could end in an empty entry, which the loader
+           treats as the current directory.  */
+        if (!kwsys_shared_forward_fits(
+              kwsys_shared_forward_ldpath, KWSYS_SHARED_FORWARD_LDPATH_SIZE,
+              strlen(kwsys_shared_forward_path_sep) + strlen(old_ldpath))) {
+          fprintf(stderr,
+                  "The inherited " KWSYS_SHARED_FORWARD_LDPATH
+                  " is too long to extend.\n");
+          return 1;
+        }
+        kwsys_shared_forward_cat(kwsys_shared_forward_ldpath,
+                                 KWSYS_SHARED_FORWARD_LDPATH_SIZE,
+                                 kwsys_shared_forward_path_sep);
+        kwsys_shared_forward_cat(kwsys_shared_forward_ldpath,
+                                 KWSYS_SHARED_FORWARD_LDPATH_SIZE, old_ldpath);
       }
 
       /* Store the environment variable.  */
-      putenv(kwsys_shared_forward_ldpath);
+      KWSYS_SHARED_FORWARD_PUTENV(kwsys_shared_forward_ldpath);
 
 #  if defined(KWSYS_SHARED_FORWARD_OPTION_COMMAND)
       /* Look for the command line replacement option.  */
@@ -797,7 +876,7 @@ static int @KWSYS_NAMESPACE@_shared_forward_to_real(int argc, char** argv_in)
           strcmp(argv[1], KWSYS_SHARED_FORWARD_OPTION_COMMAND) == 0) {
         if (argc > 2) {
           /* Use the command line given.  */
-          strcpy(exe, argv[2]);
+          kwsys_shared_forward_copy(exe, KWSYS_SHARED_FORWARD_MAXPATH, argv[2]);
           argv += 2;
           argc -= 2;
         } else {
